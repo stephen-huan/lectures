@@ -1,0 +1,79 @@
+\documentclass[11pt, oneside]{article}
+\usepackage{titling, hyperref, geometry, amsmath, amssymb, algorithm, graphicx, textcomp, subcaption, cancel}
+\usepackage[noend]{algpseudocode}
+\usepackage[cache=false]{minted}
+\geometry{a4paper}
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=cyan
+}
+
+\newcommand{\emphasis}[1]{\textcolor{blue}{\textbf{\textit{#1}}}}
+
+\title{Heavy-Light Decomposition}
+\author{Stephen Huan}
+
+\begin{document}
+\maketitle
+
+\section{Sample Problems}
+
+\begin{enumerate}
+  % \item \href{http://www.spoj.com/problems/QTREE/}{SPOJ QTREE}
+  % \item \href{http://www.spoj.com/problems/QTREE2/}{SPOJ QTREE2}
+  % \item \href{http://www.spoj.com/problems/QTREE3/}{SPOJ QTREE3}
+  % \item \href{http://www.spoj.com/problems/QTREE4/}{SPOJ QTREE4}
+  % \item \href{http://www.spoj.com/problems/QTREE5/}{SPOJ QTREE5}
+  % \item \href{http://www.spoj.com/problems/QTREE6/}{SPOJ QTREE6}
+  % \item \href{http://www.spoj.com/problems/QTREE7/}{SPOJ QTREE7}
+  % \item \href{http://www.spoj.com/problems/COT/}{SPOJ COT}
+  % \item \href{http://www.spoj.com/problems/COT2/}{SPOJ COT2}
+  % \item \href{http://www.spoj.com/problems/COT3/}{SPOJ COT3}
+  % \item \href{http://www.spoj.com/problems/GOT/}{SPOJ GOT}
+  % \item \href{http://www.spoj.com/problems/GRASSPLA/}{SPOJ GRASSPLA}
+  % \item \href{http://www.spoj.com/problems/GSS7/}{SPOJ GSS7}
+  % \item \href{http://www.codechef.com/problems/GERALD2}{CODECHEF GERALD2}
+  % \item \href{http://www.codechef.com/problems/RRTREE}{CODECHEF RRTREE}
+  % \item \href{http://www.codechef.com/problems/QUERY}{CODECHEF QUERY}
+  % \item \href{http://www.codechef.com/problems/QTREE}{CODECHEF QTREE}
+  % \item \href{http://www.codechef.com/problems/DGCD}{CODECHEF DGCD}
+  % \item \href{http://www.codechef.com/problems/MONOPLOY}{CODECHEF MONOPLOY}
+  \item \href{http://usaco.org/index.php?page=viewproblem2&cpid=970}{USACO Milk Visits} - Farmer John has a tree with \( N \) (\(1 \leq N \leq 10^5 \)) nodes.
+  Each node has a type of milk. You are asked \( M \) (\(1 \leq M \leq 10^5 \)) queries where each query gives a start node \( A \), end node \( B \), and type of milk \( C \).
+  Answer whether the type of milk \( C \) is found on the path from \( A \) to \( B \) for each query.
+
+  Solution: Apply HLD. Then, the only problem is finding what data structure to associate with each path.
+  First, we'll associate a data structure with a heavy path by associating heavy paths by their head
+  as discussed above. Then, for each node on a heavy path add its type to an dictionary
+  mapping milk type to occurrences, sorted by depth. When walking up the tree to answer queries,
+  compute whether a heavy path will contain a particular milk type by binary searching on the
+  current depth of the node that's going to be raised in the tree in the corresponding occurence list.
+  Finally, when both nodes are on the same heavy path, test whether a milk type is between them
+  by binary searching on the left for the higher node, on the right for the lower node,
+  and seeing whether the two indexes are different.
+
+  \item \href{http://www.usaco.org/index.php?page=viewproblem2&cpid=102}{USACO Grass Planting}
+  \item \href{http://www.usaco.org/index.php?page=viewproblem2&cpid=921}{USACO Cowland}
+
+\end{enumerate}
+
+\section{Past Lectures}
+
+\begin{enumerate}
+  \item \href{}{``Heavy Light Decomposition'' (Pranav Mathur, 2020)}
+  \item \href{https://activities.tjhsst.edu/sct/lectures/1819/2019_3_15_HLD.pdf}{``Heavy Light Decomposition'' [Identical] (Daniel Wisdom, 2019)}
+  \item \href{https://activities.tjhsst.edu/sct/lectures/1718/2018-03-23_Heavy_Light_Decomposition.pdf}{``Heavy Light Decomposition'' (Daniel Wisdom, 2018)}
+  \item \href{https://activities.tjhsst.edu/sct/lectures/1415/SCT_Heavy-Light_Decomposition.pdf}{``Heavy-Light Decomposition'' (Samuel Hsiang, 2015)}
+  \item (Unavailable) ``Heavy-Light Decomposition'' (Wassim Omais, 2017)
+\end{enumerate}
+
+\section{Works Cited}
+
+\begin{enumerate}
+  \item \href{https://blog.anudeep2011.com/heavy-light-decomposition/}{Sample Problems}
+  \item \href{www.csie.ntnu.edu.tw/ u91029/Heavy-LightDecomposition1.png}{Image}
+\end{enumerate}
+
+
+\end{document}

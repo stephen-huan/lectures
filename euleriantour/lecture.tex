@@ -1,0 +1,94 @@
+\documentclass[11pt, oneside]{article}
+\usepackage{titling, hyperref, geometry, amsmath, amssymb, algorithm, graphicx, textcomp, subcaption}
+\usepackage[noend]{algpseudocode}
+\usepackage[cache=false]{minted}
+\geometry{a4paper}
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=cyan
+}
+
+\newcommand{\emphasis}[1]{\textcolor{blue}{\textbf{\textit{#1}}}}
+
+\title{Eulerian Tour}
+\author{Stephen Huan \\ Edited by: Udbhav Muthakana}
+
+\begin{document}
+\maketitle
+
+\section{Definition}
+
+An \emphasis{Eulerian tour} is path through a graph that uses each edge exactly once.
+If it starts and ends at the same node, then it is called an \emphasis{Eulerian circuit}.
+
+\subsection{Identification}
+For a graph to have an Eulerian tour, it has to be connected (strongly connected for a directed graph) and either:
+
+\begin{enumerate}
+  \item Every node has an even degree (the number of incoming and outgoing edges).
+  \item Every node but two has an even degree.
+\end{enumerate}
+
+In the second case, the two nodes are the start and end nodes of the circuit.
+Detecting strongly connected components can be done in linear time with \href{https://activities.tjhsst.edu/sct/lectures/1920/2019_11_01_Strongly_Connected_Components.pdf}{Kosaraju-Sharir}.
+
+\section{Implementation}
+
+Wikipedia recommends Hierholzer's algorithm but I found it confusing and convoluted.
+Just do a postorder iterative DFS on the graph, adding nodes to the tour once their children have been processed.
+
+\section{Applications}
+
+In order to find the lowest common ancestor (LCA) between two nodes in a tree,
+one approach is to run a Eulerian tour, doubling up edges betwen parent and children,
+and then do a range minimum query (RMQ) on the resulting tour between the two nodes.
+
+\subsection{Sample Implementation}
+
+\begin{minted}{python}
+def eulerian_tour(graph):
+    # remove nodes with no edges
+    graph = {k: v for k, v in graph.items() if len(v) > 0}
+    count = sum(len(graph[v]) % 2 for v in graph)
+    if count != 0 and count != 2:
+        return # no such tour
+    start = [v for v in graph if len(graph[v]) % 2 == 1][0] if count == 2 else 0
+
+    stk = [(start, 0)]
+    tour = deque([])
+    seen = set()
+    while len(stk) > 0:
+        n, p = stk[-1]
+        # done with children
+        if len(graph[n]) == p:
+            tour.appendleft(n)
+            stk.pop()
+        # has children left to process
+        else:
+            child = graph[n][p]
+            # edges have a unique id - (vertex, id)
+            if child[1] not in seen:
+                stk.append((child[0], 0))
+                seen.add(child[1])
+                stk[-2] = (n, p + 1)
+            else:
+                stk[-1] = (n, p + 1)
+    return list(map(lambda x: x + 1, tour))
+\end{minted}
+
+\section{Sample Problems}
+
+\begin{enumerate}
+  \item \href{https://train.usaco.org/usacoprob2?a=TpH8RHs6Taa&S=fence}{USACO Training: Riding the Fence}
+
+  Solution: Direct implementation of an Eulerian Tour.
+\end{enumerate}
+
+\section{Works Cited}
+
+\begin{enumerate}
+  \item \href{https://en.wikipedia.org/wiki/Eulerian_path}{Wikipedia - ``Eulerian path''}
+\end{enumerate}
+
+\end{document}

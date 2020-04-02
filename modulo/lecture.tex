@@ -1,0 +1,136 @@
+\documentclass[11pt, oneside]{article}
+\usepackage{titling, hyperref, geometry, amsmath, amssymb, algorithm, graphicx, textcomp, subcaption}
+\usepackage[noend]{algpseudocode}
+\usepackage[cache=false]{minted}
+\geometry{a4paper}
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=cyan
+}
+
+\newcommand{\emphasis}[1]{\textcolor{blue}{\textbf{\textit{#1}}}}
+
+\title{Modulo}
+\author{Stephen Huan \\ Edited by: Udbhav Muthakana}
+
+\begin{document}
+\maketitle
+
+\section{Definition}
+
+A number \( a \) \emphasis{modulo} \( m \) is defined as the remainder after calculating \( \frac{a}{m} \),
+written in math as \( a \mod m \equiv c \), but represented in CS as \( a \) \(\%\) \( m == c \).
+Modulo is defined for integral \( a \) and \( m \) (either can be negative), but not for \( m = 0 \).
+It is considered a constant time calculation for Big-O analysis.
+
+\subsection{Properties}
+
+\[ a + b \mod m \equiv (a \mod m) + (b \mod m) \mod m \]
+\[ a - b \mod m \equiv (a \mod m) - (b \mod m) \mod m \]
+\[ a \cdot b \mod m \equiv (a \mod m) \cdot (b \mod m) \mod m \]
+
+\section{Applications}
+
+Problems that ask you to compute all possibilities of something will usually involve very large numbers,
+and thus ask you to compute the answer modulo \( m = 1000000007 \).
+
+\noindent
+Make sure to use
+\begin{minted}{python}
+print(x if x >= 0 else x + m)
+\end{minted}
+for output, as they expect the answer to be positive.
+
+Modulo is used in many number theoretic algorithms, like the Euclidean algorithm to find the greatest common divisor of two integers.
+
+\begin{minted}{python}
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+\end{minted}
+
+Modulo is also commonly used to implement ``cyclic'' behavior, because the values repeat with a period
+of \( m \) and \( a \mod m \equiv 0 \) implies \( a \) is divisible by \( m \).
+
+\subsection{Modulo Exponentiation}
+It is possible to compute \( b^e \mod m \) in \( O(\log e) \). Decompose \( e \)
+into a binary number - write it in the form \( \sum^{n - 1}_{i = 0} a_i 2^i \),
+where \( a_i \) is 1 or 0 depending the corresponding bit.
+
+Then, by exponent rules,
+\[ b^e = b^{\sum^{n - 1}_{i = 0} a_i 2^i} = \prod^{n - 1}_{i = 0} b^{a_i 2^i} = \prod^{n - 1}_{i = 0} (b^{2^i})^{a_i} \]
+
+In order to calculate \( b^{2^i} \), note that
+\[ b^{2^i} = b^{2 \cdot 2^{i - 1}} = b^{2^{i - 1} + 2^{i - 1}} = (b^{2^{i - 1}})^2 \]
+\noindent
+Start with the base case of \( i = 0 \), which is \( b \), and then just square the base repeatedly.
+
+The final algorithm is then
+\begin{minted}{python}
+def mod_exp(b: int, e: int, m: int) -> int:
+    if m == 1: return 0
+    rtn = 1
+    b %= m
+    while e > 0:
+        # if bit on in the binary representation of the exponent
+        if e & 1 == 1:
+            rtn = (rtn*b) % m
+        e >>= 1
+        b = (b*b) % m
+    return rtn
+\end{minted}
+
+\subsection{Modular Multiplicative Inverse}
+We have seen how to perform addition, subtraction, multiplication, and exponentiation with modulos.
+How do we do division quickly?
+The solution is to find some number \( x \) such that \( \frac{a}{b} \mod m \equiv a \cdot x \mod m \).
+This number \( x \) is then the \emphasis{modular multiplicative inverse} of \( b \).
+In order to compute \( x \), we use the following algorithm.
+
+\begin{minted}{python}
+def extended_gcd(a: int, b: int) -> int:
+    s, sp, t, tp, r, rp = 0, 1, 1, 0, b, a
+
+    while r != 0:
+        q = rp//r
+        rp, r = r, rp - q*r
+        sp, s = s, sp - q*s
+        tp, t = t, tp - q*t
+
+    return sp
+\end{minted}
+
+To use it,
+\begin{minted}{python}
+(a/b) % m == (a*extended_gcd(b, m)) % m
+\end{minted}
+
+\section{Sample Problems}
+
+\begin{enumerate}
+  \item \href{https://codeforces.com/group/M4wsRWBHyZ/contest/238084/problem/E}{2019 ICT In-house ``Havish's Exponents''} \\
+  Solution: Direct application of modular exponentiation.
+
+  \item \href{https://codeforces.com/group/M4wsRWBHyZ/contest/238084/problem/G}{2019 ICT In-house ``Permutations''}: \\
+  Find the number of permutations of a given string with length \( n \).
+
+  Solution: The number of permutations will be \( n! \) divided by \( (\prod_{ch} c_{ch})! \), where
+  \( c_{ch} \) is the number of times a particular character \( ch \) appears in the string.
+
+  Calculate \( n! \) by doing repeated multiplication while modding to keep it small. Then, precompute
+  the modular multiplicative inverse for each size \( i \) up to \( n \). Finally, for each distinct
+  character of the original string, count how many times it appears in the string and multiply \( n \)
+  by the multiplicative modular inverse of each number \( i \) up to the count. Initially, this seems to be a \( n^2 \) algorithm, but since the sum of the counts is exactly \( n \), the algorithm does \( O(n) \) work.
+
+\end{enumerate}
+
+\section{Works Cited}
+
+\begin{enumerate}
+  \item \href{https://en.wikipedia.org/wiki/Modular_exponentiation}{Wikipedia - ``Modular exponentiation''}
+  \item \href{https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm}{Wikipedia - ``Extended Euclidean algorithm''}
+\end{enumerate}
+
+\end{document}
