@@ -31,16 +31,15 @@ def cartesian_tree(l: list) -> CartesianTree:
 def cartesian_number(l: list) -> int:
     """ Returns the Cartesian number for a given list. """
     stk = []
-    num = [0]*(2*len(l))
-    k = 0
+    num = 0
     for i in range(len(l)):
         while len(stk) > 0 and stk[-1] > l[i]:
             stk.pop()
-            k += 1
+            num <<= 1
         stk.append(l[i])
-        num[k] = 1
-        k += 1
-    return int("".join(map(str, num)), 2)
+        num <<= 1
+        num |= 1
+    return num << (2*len(l) - msb(num) - 1)
 
 def msb(n: int) -> int:
     """ Returns the index of the most significant bit of n.
@@ -118,6 +117,23 @@ def fh_rmq(o: list, b: int, a: list, indexes: list, ids: list, table: list, tabl
     return min(b*l + full_rmq(tables[ids[l]], li, b - 1), \
                indexes[sparse_rmq(a, table, l + 1, r - 1)] if r - 1 >= l + 1 else -1, \
                b*r + full_rmq(tables[ids[r]], 0, ri), key=lambda x: o[x] if x != -1 else float("inf"))
+
+### PRESENTATION EXAMPLE
+
+l = [5, 3, 4, 1, 2]
+
+print("dp table")
+dp = full_table(l)
+for row in dp:
+    print([l[i] for i in row])
+
+print("sparse table")
+sparse = sparse_table(l)
+for row in sparse:
+    print([l[i] for i in row])
+
+
+# exit()
 
 # http://web.stanford.edu/class/cs166/lectures/00/Slides00.pdf
 # http://web.stanford.edu/class/cs166/lectures/01/Slides01.pdf
