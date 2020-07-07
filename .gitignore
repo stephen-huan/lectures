@@ -7,3 +7,6 @@
 *.bcf
 *.blg
 *.run.xml
+
+*.pygstyle
+*.pygtex
