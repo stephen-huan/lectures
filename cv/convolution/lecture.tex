@@ -252,7 +252,7 @@ our points cleverly rather than arbitrarily.
 Our special points are going to be \emphasis{complex roots of unity},
 or roots of 1 that are allowed to have an imaginary component.
 For example, the square root of 1 can be \( 1 \) or \( -1 \)
-(taking \enquote{square root}to mean anything which squared is 1).
+(taking \enquote{square root} to mean anything which squared is 1).
 The fourth root of 1 can be \( 1 \), \( -1 \), \( i \), or \( -i \).
 (since \( i^4 = (i^2)^2 = (-1)^2 = 1 \)). We will denote the \( n \)th root as 
 \( \omega_n \), where \( \omega_n = \sqrt[n]{1} \) or \( \omega^n_n = 1 \).
@@ -494,9 +494,9 @@ walkthough \href{https://www.youtube.com/watch?v=7fUicc_lIGA}{here}.
 
 \section{2D Convolutions}
 2D convolutions, a convolution generalized to matrices, are useful in computer
-vision for a variety of reasons, including edge detection and convolution neural
-networks. Their exact usage will not be discussed here, and instead we will 
-discuss an efficient way to calculate a 2D convolution with the FFT we 
+vision for a variety of reasons, including edge detection and convolutional
+neural networks. Their exact usage will not be discussed here, and instead
+we will discuss an efficient way to calculate a 2D convolution with the FFT we 
 have already developed. We have an \enquote{data} matrix, representing an image,
 and we have a \emphasis{kernel} matrix, which is the matrix we imagine
 sliding over the image. This is also known as a \emphasis{filter}.
@@ -645,6 +645,29 @@ is several million. Obviously the FFT algorithm has a much larger constant
 factor, but for a sufficiently large kernel the time savings become greater
 and greater.
 
+\section{Conclusion}
+
+The convolution, an operator very useful for signal, audio, and image
+processing, can be efficiently computed with the Fast Fourier Transform, or FFT.
+If the data is integer, then floating-point arithmetic can be avoided with the
+Number Theoretic Transform (NTT), a variant of the FFT which uses modulo
+instead of complex numbers, and calculates entirely in integers.
+
+This lecture skips over the continuous case (what I've been calling the 
+Fast Fourier Transform is more mathematically called the
+\emphasis{Discrete Fourier Transform}, or DFT) but the idea is essentially the
+same, any summation turns into an integral. It also skips over the mathematical
+interpretation of the FFT, involving decomposing a function into a series of
+sine and cosine waves. This is useful for signal processing and audio analysis,
+but requires a stronger mathematical background and to be honest, I haven't
+studied it at all myself. Fourier analysis goes deeper than we need here. 
+
+\textit{Introduction to Algorithms} is definitely the most helpful source on
+the FFT (from a computer science perspective), and more thorough treatments of
+the FFT from an engineering or mathematical standpoint are not hard to find.
+
+\newpage
+
 \section{Sample Problems}
 
 \begin{enumerate}
@@ -697,6 +720,18 @@ and greater.
     \( N - i - \frac{a[i] + b[i] + c[i]}{2} \). We divide by 2 because we
     count each mismatch twice (once for each character in the pair).
 
+    A much conceptually simpler algorithm is to encode \enquote{a}, \enquote{b},
+    and \enquote{c} cleverly and then compute the matches in one shot. 
+    If we encode \enquote{a} as (1, 0, 0), \enquote{b} as (0, 1, 0), and
+    \enquote{c} as (0, 0, 1), the FFT of the resulting list with its reverse
+    will give us the number of matches at each index because the character
+    representations dot each other will be 1 if they are equal, and 0 
+    if they are unequal. Thus, the FFT will give us exactly the number of
+    matches, but we need to only look at every 3rd index since the other 2
+    are byproducts of our transformation.
+
+    In practice, running one big FFT is faster than running 3 smaller FFTs.
+
   \item \href{https://www.codechef.com/problems/FARASA}{Codechef FARASA}:
     Given an array, find the number of distinct sums of a contiguous subarray.
 
@@ -731,13 +766,26 @@ and greater.
     character as -1. Sum over all possible characters, and that will tell you
     whether there is a mismatch somewhere (similar to SPOJ MAXMATCH).
 
+    This idea can also be applied to string matching without wildcards.
+    Encode each character as its ASCII value in a polynomial, and compute
+    the \( \ell^2 \)-norm between \( T \) and \( S \). The \( \ell^2 \) norm
+    will be 0 if they match, and positive if they don't.
+
   \item \href{https://en.wikipedia.org/wiki/3SUM}{3SUM}:
     Given a list of integers between \( -N \) and \( N \),
     find 3 numbers that add up to 0 (duplicates are allowed). 
 
-    Solution: Encode the list into a length \( 2N \) polynomial \( p \) where 
-    the degree is the integer value and the coefficient is whether it appears
-    in the array. Compute \( p^3 \) and read off the coefficient of \( x^0 \). 
+    Solution: The basic idea will be to encode the list into a length \( 2N \)
+    polynomial \( p \) where the degree is an integer value and the coefficient
+    is whether that value appears in the array.
+    Compute \( p^3 \) and read off the coefficient of \( x^0 \).
+    However, this doesn't work if the degrees are negative. If the most negative
+    power of \( x \) in \( p \) is \( x^{-N} \), We can simply multiply \( p \)
+    by \( x^N \) to make every power positive. Then, after computing
+    \( (p')^3 \), instead of looking at the coefficient of \( x^0 \), we can
+    look at the coefficient of \( x^{-3N} \) (accounting for the fact that
+    \( p' = x^N p \), \( (p')^3 = x^{3N} p^3 \),
+    \( p^3 = \frac{(p')^3}{x^{3N}} \)
 
     Alternative solution, if duplicates aren't allowed:
     \href{https://cs.stanford.edu/~rishig/courses/ref/l16.txt}{here}
