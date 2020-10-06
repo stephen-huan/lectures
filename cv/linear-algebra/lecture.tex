@@ -1,0 +1,193 @@
+\documentclass[11pt, oneside]{article}
+\usepackage[utf8]{inputenc}                        % utf8
+\usepackage[T1]{fontenc}                           % fix font encoding
+\usepackage[english]{babel}                        % language
+\usepackage{titling, geometry, hyperref, fancyhdr, algorithm}
+\usepackage{amsmath, amssymb, amsthm}              % ams mathematical packages
+\usepackage{physics, mathtools, bm}                % extra math packages
+\usepackage{graphicx, subcaption, wrapfig}         % images
+\usepackage{fvextra, textcomp, CJKutf8}            % misc. text formatting
+\usepackage[autostyle, english=american]{csquotes} % quotes
+\usepackage[shortlabels]{enumitem}                 % lists
+\usepackage{tikz, pgfplots, tikz-network}          % plots and graphs
+\usepackage[noend]{algpseudocode}                  % algorithm psuedocode
+\usepackage[cache=true]{minted}                    % source code
+\usepackage[style=ieee]{biblatex}                  % bibliography
+\geometry{a4paper}
+
+\pgfplotsset{compat=1.17}                          % version of pgfplots
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=cyan,
+    linkcolor=black
+}
+
+\setminted[]{
+    linenos=false,
+    breaklines=true,
+    encoding=utf8,
+    fontsize=\normalsize,
+    frame=lines,
+    framesep=2mm
+}
+
+% https://tex.stackexchange.com/questions/343494/minted-red-box-around-greek-characters
+\makeatletter
+\AtBeginEnvironment{minted}{\dontdofcolorbox}
+\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
+\makeatother
+
+\newcommand{\emphasis}[1]{\textbf{\textit{#1}}}
+\graphicspath{{./images/}}
+\addbibresource{ref.bib}
+
+\title{Linear Algebra}
+\author{Stephen Huan}
+
+\begin{document}
+\maketitle
+% \tableofcontents
+
+\section{Introduction}
+Suppose we have a scalar field (a function of possibly multiple variables that
+returns a single scalar value). We know from multivariable calculus that we can
+take derivatives of a function of multiple variables with respect to each
+variable, and encapsulate all the derivatives into a \emphasis{gradient} vector.
+
+Now we will see what will happen if we take the derivative of a scalar field
+\textit{with respect to a vector}. We will approach this from two angles,
+a standard multivariate approach and a more tensor-theoretic approach.
+
+\section{Examples}
+
+Suppose we have the scalar field \[ f(\vec{\beta}) = \vec{z}^T \vec{\beta} \]
+This is a function of multiple variables which returns a single number
+(\( \vec{z}^T \vec{\beta} = \vec{z} \cdot \vec{\beta} \)).
+If we explicitly write it out, we get
+\( \vec{z}^T \vec{\beta} = z_1 \beta_1 + z_2 \beta_2 + \dots \)
+Taking the partial derivative with respect to \( \beta_1 \), we get
+\( z_1 \), with respect to \( \beta_2 \), we get \( z_2 \), and so on.
+Since the gradient of \( f \), denoted \( \nabla_{\vec{\beta}} f \) is
+\( \left\langle \frac{\partial f}{\partial \beta_1}, \frac{\partial f}{\partial \beta_2}, \ldots \right\rangle \),
+the gradient is just \( \vec{z} \).
+
+We can come to the same conclusion with a different method.
+Recall that the definition for the derivative in singlevariate calculus is:
+\[ \frac{df}{dx} = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h} \]
+Intuitively, the change in the function
+over the infinitesimal change in \( x \).
+If we try to extend this definition to vectors, and replace zero with the zero
+vector, we run into a problem---division by a vector isn't well-defined.
+So we need a different conceptual basis to define the derivative.
+
+\newpage
+
+The derivative is a \emphasis{linear transformation}, that is, it fulfills
+two properties:
+\begin{enumerate}
+    \item \( T(x + y) = T(x) + T(y) \) for any \( x, y \)
+    \item \( T(cx) = cT(x) \) for any scalar.
+\end{enumerate}
+The derivative of \( f + g \), for two functions \( f \) and \( g \) is
+the derivative of \( f \) plus the derivative of \( g \), scalars can be
+taken out of differentiation and added back in later.
+We can also think of the derivative giving us a way to estimate the change in a
+function as a function of changing \( x \), e.g. \( df = f'(x) dx \). \( df \)
+can then be thought of as a linear transformation of \( dx \). So we have two
+forms of linearity: the derivative is a linear transformation in its operator 
+sense, that is, a linear transformation from functions to their derivatives,
+as well as a linear transformation from a infinitesimal change in \( x \)
+to its corresponding infinitesimal change in \( f(x) \).
+If we think of the derivative as a linear transformation of differentials,
+that gives the alternative definition we are looking for.
+\begin{align*}
+    df &= f(\vec{\beta} + d\vec{\beta}) - f(\vec{\beta}) && \text{Definition} \\
+       &= \vec{z}^T \vec{\beta} + \vec{z}^T d \vec{\beta} - \vec{z}^T \vec{\beta} && \text{Expanding} \\
+       &= \vec{z}^T d \vec{\beta}  
+\end{align*}
+which is a linear transformation of \( d \vec{\beta} \), and matches the result
+derived earlier. Except for the transpose, which I don't have a good way of
+explaining. I guess we need to transpose our answer at the end.  
+For a more complicated example, suppose we have the field
+\[ f(\vec{\beta}) = \vec{\beta}^T \bm{\sigma} \vec{\beta} \]
+where \( \bm{\sigma} \) is a symmetric matrix.
+For convenience, let \( \bm{\sigma}_i \) be the \( i \)th
+\textit{row} of \( \bm{\sigma} \).
+\begin{align*}
+    \vec{\beta}^T \bm{\sigma} \vec{\beta} &= \vec{\beta} \cdot
+    \left\langle \bm{\sigma}_1 \cdot \vec{\beta}, \bm{\sigma}_2 \cdot \vec{\beta},
+    \ldots \right\rangle && \text{Definition of matrix-vector product} \\
+                         &= \vec{\beta}_1 \cdot \bm{\sigma}_1 \cdot \vec{\beta} + 
+                            \vec{\beta}_2 \cdot \bm{\sigma}_2 \cdot \vec{\beta}
+    + \ldots && \text{Expanding the dot product} \\
+             &= \vec{\beta}_1 (\bm{\sigma}_{11} \vec{\beta}_1 +
+    \bm{\sigma}_{12} \vec{\beta}_2 + \bm{\sigma}_{13} \vec{\beta}_3 + \ldots +
+    \bm{\sigma}_{21} \vec{\beta}_2 + \bm{\sigma}_{31} \vec{\beta}_3 + \ldots) &&
+    \text{Collecting \( \vec{\beta}_1 \) terms}
+    \shortintertext{We now compute the partial with respect to \( \vec{\beta}_1 \)}
+    \frac{\partial f}{\partial \vec{\beta}_1} &= 2 \bm{\sigma}_{11} \vec{\beta}_1
+    + [2 \bm{\sigma}_{12} \vec{\beta}_2 +  \bm{\sigma}_{13} \vec{\beta}_3 + \ldots +
+    \bm{\sigma}_{21} \vec{\beta}_2 + \bm{\sigma}_{13} \vec{\beta}_3 + \ldots] \\
+                                              &= 2 \bm{\sigma}_{11} \vec{\beta}_1 + 
+                                              [2 \bm{\sigma}_1 \cdot \vec{\beta} - 
+    2 \bm{\sigma}_{11} \vec{\beta}_1] && \text{By symmetry of \( \bm{\sigma} \)} \\
+                                              &= 2 \bm{\sigma}_1 \cdot \vec{\beta}
+\end{align*}
+
+\newpage
+
+Since \( \vec{\beta}_1 \) is symmetric to every index in \( \vec{\beta} \),
+\( \nabla_{\vec{\beta}} f = 2 \bm{\sigma} \vec{\beta} \).
+We can also do this with our alternative definition.
+\begin{align*}
+    df &= f(\vec{\beta} + d\vec{\beta}) - f(\vec{\beta}) && \text{Definition} \\
+       &= (\vec{\beta} + d\vec{\beta})^T\bm{\sigma}(\vec{\beta} + d\vec{\beta}) -
+    \vec{\beta}^T\bm{\sigma}\vec{\beta} && \text{Expanding} \\
+      &= (\vec{\beta} + d\vec{\beta})(\bm{\sigma} \vec{\beta}
+      + \bm{\sigma}d\vec{\beta}) - \vec{\beta}^T \bm{\sigma} \vec{\beta} \\
+      &= \vec{\beta}^T\bm{\sigma}\vec{\beta} + \vec{\beta}^T\bm{\sigma}d\vec{\beta} +
+      d \vec{\beta}^T\bm{\sigma}\vec{\beta} + d \vec{\beta}^T\bm{\sigma}d \vec{\beta}
+      - \vec{\beta}^T\bm{\sigma}\vec{\beta} \\
+      \shortintertext{First, we can discard \( d \vec{\beta}^T\bm{\sigma}d \vec{\beta} \)
+      since it is not a linear transformation of \( d \vec{\beta} \) 
+      (intuitvely, it is a higher order differential term)}
+      &= \vec{\beta}^T\bm{\sigma}\vec{\beta} + \vec{\beta}^T\bm{\sigma}d\vec{\beta} +
+      d \vec{\beta}^T\bm{\sigma}\vec{\beta} - \vec{\beta}^T\bm{\sigma}\vec{\beta} \\
+      \shortintertext{Taking advantage of the fact that \((\vec{\beta}^T\bm{\sigma}d \vec{\beta})^T
+      = d \vec{\beta}^T\bm{\sigma}^T\vec{\beta} = d\vec{\beta}^T\bm{\sigma}\vec{\beta} \),
+  and the fact that both are scalars, so if their transpose is equal they are equal,}
+      &= 2 \vec{\beta}^T\bm{\sigma} d \vec{\beta} 
+\end{align*}
+
+If we transpose \( 2 \vec{\beta}^T\bm{\sigma} \), we get \( 2 \bm{\sigma} \vec{\beta} \),
+which is our answer.
+
+\section{Least-squares}
+The least squares problem is the following: we have a matrix of features
+\( \bm{X} \), and a list of prediction values \( \vec{y} \). We suspect there
+is a linear relationship between the features and the target value, so we
+are trying to find a set of weights \( \vec{\beta} \) such that the predictions
+generated by \( \hat{y} = \bm{X} \vec{\beta} \) are as close to \( \vec{y} \)
+as possible, i.e. \( \norm{\vec{y} - \hat{y}} \) is minimized.
+First, we can minimize \( \norm{\vec{y} - \hat{y}}^2 \) instead 
+since squaring is monotonic, and that avoids having to take a pesky square root.
+To minimize a function, we take the gradient and set equal to the zero vector.
+\begin{align*}
+  f(\vec{\beta}) &= \norm{\vec{y} - \hat{y}}^2 \\
+                 &= (\vec{y} - \hat{y}) \cdot (\vec{y} - \hat{y}) && \text{Definition of magnitude} \\
+                 &= \vec{y} \cdot \vec{y} - 2 \vec{y} \cdot \hat{y} + \hat{y} \cdot \hat{y} \\
+                 &= \vec{y}^T \vec{y} - 2 \vec{y}^T \bm{X} \vec{\beta} + (\bm{X} \vec{\beta})^T \bm{X} \vec{\beta} &&
+                 \text{Definition of \( \hat{y} \)} \\
+                 &= \vec{y}^T \vec{y} - \underbrace{2 \vec{y}^T \bm{X}}_{\vec{z}} \vec{\beta} 
+  + \vec{\beta}^T \underbrace{\bm{X}^T \bm{X}}_{\bm{\sigma}} \vec{\beta} &&
+  \text{\( \bm{X}^T \bm{X} \) is symmetric} \\
+  \shortintertext{Using the gradients dervied above, and the fact that
+  \( \vec{y} \cdot \vec{y} \) is a constant,}
+  \nabla_{\vec{\beta}} f &= -2 \bm{X}^T \vec{y} + 2 \bm{X}^T \bm{X} \vec{\beta} = \vec{0} \\
+  \bm{X}^T \bm{X} \vec{\beta} &= \bm{X}^T \vec{y} \\
+  \Aboxed{\vec{\beta} &= (\bm{X}^T \bm{X})^{-1} \bm{X}^T \vec{y}} 
+\end{align*}
+
+% \printbibliography
+\end{document}
