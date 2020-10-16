@@ -1,6 +1,6 @@
-\documentclass{beamer}                             % presentation
+% \documentclass{beamer}                             % presentation
 % \documentclass[draft]{beamer}                    % improves compile time
-% \documentclass[11pt,handout]{beamer}             % handout
+\documentclass[11pt,handout]{beamer}             % handout
 \usepackage[utf8]{inputenc}                        % utf8
 \usepackage[T1]{fontenc}                           % fix font encoding
 \usepackage[english]{babel}                        % language
@@ -18,18 +18,18 @@
 \pgfplotsset{compat=1.17}                          % version of pgfplots
 
 \hypersetup{
-    colorlinks=true,
-    urlcolor=cyan,
-    linkcolor=black
+  colorlinks=true,
+  urlcolor=cyan,
+  linkcolor=black
 }
 
 \setminted[]{
-    linenos=false,
-    breaklines=true,
-    encoding=utf8,
-    fontsize=\small,
-    frame=lines,
-    framesep=2mm
+  linenos=false,
+  breaklines=true,
+  encoding=utf8,
+  fontsize=\small,
+  frame=lines,
+  framesep=2mm
 }
 
 % https://tex.stackexchange.com/questions/343494/minted-red-box-around-greek-characters
@@ -344,7 +344,7 @@ and \( O(N \log N) \) time with fast exponentiation.
 \end{frame}
 
 \begin{frame}
-\frametitle{Honer's Rule}
+\frametitle{Horner's Rule}
 \framesubtitle{}
 But we can do better with \alert{Horner's rule}.
 We notice that the degree in coefficient form is monotonically increasing,
