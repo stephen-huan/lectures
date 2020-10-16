@@ -1,12 +1,22 @@
+# LaTeX auxiliary files
 *.aux
 *.fdb_latexmk
 *.fls
 *.out
 
+# bibliography files
 *.bbl
 *.bcf
 *.blg
 *.run.xml
 
+# minted code output
 *.pygstyle
 *.pygtex
+
+# beamer presentation files
+*.snm
+*.nav
+*.toc
+*.vrb
+
