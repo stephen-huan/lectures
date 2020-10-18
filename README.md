@@ -1,4 +1,4 @@
-# sct-lectures
+# Computer Science Lectures
 by: Stephen Huan
 
 ## Videos
