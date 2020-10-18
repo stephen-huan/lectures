@@ -461,21 +461,24 @@ Lastly, if we make sure to scan from left to right, then we can compute
 \( a \) an additional index by subtracting out the front of \( b' \), where
 \( a \) left from, and adding the new value that \( a \) covers.
 
-\begin{minted}[label=the minimum \( \ell^2 \) between two lists]{python}
-def min_offset(a: list, b: list) -> tuple:
-    N, M = len(a), len(b)
-    p = fft(a[::-1], b)[N - 1:]
-    x2, xy, y2 = sum(x*x for x in a), p[0], \
-                 sum(b[i]*b[i] for i in range(N))
-    best, l2 = 0, -2*xy + y2
-    for i in range(1, M - N + 1):
-        y2 += b[N - 1 + i]*b[N - 1 + i] - b[i - 1]*b[i - 1]
-        xy = p[i]
-        d = -2*xy + y2
-        if d < l2:
-            best, l2 = i, d
-    return best, x2 + l2
-\end{minted}
+\begin{algorithm}
+  \caption{minimum \( \ell^2 \) between two lists}
+  \begin{minted}[frame=none]{python}
+  def min_offset(a: list, b: list) -> tuple:
+      N, M = len(a), len(b)
+      p = fft(a[::-1], b)[N - 1:]
+      x2, xy, y2 = sum(x*x for x in a), p[0], \
+                   sum(b[i]*b[i] for i in range(N))
+      best, l2 = 0, -2*xy + y2
+      for i in range(1, M - N + 1):
+          y2 += b[N - 1 + i]*b[N - 1 + i] - b[i - 1]*b[i - 1]
+          xy = p[i]
+          d = -2*xy + y2
+          if d < l2:
+              best, l2 = i, d
+      return best, x2 + l2
+  \end{minted}
+\end{algorithm}
 
 We need to be careful about a few things. If we don't pick \( p \) for the NTT
 large enough, then it won't work. If \( m \) is the largest number in a list
@@ -621,7 +624,9 @@ in the kernel to their proper rows in the image. It turns out that we can
 just pad both matrices to the final column size of the convolution, 
 \( N + W - 1 \), flatten both, convolute with the FFT, and then reshape the
 resulting list to a matrix of proper size.
-\begin{minted}[label=the 2D convolution algorithm]{python}
+\begin{algorithm}
+  \caption{2D Convolution Algorithm}
+  \begin{minted}[frame=none]{python}
 def flatten(m: list, pad=0) -> list:
     """ Flattens a matrix into a list. """
     return [x for row in m for x in row + [0]*pad]
@@ -637,6 +642,7 @@ def conv(h: list, x: list):
     h, x = flatten(h, N - 1), flatten(x, W - 1)
     return reshape(fft(h, x), M + H - 1, N + W - 1)
 \end{minted}
+\end{algorithm}
 In most computer vision applications, the kernel is a square matrix
 of size \( K \)x\( K \), where \( K \) is an odd number.
 The \textit{middle value} of the kernel is then placed over each pixel of the
@@ -653,6 +659,8 @@ def prune(h: list, x: list) -> list:
     pad = (k - 1)>>1
     return [row[pad:-pad] for row in m[pad:-pad]]
 \end{minted}
+
+\newpage
 
 The running time of the algorithm is going to be
 \( O(MN \log MN) = O(MN(\log N + \log M) = O(MN \log N) \) since we convolute 

@@ -9,6 +9,15 @@
   urlcolor=cyan
 }
 
+\setminted[]{
+  linenos=false,
+  breaklines=true,
+  encoding=utf8,
+  fontsize=\normalsize,
+  frame=lines,
+  framesep=2mm
+}
+
 \newcommand{\emphasis}[1]{\textcolor{blue}{\textbf{\textit{#1}}}}
 
 \title{Eulerian Tour}
@@ -42,12 +51,12 @@ Just do a postorder iterative DFS on the graph, adding nodes to the tour once th
 \section{Applications}
 
 In order to find the lowest common ancestor (LCA) between two nodes in a tree,
-one approach is to run a Eulerian tour, doubling up edges betwen parent and children,
+one approach is to run a Eulerian tour, doubling up edges between parent and children,
 and then do a range minimum query (RMQ) on the resulting tour between the two nodes.
 
 \subsection{Sample Implementation}
 
-\begin{minted}{python}
+\begin{minted}[label=Eulerian tour]{python}
 def eulerian_tour(graph):
     # remove nodes with no edges
     graph = {k: v for k, v in graph.items() if len(v) > 0}

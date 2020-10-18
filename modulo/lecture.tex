@@ -45,12 +45,15 @@ for output, as they expect the answer to be positive.
 
 Modulo is used in many number theoretic algorithms, like the Euclidean algorithm to find the greatest common divisor of two integers.
 
-\begin{minted}{python}
-def gcd(a, b):
-    while b != 0:
-        a, b = b, a % b
-    return a
-\end{minted}
+\begin{algorithm}
+  \caption{Euclidean algorithm}
+  \begin{minted}{python}
+  def gcd(a, b):
+      while b != 0:
+          a, b = b, a % b
+      return a
+  \end{minted}
+\end{algorithm}
 
 Modulo is also commonly used to implement ``cyclic'' behavior, because the values repeat with a period
 of \( m \) and \( a \mod m \equiv 0 \) implies \( a \) is divisible by \( m \).
@@ -69,19 +72,22 @@ In order to calculate \( b^{2^i} \), note that
 Start with the base case of \( i = 0 \), which is \( b \), and then just square the base repeatedly.
 
 The final algorithm is then
-\begin{minted}{python}
-def mod_exp(b: int, e: int, m: int) -> int:
-    if m == 1: return 0
-    rtn = 1
-    b %= m
-    while e > 0:
-        # if bit on in the binary representation of the exponent
-        if e & 1 == 1:
-            rtn = (rtn*b) % m
-        e >>= 1
-        b = (b*b) % m
-    return rtn
-\end{minted}
+\begin{algorithm}
+  \caption{Modular exponentiation} 
+  \begin{minted}{python}
+  def mod_exp(b: int, e: int, m: int) -> int:
+      if m == 1: return 0
+      rtn = 1
+      b %= m
+      while e > 0:
+          # if bit on in the binary representation of the exponent
+          if e & 1 == 1:
+              rtn = (rtn*b) % m
+          e >>= 1
+          b = (b*b) % m
+      return rtn
+  \end{minted}
+\end{algorithm}
 
 \subsection{Modular Multiplicative Inverse}
 We have seen how to perform addition, subtraction, multiplication, and exponentiation with modulos.
@@ -90,18 +96,21 @@ The solution is to find some number \( x \) such that \( \frac{a}{b} \mod m \equ
 This number \( x \) is then the \emphasis{modular multiplicative inverse} of \( b \).
 In order to compute \( x \), we use the following algorithm.
 
-\begin{minted}{python}
-def extended_gcd(a: int, b: int) -> int:
-    s, sp, t, tp, r, rp = 0, 1, 1, 0, b, a
+\begin{algorithm}
+  \caption{Extended Euclidean algorithm}
+  \begin{minted}{python}
+  def extended_gcd(a: int, b: int) -> int:
+      s, sp, t, tp, r, rp = 0, 1, 1, 0, b, a
 
-    while r != 0:
-        q = rp//r
-        rp, r = r, rp - q*r
-        sp, s = s, sp - q*s
-        tp, t = t, tp - q*t
+      while r != 0:
+          q = rp//r
+          rp, r = r, rp - q*r
+          sp, s = s, sp - q*s
+          tp, t = t, tp - q*t
 
-    return sp
-\end{minted}
+      return sp
+  \end{minted}
+\end{algorithm}
 
 To use it,
 \begin{minted}{python}

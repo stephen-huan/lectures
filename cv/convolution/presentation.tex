@@ -1,6 +1,6 @@
 \documentclass{beamer}                             % presentation
 % \documentclass[draft]{beamer}                    % improves compile time
-% \documentclass[11pt,handout]{beamer}             % handout
+% \documentclass[11pt, handout]{beamer}            % handout
 \usepackage[utf8]{inputenc}                        % utf8
 \usepackage[T1]{fontenc}                           % fix font encoding
 \usepackage[english]{babel}                        % language
@@ -66,7 +66,7 @@
 {
   \begin{frame}
     \frametitle{Table of Contents}
-    \tableofcontents[currentsection,currentsubsection]
+    \tableofcontents[currentsection, currentsubsection]
   \end{frame}
 }
 
@@ -819,21 +819,24 @@ Lastly, if we make sure to scan from left to right, then we can compute
 \begin{frame}[fragile]
 \frametitle{Minimum \( \ell^2 \)}
 \framesubtitle{}
-\begin{minted}[label=the minimum \( \ell^2 \) between two lists,fontsize=\footnotesize]{python}
-def min_offset(a: list, b: list) -> tuple:
-    N, M = len(a), len(b)
-    p = fft(a[::-1], b)[N - 1:]
-    x2, xy, y2 = sum(x*x for x in a), p[0], \
-                 sum(b[i]*b[i] for i in range(N))
-    best, l2 = 0, -2*xy + y2
-    for i in range(1, M - N + 1):
-        y2 += b[N - 1 + i]*b[N - 1 + i] - b[i - 1]*b[i - 1]
-        xy = p[i]
-        d = -2*xy + y2
-        if d < l2:
-            best, l2 = i, d
-    return best, x2 + l2
-\end{minted}
+\begin{algorithm}[H]
+  \caption{minimum \( \ell^2 \) between two lists}
+  \begin{minted}[frame=none, fontsize=\footnotesize]{python}
+  def min_offset(a: list, b: list) -> tuple:
+      N, M = len(a), len(b)
+      p = fft(a[::-1], b)[N - 1:]
+      x2, xy, y2 = sum(x*x for x in a), p[0], \
+                   sum(b[i]*b[i] for i in range(N))
+      best, l2 = 0, -2*xy + y2
+      for i in range(1, M - N + 1):
+          y2 += b[N - 1 + i]*b[N - 1 + i] - b[i - 1]*b[i - 1]
+          xy = p[i]
+          d = -2*xy + y2
+          if d < l2:
+              best, l2 = i, d
+      return best, x2 + l2
+  \end{minted}
+\end{algorithm}
 \end{frame}
 
 \begin{frame}
@@ -1076,23 +1079,26 @@ resulting list to a matrix of proper size.
 \begin{frame}[fragile]
 \frametitle{The 2D Convolution Algorithm}
 \framesubtitle{}
-\begin{minted}[label=the 2D convolution algorithm]{python}
-def flatten(m: list, pad=0) -> list:
-    """ Flattens a matrix into a list. """
-    return [x for row in m for x in row + [0]*pad]
+\begin{algorithm}[H]
+  \caption{2D Convolution Algorithm}
+  \begin{minted}[frame=none]{python}
+  def flatten(m: list, pad=0) -> list:
+      """ Flattens a matrix into a list. """
+      return [x for row in m for x in row + [0]*pad]
 
-def reshape(l: list, m: int, n: int) -> list:
-    """ Shapes a list into a MxN matrix."""
-    return [[l[r*n + c] for c in range(n)]
-            for r in range(m)]
+  def reshape(l: list, m: int, n: int) -> list:
+      """ Shapes a list into a MxN matrix."""
+      return [[l[r*n + c] for c in range(n)]
+              for r in range(m)]
 
-def conv(h: list, x: list):
-    """ Computes the 2D convolution. """
-    M, N, H, W = len(x), len(x[0]), len(h), len(h[0])
-    # need to pad the columns to the final size
-    h, x = flatten(h, N - 1), flatten(x, W - 1)
-    return reshape(fft(h, x), M + H - 1, N + W - 1)
-\end{minted}
+  def conv(h: list, x: list):
+      """ Computes the 2D convolution. """
+      M, N, H, W = len(x), len(x[0]), len(h), len(h[0])
+      # need to pad the columns to the final size
+      h, x = flatten(h, N - 1), flatten(x, W - 1)
+      return reshape(fft(h, x), M + H - 1, N + W - 1)
+  \end{minted}
+\end{algorithm}
 \end{frame}
 
 \begin{frame}
