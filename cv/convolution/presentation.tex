@@ -472,7 +472,7 @@ We will denote this principle root as \( \omega_n \), where
 \end{block} \pause
 Since we picked \( k = 1 \), we can represent every \( n \)th root of unity as 
 a power of this root of unity since 
-\[ e^{\frac{2 \pi k i}{n}} = (e^{\frac{2 \pi i}{n}})^k = \omega^k \] 
+\[ e^{\frac{2 \pi k i}{n}} = (e^{\frac{2 \pi i}{n}})^k = \omega_n^k \] 
 \end{frame}
 
 \begin{frame}
@@ -505,7 +505,7 @@ Our observation is a clever rewrite of a polynomial into two parts.
 \frametitle{Splitting a Polynomial}
 \framesubtitle{}
 Suppose we have the polynomial
-\[ p(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_n x^{n - 1} \]
+\[ p(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_{n - 1} x^{n - 1} \]
 
 We divide the coefficient list of \( p \) into two parts,
 one with even powers and the other with odd powers,
@@ -516,7 +516,7 @@ can always be divided in such a manner.
 
 If \( n \) isn't, we can always pad with 0's. \pause
 \begin{align}
-  p(x) &= a_0 + a_1 x + a_2 x^2 + \dots + a_n x^{n - 1} \\
+  p(x) &= a_0 + a_1 x + a_2 x^2 + \dots + a_{n - 1} x^{n - 1} \\
   L(x) &= a_0 + a_2 x + a_4 x^2 + \dots \\
   R(x) &= a_1 + a_3 x + a_5 x^2 + \dots \\
   \shortintertext{It follows that \( p \) can be written
