@@ -1,0 +1,219 @@
+\documentclass[11pt, oneside]{article}
+\usepackage[utf8]{inputenc}                        % utf8
+\usepackage[T1]{fontenc}                           % fix font encoding
+\usepackage[english]{babel}                        % language
+\usepackage{titling, geometry, hyperref, fancyhdr, algorithm}
+\usepackage{amsmath, amssymb, amsthm}              % ams mathematical packages
+\usepackage{physics, mathtools, bm}                % extra math packages
+\usepackage{graphicx, subcaption, wrapfig}         % images
+\usepackage{fvextra, textcomp, CJKutf8}            % misc. text formatting
+\usepackage[autostyle, english=american]{csquotes} % quotes
+\usepackage[shortlabels]{enumitem}                 % lists
+\usepackage{tikz, pgfplots, tikz-network}          % plots and graphs
+\usepackage[noend]{algpseudocode}                  % algorithm psuedocode
+\usepackage[cache=true]{minted}                    % source code
+\usepackage[style=ieee]{biblatex}                  % bibliography
+\geometry{a4paper}
+
+\pgfplotsset{compat=1.17}                          % version of pgfplots
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=cyan,
+  linkcolor=black
+}
+
+\setminted[]{
+  linenos=false,
+  breaklines=true,
+  encoding=utf8,
+  fontsize=\normalsize,
+  frame=lines,
+  framesep=2mm
+}
+
+% https://tex.stackexchange.com/questions/343494/minted-red-box-around-greek-characters
+\makeatletter
+\AtBeginEnvironment{minted}{\dontdofcolorbox}
+\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
+\makeatother
+
+\graphicspath{{./images/}}
+\addbibresource{ref.bib}
+
+\newcommand{\emphasis}[1]{\textbf{\textit{#1}}}
+% \renewcommand{\vec}{\overrightarrow}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\renewcommand\qedsymbol{$\square$}
+
+\title{Complex Eigenvectors}
+\author{Stephen Huan}
+\date{December 3, 2020}
+
+\begin{document}
+\maketitle
+% \tableofcontents
+
+\section{Conjugate Eigenvalues and Eigenvectors}
+
+Let \( \lambda = \alpha + i \beta \) be a complex eigenvalue of the coefficient
+matrix \( A \) in the homogeneous system \( \vec{X}' = A \vec{X} \) and let
+\( \vec{K} \) be a (complex) eigenvector associated with \( \lambda \).
+Also let \( \vec{u_1} = \Re(\vec{K}) \) and \( \vec{u_2} = \Im(\vec{K}) \)
+such that \( \vec{K} = \vec{u_1} + i \vec{u_2} \).
+
+Also let \( \overline{\lambda} = \alpha - i \beta \) be the \emphasis{conjugate}
+eigenvalue of \( \lambda \). We first prove that the eigenvector of 
+\( \overline{\lambda} \) is the conjugate of \( \vec{K} \), or
+\( \overline{\vec{K}} = \vec{u_1} - i \vec{u_2} \).
+
+Because \( \vec{K} \) is the eigenvector of \( \lambda \) by definition,
+\begin{align*}
+  A \vec{K} &= \lambda \vec{K}
+  \shortintertext{Expanding on the left side,}
+  A \vec{K} &= A (\vec{u_1} + i \vec{u_2}) \\
+            &= A\vec{u_1} + i A \vec{u_2}
+  \shortintertext{Expanding on the right side,}
+  \lambda \vec{K} &= \lambda (\vec{u_1} + i \vec{u_2}) \\
+                  &= (\alpha + i \beta)(\vec{u_1} + i \vec{u_2}) \\
+                  &= (\alpha \vec{u_1} - \beta \vec{u_2}) + i(\beta \vec{u_1} + \alpha \vec{u_2})
+  \shortintertext{Setting real and imaginary parts equal,}
+  A\vec{u_1} = \alpha \vec{u_1} - \beta \vec{u_2} \text{ and }
+  A\vec{u_2} = \beta \vec{u_1} + \alpha \vec{u_2}
+\end{align*}
+
+We now compute \( \overline{\lambda} \overline{\vec{K}} \) which should be
+equal to \( A \overline{\vec{K}} \) if \( \overline{\vec{K}} \) is an
+eigenvector of \( \overline{\lambda} \). 
+\begin{align*}
+  \overline{\lambda} \overline{\vec{K}} &= (\alpha - i \beta)(\vec{u_1} - i\vec{u_2}) \\
+                                        &= (\alpha \vec{u_1} - \beta \vec{u_2})
+                                        + i(-\beta \vec{u_1} - \alpha \vec{u_2}) \\
+                                        \shortintertext{Using \( A\vec{u_1} \) and \( A\vec{u_2} \) computed earlier,}
+                                        &= A\vec{u_1} - iA\vec{u_2} \\
+                                        &= A(\vec{u_1} - i \vec{u_2}) \\
+                                        &= A \overline{\vec{K}} \qed
+\end{align*}
+
+\subsection{Real Solutions}
+
+We have two eigenvalues \( \lambda \) and its conjugate \( \overline{\lambda} \)
+and we have the two associated eigenvectors \( \vec{K} \) and its conjugate
+\( \overline{\vec{K}} \).
+
+Thus, the two (complex) solutions are \( \vec{K} e^{\lambda t} \) and
+\( \overline{\vec{K}} e^{\overline{\lambda} t} \).
+We want to write these two solutions in terms of reals, which is possible
+because we are allowed to arbitrarily linearly combine the two solutions by
+the superposition principle.
+
+We first explicitly write out each solution in terms of
+\( \vec{u_1} \) and \( \vec{u_2} \).
+\begin{align*}
+  \vec{K} e^{\lambda t} &= (\vec{u_1} + i \vec{u_2}) e^{(\alpha + i \beta) t} \\
+                        &= [\vec{u_1} e^{i \beta t} + i \vec{u_2} e^{i \beta t}] e^{\alpha t} \\
+  \shortintertext{Using Euler's formula \( e^{ix} = \cos x + i \sin x \),}
+                        &= [\vec{u_1} (\cos{\beta t} + i \sin{\beta t})
+                        + i \vec{u_2} (\cos{\beta t} + i \sin{\beta t})] e^{\alpha t} \\
+  \shortintertext{Seperating real and imaginary parts,}
+                        &= [(\vec{u_1} \cos{\beta t} - \vec{u_2} \sin{\beta t})
+                        + i (\vec{u_1} \sin{\beta t} + \vec{u_2} \cos{\beta t})] e^{\alpha t}
+\end{align*}
+We now do the same for the other solution.
+\begin{align*}
+  \overline{\vec{K}} e^{\overline{\lambda} t} &= (\vec{u_1} - i \vec{u_2}) e^{(\alpha - i \beta) t} \\
+                        &= [\vec{u_1} e^{-i \beta t} - i \vec{u_2} e^{-i \beta t}] e^{\alpha t} \\
+  \shortintertext{Because \( \cos(-x) = \cos x \) and \( \sin(-x) = - \sin x\),}
+                        &= [\vec{u_1} (\cos{\beta t} - i \sin{\beta t})
+                        - i \vec{u_2} (\cos{\beta t} - i \sin{\beta t})] e^{\alpha t} 
+  \shortintertext{Beware of the sign on the \( \vec{u_2} \sin{\beta t} \) term!
+  \newline The two negative signs from each conjugation cancel:}
+                        &= [(\vec{u_1} \cos{\beta t} - \vec{u_2} \sin{\beta t})
+                        - i (\vec{u_1} \sin{\beta t} + \vec{u_2} \cos{\beta t})] e^{\alpha t}
+\end{align*}
+
+To summarize,
+\begin{align*}
+  \vec{K} e^{\lambda t} &= [(\vec{u_1} \cos{\beta t} - \vec{u_2} \sin{\beta t})
+                        + i (\vec{u_1} \sin{\beta t} + \vec{u_2} \cos{\beta t})] e^{\alpha t} \\
+\overline{\vec{K}} e^{\overline{\lambda} t}
+                        &= [(\vec{u_1} \cos{\beta t} - \vec{u_2} \sin{\beta t})
+                        - i (\vec{u_1} \sin{\beta t} + \vec{u_2} \cos{\beta t})] e^{\alpha t}
+\end{align*}
+
+We notice we can cancel the imaginary parts if we add them up:
+\begin{align*}
+  \frac{1}{2}(\vec{K} e^{\lambda t} + \overline{\vec{K}} e^{\overline{\lambda} t}) &= 
+  \frac{1}{2}[2(\vec{u_1} \cos{\beta t} - \vec{u_2} \sin{\beta t})]e^{\alpha t} \\
+  \vec{X_1} &= [\vec{u_1} \cos{\beta t} - \vec{u_2} \sin{\beta t}] e^{\alpha t}
+\end{align*}
+
+We notice we can cancel the real parts if we take the difference, and to make
+it real we can simply multiply it by a factor of \( i \).
+\begin{align*}
+  \frac{-i}{2}(\vec{K} e^{\lambda t} - \overline{\vec{K}} e^{\overline{\lambda} t}) &= 
+  \frac{-i}{2}[2i(\vec{u_1} \sin{\beta t} + \vec{u_2} \cos{\beta t})]e^{\alpha t} \\
+  \vec{X_2} &= [\vec{u_2} \cos{\beta t} + \vec{u_1} \sin{\beta t}] e^{\alpha t} \qed
+\end{align*}
+
+\section{Defective Eigenvalues}
+
+Let \( \lambda \) be an defective eigenvalue with multiplicity \( m \),
+with a single eigenvector by definition. Then each solution is of the form:
+\[ \vec{X}_m = \vec{K}_{1} \frac{t^{m - 1}}{(m - 1)!}e^{\lambda t} +  
+               \vec{K}_{2} \frac{t^{m - 2}}{(m - 2)!}e^{\lambda t} + \dots +
+               \vec{K}_{m} e^{\lambda t} \]
+\begin{proof}
+  Inductive sketch.
+  For \( \vec{X}_m \) to be a valid solution, it must satisfy
+  \( \vec{X}_m' = A\vec{X} \).
+  \begin{align*}
+    \vec{X}_m' &= \vec{K}_{1} \frac{t^{m - 2}}{(m - 2)!}e^{\lambda t} +  
+                  \vec{K}_{2} \frac{t^{m - 3}}{(m - 3)!}e^{\lambda t} + \dots + \vec{0} \\
+               &+ \vec{K}_{1} \frac{t^{m - 1}}{(m - 1)!} \lambda e^{\lambda t} +  
+                  \vec{K}_{2} \frac{t^{m - 2}}{(m - 2)!} \lambda e^{\lambda t} + \dots +
+                  \vec{K}_{m} \lambda e^{\lambda t}
+   \shortintertext{By the inductive hypothesis, the top is \( \vec{X}_{m - 1} \):}
+               &= \vec{X}_{m - 1} + \lambda \vec{X}_m
+  \end{align*}
+  This must be equal to \( A \vec{X}_m \), so
+  \begin{align*}
+    \vec{X}_{m - 1} + \lambda \vec{X}_m &= A \vec{X}_m
+    \shortintertext{or, moving \( \lambda \vec{X}_m \) to the right side,}
+    (A - \lambda I) \vec{X}_m &= \vec{X}_{m - 1}
+  \end{align*}
+  We need to show this system is solvable, and the easiest way to do that is
+  to write it in terms of \( \vec{K}_1 \dots \vec{K}_m \) first
+  and then reconstruct the solutions \( \vec{X}_1 \dots \vec{X}_m \).
+  \begin{align*}
+    (A - \lambda I)(\vec{K}_{1} \frac{t^{m - 1}}{(m - 1)!}e^{\lambda t} +  
+                   &\vec{K}_{2} \frac{t^{m - 2}}{(m - 2)!}e^{\lambda t} + 
+                    \vec{K}_{3} \frac{t^{m - 3}}{(m - 3)!}e^{\lambda t} + \dots +
+                    \vec{K}_{m} e^{\lambda t}) = \\
+                   &\vec{K}_{1} \frac{t^{m - 2}}{(m - 2)!}e^{\lambda t} +  
+                    \vec{K}_{2} \frac{t^{m - 3}}{(m - 3)!}e^{\lambda t} + \dots +
+                    \vec{K}_{m - 1} e^{\lambda t})
+    \shortintertext{Because \( \vec{X}_m \) is one degree higher than
+      \( \vec{X}_{m - 1} \), \( \vec{K}_1 \) has no correspondence, so we have}
+    (A - \lambda I)\vec{K}_1 &= \vec{0} \\
+    (A - \lambda I)\vec{K}_2 &= \vec{K}_1 \\
+                               & \dots \\
+    (A - \lambda I)\vec{K_m} &= \vec{K}_{m - 1}
+  \end{align*}
+
+  By induction, we can assume \( \vec{K}_1 \dots \vec{K}_{m - 1} \) exist
+  because the solution \( \vec{X}_{m - 1} \) exists.
+  We therefore just need to show that
+  \( (A - \lambda I)\vec{K_m} = \vec{K}_{m - 1} \) has a solution,
+  which is left as an exercise to the reader.
+\end{proof}
+
+% \printbibliography
+\end{document}

@@ -1,0 +1,679 @@
+\documentclass[11pt, oneside]{article}
+\usepackage[utf8]{inputenc}                        % utf8
+\usepackage[T1]{fontenc}                           % fix font encoding
+\usepackage[english]{babel}                        % language
+\usepackage{titling, geometry, hyperref, fancyhdr, algorithm}
+\usepackage{amsmath, amssymb, amsthm}              % ams mathematical packages
+\usepackage{physics, mathtools, bm, systeme}       % extra math packages
+\usepackage{graphicx, subcaption, wrapfig}         % images
+\usepackage{fvextra, textcomp, CJKutf8}            % misc. text formatting
+\usepackage[autostyle, english=american]{csquotes} % quotes
+\usepackage[shortlabels]{enumitem}                 % lists
+\usepackage{tikz, pgfplots, tikz-network}          % plots and graphs
+\usepackage[noend]{algpseudocode}                  % algorithm psuedocode
+\usepackage[cache=true]{minted}                    % source code
+\usepackage[style=ieee]{biblatex}                  % bibliography
+\geometry{a4paper}
+
+\pgfplotsset{compat=1.17}                          % version of pgfplots
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=cyan,
+  linkcolor=black
+}
+
+\setminted[]{
+  linenos=false,
+  breaklines=true,
+  encoding=utf8,
+  fontsize=\normalsize,
+  frame=lines,
+  framesep=2mm
+}
+
+% https://tex.stackexchange.com/questions/343494/minted-red-box-around-greek-characters
+\makeatletter
+\AtBeginEnvironment{minted}{\dontdofcolorbox}
+\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
+\makeatother
+
+\graphicspath{{./images/}}
+\addbibresource{ref.bib}
+
+\newcommand{\emphasis}[1]{\textbf{\textit{#1}}}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\renewcommand\qedsymbol{$\square$}
+
+\title{Differential Equations and Geosystems}
+\author{Senjougahara Hitagi}
+\date{December 6, 2020}
+
+\begin{document}
+\maketitle
+% \tableofcontents
+
+\begin{abstract}
+  In this paper, we systematize the conjectures of the TJHSST geosystems
+  textbook. We solve an elementary linear first-order series of ordinary
+  differential equations and interpret the solution and its relevance to
+  the study of Earth systems.
+\end{abstract}
+
+\section{Introduction}
+Why do we combine the study of differential equations with the study of
+the Earth? Simply put, differential equations provide an elegant model
+for many natural phenomena. The link between the two is the study of
+\emphasis{systems}, giving \enquote{geosystems} its name.
+\begin{displayquote}
+  Because most natural systems are time-dependent, their behavior must be
+  described by differential equations. Differential equations are beyond the
+  level of most readers of this book; however, readers who have the required
+  mathematical background are invited to follow the discussion below.
+
+  --- \fullcite{textbook}
+\end{displayquote}
+
+In order to facilitate the connection between differential equations and
+systems, we introduce a pet two-component system and its corresponding
+model. Although the system is simple, it will elucidate general results
+about the theory of systems and of stability.
+\begin{displayquote}
+  Suppose we have a system of two reservoirs whose states (e.g., amounts
+  of material in the reservoirs) are represented by the variables
+  \( A(t) \) and \( B(t) \), which are coupled in a feedback loop.
+  Furthermore, suppose that an equilibrium state exists in
+  this system, in which the reservoir sizes are denoted by
+  \( A_\text{eq} \) and \( B_\text{eq} \).
+  We are interested in how these reservoirs will respond to a
+  disturbance from their equilibrium state. This system can
+  be described by the two following differential equations:
+  \begin{align*}
+    dA/dt &= a(B - B_\text{eq}) \\
+    dB/dt &= b(A - A_\text{eq})
+  \end{align*}
+  --- \cite{textbook}, page 25
+\end{displayquote}
+
+Note that this system corresponds to our intuition about systems. If \( B \) is
+at equilibrium, then there is no change in \( A \). If \( B \) is greater than
+the equilibrium, then \( A \) will increase if there is a positive link from
+\( B \) to \( A \), represented by the sign of \( a \). If \( B \) is lower,
+then \( A \) will decrease. The same is true for the connection between \( A \)
+and \( B \).
+\begin{displayquote}
+  Here, \( a \) and \( b \) are constants. The feedback loop is positive if
+  both \( a \) and \( b \) are positive or if both constants are negative.
+  If \( a \) and \( b \) have opposite signs, the feedback loop is negative.
+  This follows from our definition of positive and negative couplings.
+  A coupling is positive if component \( A \) responds in the same direction
+  as the perturbation to component \( B \); it is negative if the response
+  is in the opposite direction.
+\end{displayquote}
+
+\section{Analysis}
+Recall we have the system of differential equations:
+\begin{align*}
+  \frac{dA}{dt} &= a(B - B_\text{eq}) \\
+  \frac{dB}{dt} &= b(A - A_\text{eq})
+\end{align*}
+
+We first suppose the system starts at some initial time \( t_0 = 0 \),
+and that \( A_0 = A(t_0) \) and \( B_0 = B(t_0) \) representing
+the initial amounts in each reservoir. We then put the initial value problem
+into \textit{matrix form}, encapsulating both functions into one vector:
+\begin{align*}
+  \vec{X} = \begin{pmatrix} A \\ B \end{pmatrix}, \
+  \vec{X}' = \begin{pmatrix} 0 & a \\ b & 0 \end{pmatrix} \vec{X} + 
+  \begin{pmatrix} -a B_\text{eq} \\ -b A_\text{eq}
+  \end{pmatrix}, \
+  \vec{X}(t_0) = \begin{pmatrix} A_0 \\ B_0 \end{pmatrix}
+\end{align*}
+
+To solve this system, we first ignore the forcing term and solve the resulting
+homogeneous system. To solve the homogeneous system, we find the eigenvalues
+of the matrix. Looking at the characteristic equation:
+\begin{align*}
+  \det(A - \lambda I) =
+  \begin{vmatrix} -\lambda & a \\ b & -\lambda \end{vmatrix}
+  = \lambda^2 - ab = 0 \implies \lambda &= \pm \sqrt{ab} \\
+  \text{Letting \( \alpha = \sqrt{ab} \), } \lambda &= \pm \alpha
+\end{align*}
+We now assume \( ab \geq 0 \), that is, \( \alpha \) is real  
+and the system represents a positive feedback loop.
+We will see what happens in the negative case later.
+\begin{align*}
+  \shortintertext{For \( \lambda_1 = \alpha \), we find its associated eigenvector:} 
+  \begin{pmatrix} -\alpha & a \\ b & -\alpha \end{pmatrix} \vec{K}_1 &= \vec{0}
+  \rightarrow -\alpha k_1 + a k_2 = 0 \rightarrow k_1 = \frac{a k_2}{\alpha}
+  \shortintertext{Because \( \frac{a}{\alpha} = \frac{a}{\sqrt{ab}} = 
+    \frac{\sqrt{a}}{\sqrt{b}} \), let \( \beta = \sqrt{\frac{a}{b}} \)
+  so \( k_1 = \beta k_2 \). Taking \( k_2 = 1 \),} 
+  \vec{K}_1 &= \begin{pmatrix} \beta \\ 1 \end{pmatrix} \text{ so }
+  \vec{X}_1(t) = \begin{pmatrix} \beta \\ 1 \end{pmatrix} e^{\alpha t} 
+  \shortintertext{Similarly, for \( \lambda_2 = -\alpha \):}
+  \begin{pmatrix} \alpha & a \\ b & \alpha \end{pmatrix} \vec{K}_1 &= \vec{0}
+  \rightarrow \alpha k_1 + a k_2 = 0 \rightarrow k_1 = -\frac{a k_2}{\alpha} = -\beta k_2
+  \shortintertext{Taking \( k_2 = 1 \) again,} 
+  \vec{K}_2 &= \begin{pmatrix} -\beta \\ 1 \end{pmatrix} \text{ so }
+  \vec{X}_2(t) = \begin{pmatrix} -\beta \\ 1 \end{pmatrix} e^{-\alpha t} 
+  \shortintertext{The complementary solution to the homogenous equation is therefore}
+  \vec{X}_c(t) &= c_1 \begin{pmatrix}  \beta \\ 1 \end{pmatrix} e^{ \alpha t} +
+                  c_2 \begin{pmatrix} -\beta \\ 1 \end{pmatrix} e^{-\alpha t} 
+\end{align*}
+
+We now solve for a particular solution by
+the method of undetermined coefficients.
+Because the forcing term is a constant vector, we assume the form
+\( \vec{X}_p = \begin{pmatrix} E \\ F \end{pmatrix} \),
+where \( E \) and \( F \) are \enquote{undetermined coefficients},
+or constants whose values will be determined by the differential equation.
+\begin{align*}
+  \vec{X}_p' &= \begin{pmatrix} 0 & a \\ b & 0 \end{pmatrix} \vec{X}_p + 
+  \begin{pmatrix} -a B_\text{eq} \\ -b A_\text{eq} \end{pmatrix}
+  \shortintertext{Because the derivative of a constant vector is \( \vec{0} \),}
+  \vec{0} &= \begin{pmatrix} 0 & a \\ b & 0 \end{pmatrix}
+  \begin{pmatrix} E \\ F \end{pmatrix} + 
+  \begin{pmatrix} -a B_\text{eq} \\ -b A_\text{eq} \end{pmatrix} \\
+  \vec{0} &= \begin{pmatrix} aF \\ bE \end{pmatrix} +  
+  \begin{pmatrix} -a B_\text{eq} \\ -b A_\text{eq} \end{pmatrix}
+  \shortintertext{This yields the system}
+  \systeme*{
+    a(F - B_\text{eq}) = 0,
+    b(E - A_\text{eq}) = 5
+  }       &\implies \begin{matrix} F = B_\text{eq} \\ E = A_\text{eq} \end{matrix}
+  \shortintertext{so}
+  \vec{X}_p &= \begin{pmatrix} A_\text{eq} \\ B_\text{eq} \end{pmatrix}
+\end{align*}
+
+This makes sense because if both reservoirs are at equilibrium,
+then the differential equation is trivially satisfied because there is no
+change in the system.
+\begin{align*}
+  \shortintertext{The general solution is therefore}
+  \vec{X} &= \vec{X}_c + \vec{X}_p \\
+  \vec{X}(t) &= c_1 \begin{pmatrix}  \beta \\ 1 \end{pmatrix} e^{ \alpha t} +
+                c_2 \begin{pmatrix} -\beta \\ 1 \end{pmatrix} e^{-\alpha t} +
+                    \begin{pmatrix} A_\text{eq} \\ B_\text{eq} \end{pmatrix}
+  \shortintertext{Using the initial conditions to solve for \( c_1 \) and \( c_2 \),}
+  \vec{X}(0) &= c_1 \begin{pmatrix}  \beta \\ 1 \end{pmatrix} +
+                c_2 \begin{pmatrix} -\beta \\ 1 \end{pmatrix} +
+                \begin{pmatrix} A_\text{eq} \\ B_\text{eq} \end{pmatrix}
+              = \begin{pmatrix} \beta c_1  - \beta c_2 + A_\text{eq} \\ 
+                                      c_1 + c_2 + B_\text{eq} \end{pmatrix} \\
+  \vec{X}(0) &= \begin{pmatrix} \beta c_1  - \beta c_2 + A_\text{eq} \\ c_1 + c_2 + B_\text{eq} \end{pmatrix}
+              = \begin{pmatrix} A_0 \\ B_0 \end{pmatrix}
+  \shortintertext{Subtracting the equilibrium amounts, let's let
+  \( A_d = A_0 - A_\text{eq} \) and \( B_d = B_0 - B_\text{eq} \).}
+  & \systeme{
+      \beta c_1 - \beta c_2 = A_d,
+      c_1 + c_2 = B_d 
+  }
+  \shortintertext{Multiplying the second row by \( \beta \)
+  and adding the two equations to cancel \( c_2 \),}
+  2 \beta c_1 &= A_d + \beta B_d \\
+          c_1 &= \frac{A_d + \beta B_d}{2 \beta}
+  \shortintertext{Solving for \( c_2 \),}
+          c_2 &= B_d - c_1 \\
+              &= \frac{2 \beta B_d}{2 \beta} - \frac{A_d + \beta B_d}{2 \beta}
+               = \frac{-A_d + \beta B_d}{2 \beta}
+  \shortintertext{At last, the final solution is}
+  \vec{X}(t) &= \left( \frac{ A_d + \beta B_d}{2 \beta} \right)
+                  \begin{pmatrix}  \beta \\ 1 \end{pmatrix} e^{ \alpha t} +
+                \left( \frac{-A_d + \beta B_d}{2 \beta} \right) 
+                  \begin{pmatrix} -\beta \\ 1 \end{pmatrix} e^{-\alpha t} +
+                  \begin{pmatrix} A_\text{eq} \\ B_\text{eq} \end{pmatrix}
+  \shortintertext{Explicitly writing out \( A \) and \( B \),}
+  A(t) &= \left\{ \frac{ A_d + \beta B_d}{2} \right\} e^{ \alpha t}
+        + \left\{ \frac{ A_d - \beta B_d}{2} \right\} e^{-\alpha t} + A_\text{eq} \\
+  B(t) &= \left\{ \frac{\beta B_d + A_d}{2 \beta} \right\} e^{ \alpha t}
+        + \left\{ \frac{\beta B_d - A_d}{2 \beta} \right\} e^{-\alpha t} + B_\text{eq}
+\end{align*}
+The book actually has a typo for \( A \)! They have \( A_0 - \beta B_0 \)
+as the numerator for both fractions, when it should be \( A_0 + \beta B_0 \)
+for the first fraction (what I call \( A_d \) they call \( A_0 \)).
+
+\begin{displayquote}
+  The solution to these two coupled differential equations can be shown to be 
+  \begin{align*}  
+    A(t) - A_\text{eq} = & \left\{ \frac{(A_0 - \beta B_0)}{2} \right\} \exp(\alpha t) \\
+                       &+ \left\{ \frac{(A_0 - \beta B_0)}{2} \right\} \exp(-\alpha t)
+  \end{align*}
+  Here, \( A_0 \) and \( B_0 \) are the amounts that \( A \) and \( B \) are
+  disturbed from their equilibrium values at the initiation of the disturbance,
+  and \( \alpha = \sqrt{ab} \) and \( \beta = \sqrt{\frac{a}{b}} \).
+  The second term on the right-hand side has a negative exponent and thus
+  decays with time, but the first term has a positive exponent and thus will
+  increase without limit if \( \alpha \) is a real number. Thus, if the product
+  \( ab \) is positive, as it must be for a positive feedback loop,
+  the system is clearly unstable.
+\end{displayquote}
+
+We continue our analysis, now on the case where \( ab < 0 \), that is,
+\( \alpha \) is imaginary and the system represents a negative feedback loop.
+Recall the eigenvalues of the matrix were \( \lambda = \pm \sqrt{ab} \).
+If \( ab < 0 \), then let \( \alpha = \sqrt{-ab} \) to make \( \alpha \) real
+again, making \( \lambda = \pm i \alpha \).
+\begin{align*}
+  \shortintertext{For \( \lambda = i \alpha \),
+    we find its associated (complex) eigenvector:} 
+  \begin{pmatrix} -i \alpha & a \\ b & -i \alpha \end{pmatrix} \vec{K} &= \vec{0}
+  \rightarrow -i \alpha k_1 + a k_2 = 0 \rightarrow k_1 = \frac{a k_2}{i \alpha}
+  = - i \frac{a}{\alpha} k_2
+  \shortintertext{where we multiply by \( i \) on top and bottom to move
+  \( i \) to the numerator. We introduce \( \beta \) again, but we have to be
+  very careful how we define \( \beta \) in a complex space.
+  Without loss of generality, let \( a > 0 \) and therefore \( b < 0 \).
+  \( \beta = \sqrt{-\frac{a}{b}} \), and \( \frac{a}{\alpha} = 
+  \frac{\sqrt{a} \sqrt{a}}{\sqrt a \sqrt{-b}} = \beta \). Since we assume \( a \)
+  is positive, we can decompose it. Finally, \( k_1 = - i\beta k_2 \). Taking \( k_2 = 1 \),} 
+  \vec{K} &= \begin{pmatrix} -i \beta \\ 1 \end{pmatrix}
+           = \begin{pmatrix} 0 \\ 1 \end{pmatrix} +
+           i \begin{pmatrix} -\beta \\ 0 \end{pmatrix}  
+\end{align*}
+Using the technique proved in the appendix, section \ref{subsec:complex},
+we don't need to find the other eigenvector and can instead directly compute the
+two solutions from the real and imaginary parts of the eigenvector. 
+\begin{align*}
+  \vec{X}_1 &= \left[\begin{pmatrix} 0 \\ 1 \end{pmatrix} \cos{\alpha t} -
+                     \begin{pmatrix} -\beta \\ 0 \end{pmatrix} \sin{\alpha t} \right]e^{0t}
+             = \begin{pmatrix} \beta \sin \alpha t \\ \cos \alpha t \end{pmatrix} \\
+  \vec{X}_2 &= \left[\begin{pmatrix} -\beta \\ 0 \end{pmatrix} \cos{\alpha t} +
+                     \begin{pmatrix} 0 \\ 1 \end{pmatrix} \sin{\alpha t} \right]e^{0t}
+             = \begin{pmatrix} -\beta \cos \alpha t \\ \sin \alpha t \end{pmatrix} 
+  \shortintertext{The general solution is then}
+    \vec{X} &= c_1 \begin{pmatrix}  \beta \sin \alpha t \\ \cos \alpha t \end{pmatrix} + 
+               c_2 \begin{pmatrix} -\beta \cos \alpha t \\ \sin \alpha t \end{pmatrix} +
+                   \begin{pmatrix} A_\text{eq} \\ B_\text{eq} \end{pmatrix}
+  \shortintertext{where we make use of the same particular solution as the 
+      positive feedback case.
+  Solving for the constants by making use of the initial conditions,}
+ \vec{X}(0) &= \begin{pmatrix} - \beta c_2 \\ c_1 \end{pmatrix}  +
+               \begin{pmatrix} A_\text{eq} \\ B_\text{eq} \end{pmatrix}
+             =  \begin{pmatrix} A_0 \\ B_0 \end{pmatrix}
+  \shortintertext{Moving the equilibrium sizes to the other side again,}
+  \systeme*{
+    -\beta c_2 = A_d,
+    c_1 = B_d
+  } & \implies \begin{array}{l} c_1 = B_d \\ c_2 = -\frac{A_d}{\beta} \end{array}
+  \shortintertext{Plugging back into \( \vec{X} \),}
+    \vec{X} &= B_d  \begin{pmatrix}  \beta \sin \alpha t \\ \cos \alpha t \end{pmatrix} - 
+  \frac{A_d}{\beta} \begin{pmatrix} -\beta \cos \alpha t \\ \sin \alpha t \end{pmatrix} +
+                    \begin{pmatrix} A_\text{eq} \\ B_\text{eq} \end{pmatrix} \\
+  A(t) &= A_d \cos \alpha t + \beta B_d \sin \alpha t + A_\text{eq} \\ 
+  B(t) &= B_d \cos \alpha t - \frac{A_d}{\beta} \sin \alpha t + B_\text{eq}
+\end{align*}
+Because both \( A(t) \) and \( B(t) \) are a linear combination
+of sines and cosines, they can be written as a single sine function
+with the same frequency of \( \alpha \) and a certain fixed magnitude and phase.
+Thus, the magnitudes of \( A \) and \( B \) are bounded above by the magnitude
+of that wave plus \( A_\text{eq} \) or \( B_\text{eq} \), and below by the
+negative magnitude of the wave plus the same equilibrium size.
+For more details, consult section \ref{subsec:linear} of the appendix.
+
+\newpage
+We finish with the last statement on the page.
+\begin{displayquote}
+  When \( a \) and \( b \) have opposite signs, though, as they do in a
+  negative feedback loop, then the product \( ab \) is negative.
+  The square root of a negative number is imaginary,
+  so \( \alpha \) is no longer a real number. In such a case, the system
+  becomes a sinusoidal oscillator. The solution is always bounded, however,
+  thus demonstrating that negative feedback loops are stable.
+\end{displayquote}
+Our job is not quite done, however.
+Notice how \( \beta = \sqrt{\frac{a}{b}} \). Clearly, this poses a problem
+if \( b = 0 \), and by symmetry, \( a = 0 \) is also bad---these cases
+are \enquote{degenerate}.
+
+If \( a = 0 \) and \( b = 0 \), the reader can confirm for themselves that
+both the positive and negative feedback loop solutions
+\enquote{do the right thing} and reduce to two constant solutions
+\( A(t) = A_0 \) and \( B(t) = B_0 \) which trivially
+satisfy the differential equations.
+
+If exactly one of \( a \) or \( b \) is 0, assume \( b = 0 \) and therefore
+\( a \neq 0 \) without loss of generality. We could proceed with eigenvalue
+analysis as usual, discovering that \( \lambda = 0 \) is the only eigenvalue,
+and is \enquote{defective} in the sense that it has multiplicity 2 but only
+one associated eigenvector. We could handle this using a polynomial form,
+successively generating solutions via this sole eigenvector.
+See section \ref{subsec:defective} of the appendix for details.
+However, the system can be much more easily solved with ad-hoc analysis.
+Since \( b = 0 \), \( \frac{dB}{dt} = 0 \) so \( B(t) \) is a constant function,
+whose value must be \( B_0 \) to satisfy the initial condition.
+\( \frac{dA}{dt} \) then equals \( a(B - B_\text{eq}) = aB_d \).
+Integrating on both sides, \( A(t) = aB_d t + C \),
+and \( C \) must be \( A_0 \) to satisfy the initial condition.
+So \( A(t) = aB_d t + A_0 \) and \( B(t) = B_0 \),
+which means \( A \) grows without bound, but much slower than an exponential function.
+
+\section{Conclusion}
+
+We have rigorously computed the solution to the differential equation,
+correcting the mistakes of the geosystems textbook and extending 
+to the complex and degenerate cases.
+Positive feedback loops happen when both couplings are
+positive or both are negative, while negative feedback loops happen
+when one is positive and the other is negative.
+We have seen the mathematical result of a positive feedback loop;
+the amount of material grows exponentially as both feed into each other.
+In a negative feedback loop, in contrast, the system oscillates perpetually,
+but is always stable, as its deviation from equilibrium is bounded.
+Future work can be done in extending this intuition to multiple couplings,
+where positive feedback loops happen if the number of positive coupling is even.
+Negative feedback loops, by process of elimination,
+must happen when the number is odd.
+Work can also be done in more complicated systems---for example,
+when the sign of a coupling is itself dependent on the state of the system,
+so an initially negative feedback loop can turn into a positive feedback loop
+with an external forcing (refer to the Daisyworld lab).
+These systems often cannot be solved analytically,
+necessitating a numerical approach.
+
+\printbibliography
+
+\section{Appendix}
+
+\subsection{Conjugate Eigenvalues and Eigenvectors}
+\label{subsec:complex}
+
+Let \( \lambda = \alpha + i \beta \) be a complex eigenvalue of the coefficient
+matrix \( A \) in the homogeneous system \( \vec{X}' = A \vec{X} \) and let
+\( \vec{K} \) be a (complex) eigenvector associated with \( \lambda \).
+Also let \( \vec{u_1} = \Re(\vec{K}) \) and \( \vec{u_2} = \Im(\vec{K}) \)
+such that \( \vec{K} = \vec{u_1} + i \vec{u_2} \).
+
+Also let \( \overline{\lambda} = \alpha - i \beta \) be the \emphasis{conjugate}
+eigenvalue of \( \lambda \). We first prove that the eigenvector of 
+\( \overline{\lambda} \) is the conjugate of \( \vec{K} \), or
+\( \overline{\vec{K}} = \vec{u_1} - i \vec{u_2} \).
+
+Because \( \vec{K} \) is the eigenvector of \( \lambda \) by definition,
+\begin{align*}
+  A \vec{K} &= \lambda \vec{K}
+  \shortintertext{Expanding on the left side,}
+  A \vec{K} &= A (\vec{u_1} + i \vec{u_2}) \\
+            &= A\vec{u_1} + i A \vec{u_2}
+  \shortintertext{Expanding on the right side,}
+  \lambda \vec{K} &= \lambda (\vec{u_1} + i \vec{u_2}) \\
+                  &= (\alpha + i \beta)(\vec{u_1} + i \vec{u_2}) \\
+                  &= (\alpha \vec{u_1} - \beta \vec{u_2}) + i(\beta \vec{u_1} + \alpha \vec{u_2})
+  \shortintertext{Setting real and imaginary parts equal,}
+  A\vec{u_1} = \alpha \vec{u_1} - \beta \vec{u_2} \text{ and }
+  A\vec{u_2} = \beta \vec{u_1} + \alpha \vec{u_2}
+\end{align*}
+
+We now compute \( \overline{\lambda} \overline{\vec{K}} \) which should be
+equal to \( A \overline{\vec{K}} \) if \( \overline{\vec{K}} \) is an
+eigenvector of \( \overline{\lambda} \). 
+\begin{align*}
+  \overline{\lambda} \overline{\vec{K}} &= (\alpha - i \beta)(\vec{u_1} - i\vec{u_2}) \\
+                                        &= (\alpha \vec{u_1} - \beta \vec{u_2})
+                                        + i(-\beta \vec{u_1} - \alpha \vec{u_2}) \\
+                                        \shortintertext{Using \( A\vec{u_1} \) and \( A\vec{u_2} \) computed earlier,}
+                                        &= A\vec{u_1} - iA\vec{u_2} \\
+                                        &= A(\vec{u_1} - i \vec{u_2}) \\
+                                        &= A \overline{\vec{K}} \qed
+\end{align*}
+
+\subsection{Real Solutions}
+
+We have two eigenvalues \( \lambda \) and its conjugate \( \overline{\lambda} \)
+and we have the two associated eigenvectors \( \vec{K} \) and its conjugate
+\( \overline{\vec{K}} \).
+
+Thus, the two (complex) solutions are \( \vec{K} e^{\lambda t} \) and
+\( \overline{\vec{K}} e^{\overline{\lambda} t} \).
+We want to write these two solutions in terms of reals, which is possible
+because we are allowed to arbitrarily linearly combine the two solutions by
+the superposition principle.
+
+We first explicitly write out each solution in terms of
+\( \vec{u_1} \) and \( \vec{u_2} \).
+\begin{align*}
+  \vec{K} e^{\lambda t} &= (\vec{u_1} + i \vec{u_2}) e^{(\alpha + i \beta) t} \\
+                        &= [\vec{u_1} e^{i \beta t} + i \vec{u_2} e^{i \beta t}] e^{\alpha t} \\
+  \shortintertext{Using Euler's formula \( e^{ix} = \cos x + i \sin x \)
+  (a proof appears in the appendix, section \ref{subsec:euler}),}
+                        &= [\vec{u_1} (\cos{\beta t} + i \sin{\beta t})
+                        + i \vec{u_2} (\cos{\beta t} + i \sin{\beta t})] e^{\alpha t} \\
+  \shortintertext{Seperating real and imaginary parts,}
+                        &= [(\vec{u_1} \cos{\beta t} - \vec{u_2} \sin{\beta t})
+                        + i (\vec{u_1} \sin{\beta t} + \vec{u_2} \cos{\beta t})] e^{\alpha t}
+\end{align*}
+We now do the same for the other solution.
+\begin{align*}
+  \overline{\vec{K}} e^{\overline{\lambda} t} &= (\vec{u_1} - i \vec{u_2}) e^{(\alpha - i \beta) t} \\
+                        &= [\vec{u_1} e^{-i \beta t} - i \vec{u_2} e^{-i \beta t}] e^{\alpha t} \\
+  \shortintertext{Because \( \cos(-x) = \cos x \) and \( \sin(-x) = - \sin x\),}
+                        &= [\vec{u_1} (\cos{\beta t} - i \sin{\beta t})
+                        - i \vec{u_2} (\cos{\beta t} - i \sin{\beta t})] e^{\alpha t} 
+  \shortintertext{Beware of the sign on the \( \vec{u_2} \sin{\beta t} \) term!
+  \newline The two negative signs from each conjugation cancel:}
+                        &= [(\vec{u_1} \cos{\beta t} - \vec{u_2} \sin{\beta t})
+                        - i (\vec{u_1} \sin{\beta t} + \vec{u_2} \cos{\beta t})] e^{\alpha t}
+\end{align*}
+
+To summarize,
+\begin{align*}
+  \vec{K} e^{\lambda t} &= [(\vec{u_1} \cos{\beta t} - \vec{u_2} \sin{\beta t})
+                        + i (\vec{u_1} \sin{\beta t} + \vec{u_2} \cos{\beta t})] e^{\alpha t} \\
+\overline{\vec{K}} e^{\overline{\lambda} t}
+                        &= [(\vec{u_1} \cos{\beta t} - \vec{u_2} \sin{\beta t})
+                        - i (\vec{u_1} \sin{\beta t} + \vec{u_2} \cos{\beta t})] e^{\alpha t}
+\end{align*}
+
+We notice we can cancel the imaginary parts if we add them up:
+\begin{align*}
+  \frac{1}{2}(\vec{K} e^{\lambda t} + \overline{\vec{K}} e^{\overline{\lambda} t}) &= 
+  \frac{1}{2}[2(\vec{u_1} \cos{\beta t} - \vec{u_2} \sin{\beta t})]e^{\alpha t} \\
+  \vec{X_1} &= [\vec{u_1} \cos{\beta t} - \vec{u_2} \sin{\beta t}] e^{\alpha t}
+\end{align*}
+
+We notice we can cancel the real parts if we take the difference, and to make
+it real we can simply multiply it by a factor of \( i \).
+\begin{align*}
+  \frac{-i}{2}(\vec{K} e^{\lambda t} - \overline{\vec{K}} e^{\overline{\lambda} t}) &= 
+  \frac{-i}{2}[2i(\vec{u_1} \sin{\beta t} + \vec{u_2} \cos{\beta t})]e^{\alpha t} \\
+  \vec{X_2} &= [\vec{u_2} \cos{\beta t} + \vec{u_1} \sin{\beta t}] e^{\alpha t} \qed
+\end{align*}
+
+\newpage
+
+\subsection{Defective Eigenvalues}
+\label{subsec:defective}
+Let \( \lambda \) be an defective eigenvalue with multiplicity \( m \),
+with a single eigenvector by definition. Then each solution is of the form:
+\[ \vec{X}_m = \vec{K}_{1} \frac{t^{m - 1}}{(m - 1)!}e^{\lambda t} +  
+               \vec{K}_{2} \frac{t^{m - 2}}{(m - 2)!}e^{\lambda t} + \dots +
+               \vec{K}_{m} e^{\lambda t} \]
+\begin{proof}
+  Inductive sketch.
+  For \( \vec{X}_m \) to be a valid solution, it must satisfy
+  \( \vec{X}_m' = A\vec{X} \).
+  \begin{align*}
+    \vec{X}_m' &= \vec{K}_{1} \frac{t^{m - 2}}{(m - 2)!}e^{\lambda t} +  
+                  \vec{K}_{2} \frac{t^{m - 3}}{(m - 3)!}e^{\lambda t} + \dots + \vec{0} \\
+               &+ \vec{K}_{1} \frac{t^{m - 1}}{(m - 1)!} \lambda e^{\lambda t} +  
+                  \vec{K}_{2} \frac{t^{m - 2}}{(m - 2)!} \lambda e^{\lambda t} + \dots +
+                  \vec{K}_{m} \lambda e^{\lambda t}
+   \shortintertext{By the inductive hypothesis, the top is \( \vec{X}_{m - 1} \):}
+               &= \vec{X}_{m - 1} + \lambda \vec{X}_m
+  \end{align*}
+  This must be equal to \( A \vec{X}_m \), so
+  \begin{align*}
+    \vec{X}_{m - 1} + \lambda \vec{X}_m &= A \vec{X}_m
+    \shortintertext{or, moving \( \lambda \vec{X}_m \) to the right side,}
+    (A - \lambda I) \vec{X}_m &= \vec{X}_{m - 1}
+  \end{align*}
+  We need to show this system is solvable, and the easiest way to do that is
+  to write it in terms of \( \vec{K}_1 \dots \vec{K}_m \) first
+  and then reconstruct the solutions \( \vec{X}_1 \dots \vec{X}_m \).
+  \begin{align*}
+    (A - \lambda I)(\vec{K}_{1} \frac{t^{m - 1}}{(m - 1)!}e^{\lambda t} +  
+                   &\vec{K}_{2} \frac{t^{m - 2}}{(m - 2)!}e^{\lambda t} + 
+                    \vec{K}_{3} \frac{t^{m - 3}}{(m - 3)!}e^{\lambda t} + \dots +
+                    \vec{K}_{m} e^{\lambda t}) = \\
+                   &\vec{K}_{1} \frac{t^{m - 2}}{(m - 2)!}e^{\lambda t} +  
+                    \vec{K}_{2} \frac{t^{m - 3}}{(m - 3)!}e^{\lambda t} + \dots +
+                    \vec{K}_{m - 1} e^{\lambda t})
+    \shortintertext{Because \( \vec{X}_m \) is one degree higher than
+      \( \vec{X}_{m - 1} \), \( \vec{K}_1 \) has no correspondence, so we have}
+    (A - \lambda I)\vec{K}_1 &= \vec{0} \\
+    (A - \lambda I)\vec{K}_2 &= \vec{K}_1 \\
+                               & \dots \\
+    (A - \lambda I)\vec{K_m} &= \vec{K}_{m - 1}
+  \end{align*}
+
+  By induction, we can assume \( \vec{K}_1 \dots \vec{K}_{m - 1} \) exist
+  because the solution \( \vec{X}_{m - 1} \) exists.
+  We therefore just need to show that
+  \( (A - \lambda I)\vec{K_m} = \vec{K}_{m - 1} \) has a solution,
+  which is left as an exercise to the reader.
+\end{proof}
+
+\subsubsection{Defective Eigenvalues in the Degenerate Case}
+Recall we are trying to solve the system where \( a \neq 0 \) and \( b = 0 \).
+We proceed with eigenvalue analysis, where the characteristic equation is: 
+\begin{align*}
+  \det(A - \lambda I) =
+  \begin{vmatrix} -\lambda & a \\ 0 & -\lambda \end{vmatrix}
+  = \lambda^2 - 0 = 0 \implies \lambda = 0
+\end{align*}
+We proceed to find the sole eigenvector for the sole eigenvalue.
+\begin{align*}
+  \begin{pmatrix} 0 & a \\ 0 & 0 \end{pmatrix} \vec{K} &= \vec{0}
+  \rightarrow a k_2 = 0 \implies k_2 = 0, k_1 \text{ free}
+  \shortintertext{Taking \( k_1 = 1 \),} 
+  \vec{K} &= \begin{pmatrix} 1 \\ 0 \end{pmatrix} \text{ so }
+  \vec{X}_1(t) = \begin{pmatrix} 1 \\ 0 \end{pmatrix} e^{0 t}
+               = \begin{pmatrix} 1 \\ 0 \end{pmatrix}
+  \shortintertext{We now solve for \( \vec{P} \),
+  which satisfies \( (A - \lambda I) \vec{P} = \vec{K} \):}
+  \begin{pmatrix} 0 & a \\ 0 & 0 \end{pmatrix} \vec{P} &= \vec{K} \\
+  \begin{pmatrix} 0 & a \\ 0 & 0 \end{pmatrix}
+    \begin{pmatrix} p_1 \\ p_2 \end{pmatrix} &= \begin{pmatrix} 1 \\ 0 \end{pmatrix}
+    \rightarrow a p_2 = 1 \implies p_2 = \frac{1}{a}, p_1 \text{ free}
+  \shortintertext{Taking \( p_2 = 0 \) for simplicity,} 
+  \vec{P} &= \begin{pmatrix} 0 \\ \frac{1}{a} \end{pmatrix} \text{ so }
+  \vec{X}_2(t) = \left[ \begin{pmatrix} 1 \\ 0 \end{pmatrix}t + 
+                         \begin{pmatrix} 0 \\ \frac{1}{a} \end{pmatrix} \right] e^{0 t}
+               =  \begin{pmatrix} t \\ \frac{1}{a} \end{pmatrix}
+  \shortintertext{The general solution is therefore}
+  \vec{X} &= c_1 \vec{X}_1 + c_2 \vec{X}_2 + \vec{X}_p \\
+  \vec{X} &= c_1 \begin{pmatrix} 1 \\ 0 \end{pmatrix} + 
+             c_2 \begin{pmatrix} t \\ \frac{1}{a} \end{pmatrix} +
+                 \begin{pmatrix} A_\text{eq} \\ B_\text{eq} \end{pmatrix}
+  \shortintertext{where we used the standard particular solution.
+  Making use of the initial conditions,}
+  \vec{X}(0) &= \begin{pmatrix} c_1 \\ 0 \end{pmatrix} + 
+                \begin{pmatrix} 0 \\ \frac{1}{a} c_2 \end{pmatrix} + 
+                \begin{pmatrix} A_\text{eq} \\ B_\text{eq} \end{pmatrix}
+             =  \begin{pmatrix} A_0 \\ B_0 \end{pmatrix} \\
+  \systeme*{
+    c_1 = A_d,
+    \frac{1}{a} c_2 = B_d
+  } & \implies \begin{array}{l} c_1 = A_d \\ c_2 = a B_d \end{array}
+  \shortintertext{Plugging back into \( \vec{X} \),}
+  \vec{X} &=   A_d \begin{pmatrix} 1 \\ 0 \end{pmatrix} + 
+             a B_d \begin{pmatrix} t \\ \frac{1}{a} \end{pmatrix} +
+                   \begin{pmatrix} A_\text{eq} \\ B_\text{eq} \end{pmatrix} \\
+  A(t) &= aB_d t + A_0  \\
+  B(t) &= B_0 
+\end{align*}
+Luckily, this agrees with our ad-hoc analysis. However,
+this method for this particular set of equations is clearly
+much more tedious than simply solving with separation.
+
+\subsection{Euler's Formula}
+\label{subsec:euler}
+\begin{theorem}
+  \( e^{ix} = \cos x + i \sin x \), i.e. Euler's formula 
+\end{theorem}
+\begin{proof}
+  We have the initial value problem (IVP) 
+\[ \frac{dy}{dx} = f(x, y), y(x_0) = y_0 \]
+\textit{Picard's existence and uniqueness theorem} says that if \( f \) and
+\( \frac{\partial f}{\partial y} \) are continuous functions on some rectangle
+\( R \) that contains \( (x_0, y_0) \), then the IVP has an unique solution
+on some interval \( I \) whose bounds are the regions where the hypotheses hold.
+
+In our particular case, we have \( f(x, y) = iy \) and \( y(0) = 1 \),
+so \( \frac{\partial f}{\partial y} = i \). By Picard's theorem, the IVP has a 
+unique solution on the interval \( I \) where \( y \) is continuous and
+\( \frac{\partial f}{\partial y} \) is continuous. \( i \) is continuous
+everywhere, so the IVP will have an unique solution
+wherever \( y \) is continuous.
+
+Because this differential equation is separable, we can directly solve
+for \( y \).
+\begin{align*}
+  \frac{dy}{dx} &= iy \\
+  \int \frac{1}{iy} dy &= \int dx \\
+  \frac{1}{i} \ln{\abs{iy}} &= x + C \\
+  \ln{\abs{iy}} &= ix + C \\
+  iy &= Ce^{ix} \\
+  y &= Ce^{ix}
+\end{align*}
+
+Taking into account the initial condition, \( y(0) = 1 = Ce^0 = C \).
+So \( y = e^{ix} \), which is continuous on \( \mathbb{R} \).
+Picard's theorem therefore guarantees the uniqueness of this solution.
+However, note that \( \cos x + i \sin x \) is also a solution to the IVP.
+First, it fulfills the initial condition since
+\( y(0) = \cos 0 + i \sin 0 = 1 \).
+Second, it fulfills the differential equation:
+\begin{align*}
+  \frac{dy}{dx} &= -\sin x + i \cos x \\
+                &= i^2 \sin x + i \cos x && \text{Definition of \( i \)} \\
+                &= i(\cos x + i \sin x) \\
+                &= iy
+\end{align*}
+Since \( e^{ix} \) is the unique solution to the IVP on \( \mathbb{R} \),
+\( e^{ix} = \cos x + i \sin x \).
+\end{proof}
+
+\newpage
+
+\subsection{Linear Combination of Sines and Cosines}
+\label{subsec:linear}
+Suppose we have a function in the form
+\( f(t) = c_1 \cos(\omega t) + c_2 \sin(\omega t) \). 
+Can rewrite \( f \) to be of the form \( A \sin(\omega t + \delta) \),
+i.e. as a sin function with the same frequency, but with a certain magnitude
+and phase? Using the identity \( \sin(x + y) = \sin x \cos y + \cos x \sin y \),
+\[ A \sin(\omega t + \delta) = A \sin(\omega t)\cos \delta + A\cos(\omega t) \sin \delta
+= (A \sin \delta) \cos(\omega t) + (A \cos \delta) \sin(\omega t) \] 
+From this \( c_1 = A \sin \delta \) and \( c_2 = A \cos \delta \), so
+\[ A^2 \sin^2 \delta + A^2 \cos^2 \delta = c_1^2 + c_2^2
+\implies A = \sqrt{c_1^2 + c_2^2} \]
+Finally, \[ c_1 = A \sin \delta \rightarrow \sin \delta = \frac{c_1}{A} \implies 
+\delta = \arcsin(\frac{c_1}{\sqrt{c_1^2 + c_2^2}})
+= \arctan(\frac{c_1}{c_2}) \] 
+where the last step comes from the right triangle with opposite side \( c_1 \),
+adjacent side \( c_2 \), and hypotenuse \( \sqrt{c_1^2 + c_2^2} \).
+We can therefore write
+\( f(t) = \sqrt{c_1^2 + c_2^2} \sin(\omega t + \arctan(\frac{c_1}{c_2})) \).
+
+\section{About the Author}
+The author's interest in geosystems and mathematics began at an early age,
+fascinated by the stars in the sky and the beauty of math. She currently
+takes geoscience at Naoetsu Private High School, and plans to study astronomy
+in college, aiming towards the creation of a complete space map, as well as
+solving the current mass asymmetries unexplainable by current models of galaxy
+formation. In her free time, the author likes going to the planetarium and
+going on dates, preferably both at the same time.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.3]{Hitagi_Rendezvous_1.jpg}
+  \caption{A picture of the author}
+\end{figure}
+
+\end{document}
