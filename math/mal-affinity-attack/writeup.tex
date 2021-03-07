@@ -1,0 +1,448 @@
+\documentclass[11pt, oneside]{article}
+\usepackage[utf8]{inputenc}                        % utf8
+\usepackage[T1]{fontenc}                           % fix font encoding
+\usepackage[english]{babel}                        % language
+\usepackage{titling, geometry, hyperref, fancyhdr, algorithm}
+\usepackage{amsmath, amssymb, amsthm}              % ams mathematical packages
+\usepackage{physics, mathtools, bm}                % extra math packages
+\usepackage{graphicx, subcaption, wrapfig}         % images
+\usepackage{fvextra, textcomp, CJKutf8}            % misc. text formatting
+\usepackage[autostyle, english=american]{csquotes} % quotes
+\usepackage[shortlabels]{enumitem}                 % lists
+\usepackage{tikz, pgfplots, tikz-network}          % plots and graphs
+\usepackage[noend]{algpseudocode}                  % algorithm psuedocode
+\usepackage[cache=true]{minted}                    % source code
+\usepackage[style=ieee]{biblatex}                  % bibliography
+\geometry{a4paper}
+
+\pgfplotsset{compat=1.17}                          % version of pgfplots
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=cyan,
+  linkcolor=magenta
+}
+
+\setminted[]{
+  linenos=false,
+  breaklines=true,
+  encoding=utf8,
+  fontsize=\normalsize,
+  frame=lines,
+  framesep=2mm
+}
+
+% https://tex.stackexchange.com/questions/343494/minted-red-box-around-greek-characters
+\makeatletter
+\AtBeginEnvironment{minted}{\dontdofcolorbox}
+\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
+\makeatother
+
+\graphicspath{{./images/}}
+\addbibresource{ref.bib}
+
+\newcommand{\emphasis}[1]{\textbf{\textit{#1}}}
+
+\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\C}{\mathcal{C}}
+\DeclareMathOperator{\T}{\mathcal{T}}
+\DeclareMathOperator{\p}{\mathcal{L}}
+\DeclareMathOperator{\round}{round}
+\renewcommand{\vec}[1]{\bm{#1}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\renewcommand\qedsymbol{$\square$}
+
+\title{An Efficient Privacy Attack on MyAnimeList's
+Affinity Oracle: Technical Notes on Score Estimation}
+\author{Stephen Huan}
+\date{March 7, 2021}
+
+\begin{document}
+\maketitle
+% {\hypersetup{linkcolor=black}
+% \tableofcontents
+% }
+\textit{For context (and code) see this
+\href{https://github.com/stephen-huan/MAL-affinity-attack}{GitHub repository}.}
+
+\section{Pearson's Correlation}
+
+\begin{definition}
+  \textit{Pearson's correlation} between vectors \( \vec{u} \) and \( \vec{v}
+  \) is defined as follows: first, define \( \vec{u}' = \vec{u} - \bar{\vec{u}}
+  \) where \( \bar{\vec{u}} \) is the constant vector equal to the sample
+  mean of \( \vec{u} \), and define \( \vec{v}' \) similarly. Then Pearson's
+  correlation is simply the cosine similarity:
+  \[ \rho(\vec{u}, \vec{v}) = \cos \alpha = \frac{\vec{u}' \cdot \vec{v}'}{|\vec{u}'| |\vec{v}'|} \]
+\end{definition}
+
+\begin{theorem}
+  \label{thm:corr}
+  Pearson's correlation is invariant to a transformation
+  of the form \( a \vec{u} + \vec{b} \), for any positive
+  real number \( a \) and constant vector \( \vec{b} \).
+\end{theorem}
+\begin{proof}
+  We start with the constant vector, which is destroyed when taking the mean:
+  \begin{align*}
+    \vec{u}' &= \vec{u} - \E[\vec{u}] & \text{definition} \\
+    (a \vec{u} + \vec{b})' &= a \vec{u} + \vec{b} - (a \E[\vec{u}] + \vec{b}) &
+    \text{\href{https://stephen-huan.github.io/assets/pdfs/cs-lectures/probability-theory/gacha-optimization/writeup.pdf\#page=5}{linearity of expectation}} \\
+                           &= a (\vec{u} - \E[\vec{u}]) \\
+                           &= a \vec{u}'
+  \end{align*}
+  We now see what happens to this scaling by \( a \) after Pearson's correlation:
+  \begin{align*}
+    \rho(a \vec{u} + \vec{b}, \vec{v}) &= \frac{(a \vec{u}') \cdot \vec{v}'}{|a \vec{u}'| |\vec{v}'|} 
+    =  \frac{a(\vec{u}' \cdot \vec{v}')}{a |\vec{u}'| |\vec{v}'|} = \rho(\vec{u}, \vec{v})  
+  \end{align*}
+  If \( a = 0 \) then dividing by the magnitude of the zero vector is
+  ill-defined, and if \( a < 0 \) then \( | a \vec{u}'| \) becomes \(
+  |a| |\vec{u}'| \), so the sign of the correlation switches because
+  of the \( a \) on the numerator. Thus, \( a \) must be positive for
+  the correlation to be preserved.
+\end{proof}
+
+\begin{corollary}
+  We can't tell the difference between \( \vec{u} \) and \( a \vec{u} + \vec{b}
+  \) by looking at Pearson's correlation without using additional information.
+\end{corollary}
+
+\section{The Attack}
+\label{sec:attack}
+Suppose \( \vec{u} \) is an unknown vector and our only method of obtaining
+information about \( \vec{u} \) is through querying some \textit{affinity
+oracle} which tells us \( \rho (\vec{u}, \vec{v}) \) for some \( \vec{v}
+\) that we pick. We now show how to pick \( \vec{v} \) in such a way that
+\( \vec{u} \) can be determined, up to a positive scaling and constant
+translation as mentioned previously.
+
+The basic idea is going to be to pick \( \vec{v} \) such that \( \vec{v}' \) is
+as close to a basis vector as possible, e.g. something like \( \begin{bmatrix}
+1 & 0 & 0 & \dots & 0 \end{bmatrix}^T \). In that case when we compute \(
+\rho(\vec{u}, \vec{v}) \), it equals \( \vec{u}' \cdot \vec{v}' \) divided by
+the magnitude of \( \vec{u} \), which we can ignore since we can't tell the
+difference between \( \vec{u} \) and \( a \vec{u} \) anyways. Since \( \vec{v}'
+\) is all zeros except for one 1, \( \vec{u}' \cdot \vec{v}' = \vec{u}'_1 \),
+telling us the first element of \( \vec{u}' \) directly. The first snag is that
+it is not possible for such a \( \vec{v}' \) to exist, since the sum of any \(
+\vec{x}' \) must be 0 and \( \vec{v}' \) sums to 1.
+
+\begin{theorem}
+  \label{thm:mean}
+  The sum of the elements in \( \vec{x}' \) is 0 for any \( \vec{x} \).
+\end{theorem}
+\begin{proof}
+  \[ \E[\vec{x}'] = \E[\vec{x} - \E[\vec{x}]] = \E[\vec{x}] - \E[\vec{x}] = 0 \]
+\end{proof}
+
+Thus, we need a different pick for \( \vec{v}' \). One simple fix is to
+introduce a -1 to cancel the existing 1, i.e. \( \begin{bmatrix} 1 & -1 & 0 &
+\dots & 0 \end{bmatrix}^T \). When we compute \( \vec{u}' \cdot \vec{v}' \), we
+get that \( \rho(\vec{u}, \vec{v}) = \frac{\vec{u}' \cdot \vec{v}'}{|\vec{u}'|
+|\vec{v}'|}= \vec{u}_1 - \vec{u}_2 \) (where we arbitrarily let \( |\vec{u}'|
+\) = \( \frac{1}{|\vec{v}'|} \) for simplicity). This is a linear equation in
+\( \vec{u} \), so to solve for \( \vec{u} \) we just need a system. The first
+step is finding a \( \vec{v} \) that generates the \( \vec{v}' \) used above.
+That can be done by seeing a constant vector will map to the zero vector, so
+we can start with a vector of all 5's, and then put a 6 where the 1 in \(
+\vec{v}' \) should be and a 4 where the -1 should be. The average of \( \vec{v}
+\) will be 5, so \( \vec{v}' \) will map to zeros except the 6 goes to 1 and
+the 4 goes to -1, which is what we wanted. The second step is that we need a
+system of equations, so we need multiple (linearly-independent) \( \vec{v}
+\)'s. The obvious choice is to \enquote{slide} the 1 over, so our next query
+is \( \begin{bmatrix} 0 & 1 & -1 & \dots & 0 \end{bmatrix}^T \), the next
+\( \begin{bmatrix} 0 & 0 & 1 & -1 & \dots & 0 \end{bmatrix}^T \) and so on.
+Notice if \( \vec{u} \) has \( M \) elements, then we only have \( M - 1 \)
+versions of \( \vec{v} \) since we can't put a 1 at the last position (we need
+a -1 after it). This is a natural consequence of the fact that we are missing
+\textit{two} variables: we can't tell the difference between \( \vec{u} \) and
+\( a \vec{u} + \vec{b} \), so \( a \) and \( \vec{b} \) are free variables. By
+setting \( |\vec{u}'| \) we lose a free variable, so we have one free variable
+left. Thus, our matrix must also have one free variable. We therefore solve
+the system by putting each variable in terms of the last variable. We have a
+system of the form:
+\[ \begin{bmatrix}
+  1 & -1 \\
+    &  1 & -1 \\
+    &    &  1 & -1 \
+\end{bmatrix} \vec{u}' = \vec{\rho} \]
+From the last row, \( \vec{u}'_{n - 1} - \vec{u}'_n = \vec{\rho}_{n - 1} \)
+so \( \vec{u}'_{n - 1} = \vec{\rho}_{n - 1} + \vec{u}'_n \). We can then
+add the last row to the second to last row, which cancels the -1 with the
+1, yielding \( \begin{bmatrix} \dots & 1 & 0 & -1 \end{bmatrix} \). Thus,
+\( \vec{u}'_{n - 2} = \vec{\rho}_{n - 2} + \vec{\rho}_{n - 1} + \vec{u}'_n
+\). We can then add this row to row above it, and so on. Thus, the value of
+\( \vec{u}_i \) is the sum \( \vec{\rho}_i + \vec{\rho}_{i + 1} + \dots +
+\vec{\rho}_{n - 1} \) which is a suffix sum that can be computed in \( O(n)
+\) over each element in \( \vec{u}' \). Now that we have \( \vec{u}' \), we
+need to find a possible \( \vec{u} \) that transforms into it. This could
+be done directly, see \autoref{subsec:mean} for a brute-force analysis, but
+we'll use a simple observation derived from \autoref{thm:mean}.
+
+\begin{theorem}
+  \( (\vec{x}')' = \vec{x}' \), i.e. \( \vec{x}' \) is a
+  fixed point of \( f(\vec{x}) = \vec{x} - \E[\vec{x}] \).
+\end{theorem}
+\begin{proof}
+  \( (\vec{x}')' = \vec{x'} - \E[\vec{x'}] \) by definition.
+  By \autoref{thm:mean}, \( \E[\vec{x}'] \) is 0.
+  Thus, \( (\vec{x}')' = \vec{x} \).
+\end{proof}
+
+Recall we wanted to find a \( \vec{x} \) such that \( \vec{x}' = \vec{u}' \).
+Since \( (\vec{u}')' = \vec{u}' \), \( \vec{u}' \) is its own \( \vec{x} \).
+
+\subsection{Determining an Valid Integer Form}
+\label{subsec:norm}
+Now that we have a possible \( \vec{u} \), we need to determine the particular
+value of \( a \) and \( \vec{b} \). One constraint is that each value in a
+score list must be an integer between 1 and 10, so \( a \vec{u} + \vec{b} \in
+\mathbb{Z}^M \) and \( 1 \leq a \vec{u} + \vec{b} \leq 10 \). Suppose we had
+a particular \( \vec{u} \) that satisfies those requirements. Then we could
+\enquote{normalize} \( \vec{u} \) by diving by the greatest common divisor of
+the score differences, e.g. if \( \vec{u} = \begin{pmatrix} 1 & 3 & 1 & 3 &
+9 & 9 \end{pmatrix} \), we first sort the scores and remove duplicates into
+\( \vec{u} = \begin{pmatrix} 1 & 3 & 9 \end{pmatrix} \). We then notice \( 3
+- 1 = 2 \) and \( 9 - 3 = 6 \), and \( \gcd(2, 6) = 2 \). We can therefore
+transform \( \vec{u} \) by \( \frac{1}{2} \vec{u} + \frac{1}{2} \) such that
+1 goes to 1, 3 goes to 2, and 9 goes to 5. It is now not possible to multiply
+\( \vec{u} \) by a fraction and then shift \( \vec{u} \) to make all the
+elements integer because the elements will have different denominators. We
+sort and only consider the gcd of adjacent elements because if some factor
+\( d \) divides each index \( i \) to \( j \), then it must also divide the
+difference of the element at \( i \) from the element at \( j \) since the
+difference is the sum of adjacent differences: \( \vec{v}_j - \vec{v}_i =
+(\vec{v}_{i + 1} - \vec{v}_i) + (\vec{v}_{i + 2} - \vec{v}_{i + 1}) + \dots
++ (\vec{v}_j - \vec{v}_{j - 1}) \). Thus, \( a \) is now constrained to \(
+\mathbb{Z} \) if \( \vec{u} \) is in this normalized form, and that constrains
+\( \vec{b} \in \mathbb{Z}^M \) as well. There are now a finite number of
+possibilities for both, since \( a > 0 \) and the end result \( a \vec{u}
++ \vec{b} \) must be between 1 and 10. Thus, if we have a \textit{single}
+valid integer representation of \( \vec{u} \), we can normalize it and then
+generate \textit{all} valid possibilities.
+
+\subsection{Finding a Single Valid Integer Form}
+
+Recall that we have some \( \vec{u} \in \mathbb{R}^M \) derived from solving
+a linear system. Since we obtain \( \vec{u} \) by computing the suffix sum
+of the vector of correlations \( \vec{\rho} \), it will not be integer. We
+therefore need to find some \( \vec{v} \) such that \( \vec{v} \in \mathbb{Z}^M
+\), \( 1 \leq \vec{v} \leq 10 \), and \( \vec{v} = a \vec{u} + \vec{b} \)
+for some positive real number \( a \) and constant vector \( \vec{b} \).
+Framed like this it seems like a search problem, and our search space is
+exponential: each score has 10 possibilities so a list of length \( M \)
+has \( 10^M \) possibilities. In order to cut down on the possibilities, we
+need to define a \textit{canonical form}. \( \vec{u} \) and \( \vec{v} \)
+are \textit{equivalent} if there exists \( a \), \( \vec{b} \) such that \(
+v = a \vec{u} + \vec{b} \) (the interested reader can verify this defines
+an equivalence relation, see \autoref{subsec:equiv}). We now need a single,
+unique, vector to represent the equivalence class defined by all vectors
+equivalent to some vector \( \vec{u} \). This is the \textit{canonical form}
+for \( \vec{u} \), or more precisely the canonical form for the equivalence
+class \( \vec{u} \) belongs to. We can do this simply by \enquote{removing}
+the parameters. We know what the maximum element in \( \vec{u} \) is. If we
+apply a transformation \( a \vec{u} + \vec{b} \), then it will still be the
+maximum element by linearity. Thus, the maximum and minimum elements give us
+hints about \( a \). We can divide by \( \max(\vec{u}) - \min(\vec{u}) \) to
+force the range to be 1, and then shift the resulting vector such that the
+minimum element is 0 so that \( \vec{b} \) is fixed.
+
+\begin{theorem}
+  The canonical form for a vector \( u \) is \( \C(\vec{u}) =
+  \frac{\vec{u} - \min(\vec{u})}{\max(\vec{u}) - \min(\vec{u})} \).
+\end{theorem}
+\begin{proof}
+  We want to show that vectors \( \vec{u} \) and \( \vec{v} \) are equivalent
+  if and only if their canonical forms are equal. We first prove the forward
+  direction, if two vectors are equivalent, then their canonical forms
+  are equal. By hypothesis, \( \vec{u} \) is equivalent to \( \vec{v} \),
+  so \( \vec{v} = a \vec{u} + \vec{b} \). 
+  \begin{align*}
+    \C(\vec{v}) &= \frac{\vec{v} - \min(\vec{v})}{\max(\vec{v}) - \min(\vec{v})} \\ 
+                &= \frac{a \vec{u} + b - (a \min(\vec{u}) + b)}
+                {(a \max(\vec{u}) + b) - (a \min(\vec{u}) + b)} \\ 
+                &= \frac{a (\vec{u} - \min(\vec{u}))}{a(\max(\vec{u}) - \min(\vec{u}))} \\
+                &= \C(\vec{u})
+  \end{align*}
+
+  We now prove the reverse direction, if \( \C(\vec{u}) = \C(\vec{v}) \) then
+  \( \vec{u} \) and \( \vec{v} \) are equivalent. \( \C(\vec{u}) \) is of
+  the form \( a \vec{u} + \vec{b} \) where \( a > 0 \), so \( \C(\vec{u}) =
+  \C(\vec{v}) \) implies \( a_1 \vec{u} + \vec{b_1} = a_2 \vec{v} + \vec{b_2}
+  \). Thus, \( \vec{v} = \frac{a_1}{a_2} \vec{u} + \frac{1}{a_2} [\vec{b}_1
+  - \vec{b}_2] \), and because \( a_2 \neq 0 \), \( \frac{a_1}{a_2} > 0 \),
+  \( \vec{u} \) and \( \vec{v} \) are equivalent.
+\end{proof}
+
+We can therefore transform the question \enquote{for a given vector \( \vec{u}
+\), find a vector \( \vec{v} \) such that \( \vec{v} \in \mathbb{Z}^M \),
+\( 1 \leq \vec{v} \leq 10 \), and \( \vec{v} = a \vec{u} + \vec{b} \)} into
+\enquote{for a given vector \( \vec{u} \), find a vector \( \vec{v} \mid
+\vec{v} \in \mathbb{Z}^M, 1 \leq \vec{v} \leq 10, \) and \( \C(\vec{u}) =
+\C(\vec{v}) \)}. Now we don't have to deal with \( \vec{u} \) at all, just
+its canonical form, which is helpful since we can construct \( \vec{v} \)
+from \( \C(\vec{u}) \). We first arbitrarily assume \( \min(\vec{v}) = 0 \);
+we can translate \( \vec{v} \) later. Given this assumption, \( \C(\vec{v})
+= \frac{\vec{v}}{\max(\vec{v})} \). Setting equal to to \( \C(\vec{u})
+\), \( \frac{\vec{v}}{\max(\vec{v})} = \C(\vec{u}) \) so \( \vec{v} =
+\round(\max(\vec{v}) \C(\vec{u})) \) since we need \( \vec{v} \) to be integer.
+We can then iterate through the possible values for \( \max(\vec{v}) \),
+between 1 and 9 since we assume \( \vec{v} \) is not a constant vector and
+it is at most 9 greater than the minimum (\( 10 - 1 = 9 \)). We choose the
+maximum value whose computed \( \vec{v} \) is actually equivalent to \( \vec{u}
+\), measured by the distance between the canonical forms, \( |\C(\vec{u}) -
+\C(\vec{v})| \). Ideally this difference should be 0, but because our \( \rho
+\) is noisy (it is only given to 1 decimal place) we need to have some error
+tolerance. We are guaranteed that at least one \( \C(\vec{v}) \) is close to \(
+\C(\vec{u}) \) since there is a ground truth --- we got \( \vec{u} \) through
+Pearson's correlation against a ground truth score vector between 1 and 10.
+
+\subsection{Enumerating and Filtering Possibilities}
+
+Once we have this \( \vec{v} \), we could still be off from the ground truth
+by a translation and a scaling. For example, if our vector has scores between
+3--10, then we could subtract 2 from each element to yield an equivalent valid
+integer vector. With just Pearson's, the integer constraint, and the 1--10
+constraint we can't distinguish between these two vectors. As mentioned in
+\autoref{subsec:norm}, if our vector is sufficiently normalized then \( a \)
+and \( \vec{b} \) are constrained to take integer values (and there is a finite
+number of pairs). We can in fact implicitly normalize if in the iteration over
+\( \max(\vec{v}) \) we break ties by prioritizing the smaller value. Given this
+normalized \( \vec{v} \), we now generate all valid \( a, \vec{b} \) pairs.
+We simply go through the possible values of \( a \), between \( 1 \) and \(
+\lfloor \frac{10}{\max(\vec{v})} \rfloor \) inclusive, and given a value of
+\( a \) the possible values of \( \vec{b} \) are those which map the smallest
+to least 1 and the maximum to at most 10, i.e. \( b \) can be between \( 1 -
+a \min(\vec{v}) \) and \( 10 - a \max(\vec{v}) \) inclusive.
+
+Finally, we need to guess a particular possibility out of the possible pairs.
+MAL gives us the private lists's mean to two decimal places, so if the ground
+truth mean is \( \mu \) and our mean is \( \bar{\vec{v}} \), then we should
+pick \( a, \vec{b} \) such that our mean is as close to \( \mu \) as possible,
+or when \( | a \bar{\vec{v}} + |\vec{b}| - \mu | \) is minimized (this follows
+again from the linearity of expectation).
+
+Another approach is to use maximum likelihood estimation, but that discussion
+is relegated to the appendix, \autoref{subsec:mle} since knowing the sample
+mean \( \mu \) is much better than knowing the distribution in practice.
+
+\newpage
+
+\section{Appendix}
+
+\subsection{Undoing Mean Subtraction}
+\label{subsec:mean}
+We have a given vector \( \vec{u}' \) and want to find a vector \( \vec{u} \)
+such that \( \vec{u} - \E[\vec{u}] = \vec{u}' \). We can solve for \( \vec{u}
+\) directly by setting up a linear system, although our linear system will
+necessarily have one free variable since the transformation is not invertible.
+The transformation \( \vec{u} - \E[\vec{u}] \) will be shown to be represented
+as a matrix \( A \) times \( \vec{u} \). This matrix is not invertible
+because the transformation is not surjective: our matrix is a mapping \(
+\mathbb{R}^M \to \mathbb{R}^M \), and we cannot get vectors whose sum is not
+0 by \autoref{thm:mean}. Thus, our function is not surjective and because the
+domain and co-domain are the same size, our function is not injective: \(
+\vec{x} \) and \( \vec{x} + \vec{b} \) for some constant vector \( \vec{b} \)
+map to the same vector by \autoref{thm:corr}. Thus, our function cannot be
+invertible on some subspace of \( \mathbb{R}^M \). This is all a long-winded
+way of saying we will have a free variable because we can't distinguish between
+\( \vec{x} \) and \( \vec{x} + \vec{b} \). To write \( f(\vec{u}) = \vec{u}
+- \E[\vec{u}] \) as a matrix, we simply write out \( f \).
+\begin{align*}
+  \shortintertext{Taking the first element,}
+  \vec{u}_1 - \frac{\vec{u}_1 + \vec{u}_2 + \dots + \vec{u}_M}{M} &= \vec{u}'_1 \\
+  \frac{(M - 1) \vec{u}_1 - \vec{u}_2 - \dots - \vec{u}_M}{M} &= \vec{u}'_1 \\
+  (M - 1) \vec{u}_1 - \vec{u}_2 - \dots - \vec{u}_M &= M \vec{u}'_1
+\end{align*}
+Thus, we get a matrix of the form:
+\[ \begin{bmatrix}
+  M - 1 &    -1 &    -1 &    -1 \\
+     -1 & M - 1 &    -1 &    -1 \\ 
+     -1 &    -1 & M - 1 &    -1 \\
+     -1 &    -1 &    -1 & M - 1
+\end{bmatrix} \]
+If we subtract the second to last row from the last row, we get a row like \(
+\begin{bmatrix} 0 & 0 & \dots & -M & M \end{bmatrix} \) We can then subtract
+the third to last row from the second to last row, getting a row like \(
+\begin{bmatrix} 0 & \dots & -M & M & 0 \end{bmatrix} \). Repeating the process,
+we get a matrix of the form:
+\[ \begin{bmatrix}
+   -M &  M &    &     \\
+      & -M &  M &     \\ 
+      &    & -M & M   \\
+\end{bmatrix} \]
+where we discard the top row since we have a free variable. Amazingly, this
+matrix is a multiple of the 1 -1 matrix used in \autoref{sec:attack}, so
+we have an equation of the form \( -M A \vec{u} = M \T(\vec{u}') \), so \(
+A \vec{u} = -\T(\vec{u}') \). \( \T(\vec{u}') \) is from the fact that we
+subtracted adjacent rows to force the original matrix into a multiple of
+\( A \), so \( -\T(\vec{u}') \) looks like \( \begin{bmatrix} \vec{u}'_1 -
+\vec{u}'_2 & \vec{u}'_2 - \vec{u}'_3 & \dots & \vec{u}_{M - 1} - \vec{u}_M
+\end{bmatrix}^T \). When we take the suffix sum, we will get \( \vec{u}'_i -
+\vec{u}'_M \), so our solution is \( \vec{u}' - \vec{b} \). This could have
+been predicted from the start if we realized \( \vec{u}' \) was a constant
+difference from \( \vec{u} \) (they differ by \( \E[\vec{u}] \)) so \( \vec{u}'
+\) must have been a valid solution to the system to begin with. See
+\href{https://github.com/stephen-huan/MAL-affinity-attack/blob/ab01b902f2a95dd0acf152a5ce0aecf74cbc2718/archive/archive.py#L12-L17}{archive.py}
+for an implementation, although clearly we just went in
+a large circle (it's a very elegant circle, however).
+
+\subsection{Equivalence Relation Under Pearson's Correlation}
+\label{subsec:equiv}
+Vectors \( \vec{u} \) and \( \vec{v} \) are \textit{equivalent} if they are
+indistinguishable under Pearson's correlation, i.e. \( \rho(\vec{u}, \vec{x}) =
+\rho(\vec{v}, \vec{x}) \) for all \( \vec{x} \). This is equivalent to saying
+there exists \( a > 0 \), \( \vec{b} \) such that \( v = a \vec{u} + \vec{b}
+\). Does this define an equivalence relation?
+\begin{itemize}
+  \item Reflexivity: Pick \( a = 1, b = \vec{0} \)
+    so \( \vec{v} \) is equivalent to itself.
+  \item Symmetry. Suppose \( \vec{v} = a \vec{u} + \vec{b} \). Then \( \vec{u}
+    = \frac{\vec{v} - \vec{b}}{a} = \frac{1}{a} \vec{v} - \frac{\vec{b}}{a} \),
+    which is valid for \( a \neq 0 \). 
+  \item Transitivity. Suppose \( \vec{v} = a \vec{u} + \vec{b} \),
+    and \( \vec{w} = c \vec{v} + \vec{d} \). Then \( \vec{w} = c (a
+    \vec{u} + \vec{b}) + \vec{d} = ca \vec{u} + [c \vec{b} + \vec{d}] \),
+    which is valid since \( ca > 0 \).
+\end{itemize}
+
+\subsection{Maximum Likelihood Estimation}
+\label{subsec:mle}
+
+Suppose we have two vectors, \( \vec{u} \) and \( \vec{v} \). Which do
+we pick? We pick the one that is the most \textit{likely} to occur,
+assuming we know the distribution. If we have a probability mass function
+\( f \), \( \vec{u} = \begin{pmatrix} 1 & 2 & 2 & 4 \end{pmatrix} \),
+and \( \vec{v} = \begin{pmatrix} 1 & 3 & 5 & 5 \end{pmatrix} \), then
+the \textit{likelihood} of \( \vec{u} \) occurring is \( \p(\vec{u}) =
+f(1) \cdot f(2)^2 \cdot f(4) \) assuming each value of \( \vec{u} \)
+is identically and independently distributed (i.i.d.). Similarly, the
+likelihood of \( \vec{v} \) is \( \p(\vec{v}) = f(1) \cdot f(3) \cdot
+f(5)^2 \). We would choose \( \vec{u} \) or \( \vec{v} \) depending on
+which \( \p(\vec{u}) \) or \( \p(\vec{v}) \) was bigger. In general,
+\begin{align*}
+  \p(\vec{x}) &= \prod^M_{i = 1} p(\vec{x}_i) \\
+  \shortintertext{If we have the frequency of each score \( x \),
+    we can compute this more efficiently as:}
+  \p(\vec{x}) &= \prod_{x \in \vec{x}} p(x)^{\text{count}[x]} \\
+  \shortintertext{Because \( \ln \) is a monotonic function, we can maximize
+    \( \ln \p(\vec{x}) \) instead of \( \p(\vec{x}) \), which allows us to turn
+    the product into a sum. This is useful because \( \p(\vec{x}) \) decreases
+    exponentially, so we will run into precision issues without the log.}
+  \ln \p(\vec{x}) &= \sum_{x \in \vec{x}} \text{count}[x] \ln p(x) 
+  \shortintertext{Finally, to pick the \( a \) and \( \vec{b} \)
+    which maximize the liklihood, we simply plug \( a \vec{x} + \vec{b} \) in:}
+  \ln \p(a \vec{x} + \vec{b}) &= \sum_{x \in \vec{x}} \text{count}[x] \ln p(ax + b) 
+\end{align*}
+
+% \printbibliography
+\end{document}
