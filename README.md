@@ -8,9 +8,14 @@ by: Stephen Huan
 [full](./computer-vision/convolution/presentation.pdf),
 [lecture](./computer-vision/convolution/lecture.pdf)
     - [_k-means, kd-Trees, and Median of Medians: Color Quantization done fast_](./computer-vision/kmeans-kd-tree/handout.pdf),
-[full](./computer-vision/kmeans-kd-tree/presentation.pdf),
-[lecture](./computer-vision/kmeans-kd-tree/lecture.pdf)
+[full](./computer-vision/kmeans-kd-tree/presentation.pdf)
     - [_Linear Algebra_](./computer-vision/linear-algebra/lecture.pdf) 
+- `cubing-lectures`
+    - [_Various Computational Cube Theory Conjectures_](./cubing-lectures/computational-cube-theory/cubetheory.pdf),
+[presentation](./cubing-lectures/computational-cube-theory/ComputationalCubeTheory.pdf)
+    - [_Eigenvalues of Permutation Matrices_](./cubing-lectures/eigenvalues-permutation-matrices/eigenvalue.pdf)
+    - [_Linearization of the Rubik's Cube_](./cubing-lectures/linearization/linear.pdf)
+    - [_One-Handed Tips and Tricks_](./cubing-lectures/one-handed-tips-tricks/lecture.pdf)
 - `machine-learning`
     - [_No Game (Theory) No Life: The Machine Learning Approach to Playing Games_](./machine-learning/game-theory/lecture.pdf)
 - `math`
@@ -40,6 +45,7 @@ by: Stephen Huan
 - [_Accelerating Exact k-means Algorithms with Geometric Reasoning: Close reading of a paper_](https://docs.google.com/presentation/d/1U8PiAoVIe2rvfzQ_q9tECdlYfy-mHq6HnJUC45Wy9Y4/edit?usp=sharing)
 - [_Color Theory, Part 1: Color Difference Metrics_](https://docs.google.com/presentation/d/1XlxeFMDeSFhnE3O-h7EvX-LEPMq4O18Dc1llNjYITZI/edit?usp=sharing)
 - [_Color Theory, Part 2: Uniform Color Spaces_](https://docs.google.com/presentation/d/1KGOiKWH8d5PEPVF3700smOwqc6q4iCkpAeJycYwdl8E/edit?usp=sharing)
+- [_ML Chessboard Recognition_](https://docs.google.com/presentation/d/10itvI75JGUYMXxGsJWE88ZogLPrzJSDJ9z4w4koN2vs/edit?usp=sharing)
 
 ## Videos
 
