@@ -15,6 +15,7 @@ by: Stephen Huan
 [presentation](./cubing-lectures/computational-cube-theory/ComputationalCubeTheory.pdf)
     - [_Eigenvalues of Permutation Matrices_](./cubing-lectures/eigenvalues-permutation-matrices/eigenvalue.pdf)
     - [_Linearization of the Rubik's Cube_](./cubing-lectures/linearization/linear.pdf)
+    - [_Matricization of the Rubik's Cube_](./cubing-lectures/matricization/matrix.pdf)
     - [_One-Handed Tips and Tricks_](./cubing-lectures/one-handed-tips-tricks/lecture.pdf)
 - `machine-learning`
     - [_No Game (Theory) No Life: The Machine Learning Approach to Playing Games_](./machine-learning/game-theory/lecture.pdf)
