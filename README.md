@@ -1,6 +1,10 @@
 # Computer Science Lectures
 by: Stephen Huan
 
+See this
+[Gist](https://gist.github.com/stephen-huan/aa609965c86d750736398c28b025f9be)
+for a comprehensive list of implementations of many of these algorithms.
+
 ## Index
 
 - `computer-vision`
@@ -34,12 +38,8 @@ by: Stephen Huan
         - [_Hog Contest Postmortem Analysis_](./senior-computer-team/editorials/cs61a-hog-contest/writeup.pdf)
         - [_2020 TJCT Blitz 1 Writeup_](./senior-computer-team/editorials/ct-blitz1/writeup.pdf)
         - [_Hyperion Introduction to Competitive Programming_](./senior-computer-team/editorials/hyperion-intro/writeup.pdf)
-    - [_Eulerian Tour_](./senior-computer-team/eulerian-tour/lecture.pdf)
-    - [_Modulo_](./senior-computer-team/modulo/lecture.pdf)
     - [_Monotonic Queue_](./senior-computer-team/monotonic-queue/lecture.pdf)
     - [_Range Minimum Query with Fischer-Heun_](./senior-computer-team/range-minimum-query/lecture.pdf), [abridged](./senior-computer-team/abridged-rmq/lecture.pdf)
-    - [_String Matching_](./senior-computer-team/string-matching/lecture.pdf)
-    - [_Suffix Trees and Arrays_](./senior-computer-team/suffix/lecture.pdf)
 
 ## Other Lectures
 
