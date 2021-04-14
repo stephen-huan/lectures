@@ -191,13 +191,12 @@ feel free to skip to the next \hyperref[subsec:computer]{section}.}
            &= c \sum_{x \in X} x p(x) \\
            &= c \E[x] \qedhere
   \end{align*}
-  \let\qedsymbol\relax
 \end{proof}
 
 \begin{definition}
   The \textit{variance} is the expected squared deviation from the
   expected value. The larger the variance, the more \enquote{variable}
-  the random variable is. By definition, \[ \Var[X] = E[(X - E[X])^2] \]
+  the random variable is. By definition, \[ \Var[X] = \E[(X - \E[X])^2] \]
   We also denote the variance as \( \sigma^2 \), since it is the square
   of the standard deviation \( \sigma \).
 \end{definition}
@@ -210,10 +209,9 @@ feel free to skip to the next \hyperref[subsec:computer]{section}.}
     \Var[X] &= \E[(X - \E[X])^2] && \text{By definition} \\
             &= \E[X^2 - 2 X \E[X] + \E[X]^2]  \\
             &= \E[X^2] - \E[2 \E[X] X] + \E[\E[X]^2] && \text{Linearity of expected value} \\
-            &= \E[X^2] - (2 \E[X]) E[X] + \E[X]^2 && \text{Expectation of a constant is constant} \\
-            &= \E[X^2] - E[X]^2 && \qedhere
+            &= \E[X^2] - (2 \E[X]) \E[X] + \E[X]^2 && \text{Expectation of a constant is constant} \\
+            &= \E[X^2] - \E[X]^2 && \qedhere
   \end{align*}
-  \let\qedsymbol\relax
 \end{proof}
 
 \subsection{Computational Representation} \label{subsec:computer}
@@ -2319,7 +2317,6 @@ know \( B \) occurs, then the ways \( A \) occurs is the intersection of
     Thus,}
     p(A|B) &= \frac{p(B|A)p(A)}{p(B)} && \qedhere
   \end{align*}
-  \let\qedsymbol\relax
 \end{proof}
 
 One way to interpret this theorem is suppose \( A \) is our hypothesis and

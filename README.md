@@ -14,6 +14,8 @@ for a comprehensive list of implementations of many of these algorithms.
     - [_k-means, kd-Trees, and Median of Medians: Color Quantization done fast_](./computer-vision/kmeans-kd-tree/handout.pdf),
 [full](./computer-vision/kmeans-kd-tree/presentation.pdf)
     - [_Linear Algebra_](./computer-vision/linear-algebra/lecture.pdf) 
+    - [_Otsu's Binarization_](./computer-vision/otsu-binarization/handout.pdf),
+[full](./computer-vision/otsu-binarization/presentation.pdf) 
 - `cubing-lectures`
     - [_Various Computational Cube Theory Conjectures_](./cubing-lectures/computational-cube-theory/cubetheory.pdf),
 [presentation](./cubing-lectures/computational-cube-theory/ComputationalCubeTheory.pdf)
