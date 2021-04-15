@@ -49,6 +49,7 @@ for a comprehensive list of implementations of many of these algorithms.
 - [_Color Theory, Part 1: Color Difference Metrics_](https://docs.google.com/presentation/d/1XlxeFMDeSFhnE3O-h7EvX-LEPMq4O18Dc1llNjYITZI/edit?usp=sharing)
 - [_Color Theory, Part 2: Uniform Color Spaces_](https://docs.google.com/presentation/d/1KGOiKWH8d5PEPVF3700smOwqc6q4iCkpAeJycYwdl8E/edit?usp=sharing)
 - [_ML Chessboard Recognition_](https://docs.google.com/presentation/d/10itvI75JGUYMXxGsJWE88ZogLPrzJSDJ9z4w4koN2vs/edit?usp=sharing)
+- [_ML Chessboard Recognition Part 2_](https://docs.google.com/presentation/d/1bNuaxi54NCM5oGh0NIlBVWBydJGxCPxmbSv71Ux3A9Y/edit?usp=sharing)
 
 ## Videos
 
