@@ -3,7 +3,7 @@ by: Stephen Huan
 
 See this
 [Gist](https://gist.github.com/stephen-huan/aa609965c86d750736398c28b025f9be)
-for a comprehensive list of implementations of many of these algorithms.
+for a comprehensive list of implementations for many of these algorithms.
 
 ## Index
 
@@ -15,7 +15,10 @@ for a comprehensive list of implementations of many of these algorithms.
 [full](./computer-vision/kmeans-kd-tree/presentation.pdf)
     - [_Linear Algebra_](./computer-vision/linear-algebra/lecture.pdf) 
     - [_Otsu's Binarization_](./computer-vision/otsu-binarization/handout.pdf),
-[full](./computer-vision/otsu-binarization/presentation.pdf) 
+[full](./computer-vision/otsu-binarization/presentation.pdf),
+fun applications: this [SMBC](https://www.smbc-comics.com/comic/2010-09-11),
+[Bad Apple!! in vim](https://youtu.be/q7K96mFyagE)
+
 - `cubing-lectures`
     - [_Various Computational Cube Theory Conjectures_](./cubing-lectures/computational-cube-theory/cubetheory.pdf),
 [presentation](./cubing-lectures/computational-cube-theory/ComputationalCubeTheory.pdf)
@@ -25,6 +28,9 @@ for a comprehensive list of implementations of many of these algorithms.
     - [_One-Handed Tips and Tricks_](./cubing-lectures/one-handed-tips-tricks/lecture.pdf)
 - `machine-learning`
     - [_No Game (Theory) No Life: The Machine Learning Approach to Playing Games_](./machine-learning/game-theory/lecture.pdf)
+    - TJHSST Computer Systems Lab 2020--2021 project:
+[poster](./machine-learning/syslab/poster.pdf),
+[paper](./machine-learning/syslab/paper.pdf)
 - `math`
     - `probability-theory`
         - [_Case Study of the Discord Mudae System_](./math/probability-theory/gacha-optimization/writeup.pdf)
