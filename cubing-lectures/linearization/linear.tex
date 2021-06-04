@@ -40,41 +40,43 @@
 \maketitle
 
 \section{Rational}
-Why make Rubik's cube moves matricies?
+Why make Rubik's cube moves matrices?
 
-See the previous lecture, \href{https://activities.tjhsst.edu/cubing/static/pdfs/Matricization/matrix.pdf}{here}. I will re-iterate them here anyways.
+See the previous lecture,
+\href{https://activities.tjhsst.edu/cubing/static/pdfs/Matricization/matrix.pdf}{here}.
+I will re-iterate them here anyways.
 \begin{enumerate}
-  \item A series of moves becomes a single matrix - the product of the moves
-  in the series.
-  \[ BAx = (BA)x = Tx \] where \( T = BA \).
-  Thus, R U R\dash \ U\dash \ = \( (U^{-1} R^{-1} U R) \)
-  (reversed because of the order of applying matrix transformations).
-  This allows sequences of moves to be compressed into constant memory,
-  and the application of a sequence of moves to be done by a single matrix mutiplication,
-  which is trivially parallelizable.
+  \item A series of moves becomes a single matrix - the product of the
+    moves in the series. \[ BAx = (BA)x = Tx \] where \( T = BA \). Thus,
+    R U R\dash \ U\dash \ = \( (U^{-1} R^{-1} U R) \) (reversed because of
+    the order of applying matrix transformations). This allows sequences of
+    moves to be compressed into constant memory, and the application of a
+    sequence of moves to be done by a single matrix multiplication, which
+    is trivially parallel sizable.
 
   \item Systematizes cube logic, by replacing logic with pure linear algebra
-  and ties nicely into group theory.
-  For example, it's commonly known that to inverse a series of moves
-  one can read the series backwards and inverse each move in the sequence.
+    and ties nicely into group theory. For example, it's commonly known that
+    to inverse a series of moves one can read the series backwards and inverse
+    each move in the sequence.
 
-  This is an example of \( (AB)^{-1} = B^{-1}A^{-1} \).
+    This is an example of \( (AB)^{-1} = B^{-1}A^{-1} \).
 
-  \item Might inspire novel solving algorithms - the problem of solving the Rubik's Cube
-  becomes a matrix factorization problem, to decompose a target matrix into the
-  product of a series of given matricies.
+  \item Might inspire novel solving algorithms --- the problem of solving
+    the Rubik's Cube becomes a matrix factorization problem, to decompose
+    a target matrix into the product of a series of given matrices.
 
-  \item It makes Wikipedia's notation more palatable if you think of moves as matricies.
+  \item It makes Wikipedia's notation
+    more palatable if you think of moves as matrices.
 \end{enumerate}
 
 \section{Previous Failure}
-Eight months ago, I attempted this exact task of making moves matricies along
+Eight months ago, I attempted this exact task of making moves matrices along
 with the cube state. The idea is to represent a cube state as a 6x9 matrix,
-and transitions as 6x6. Then, if a given cube is represented as \( S \)
-and an R move as \( R \), then applying an R move is equivalent to
-computing \( S' = R S \). However, as hard as I tried I couldn't get it to work.
-With my new knowledge of linear algebra, I realized that such a task is
-mathematically impossible.
+and transitions as 6x6. Then, if a given cube is represented as \( S \) and
+an R move as \( R \), then applying an R move is equivalent to computing \(
+S' = R S \). However, as hard as I tried I couldn't get it to work. With my
+new knowledge of linear algebra, I realized that such a task is mathematically
+impossible.
 
 Start with the solved cube given by:
 \[ \begin{bmatrix}
@@ -95,26 +97,31 @@ and a R-turn on the solved cube given by:
 5 & 5 & 2 & 5 & 5 & 2 & 5 & 5 & 2
 \end{bmatrix} \]
 
-As one can see, some columns are unaffected while others have stickers moving around.
-If one thinks of a matrix \( A \) times a vector \( \ve{x} \) as a linear transformation,
-and matrix multiplication \( AB \) as the application of the same linear transformation \( A \)
-on each column of \( B \), then leaving some columns alone while permuting others is impossible in general.
+As one can see, some columns are unaffected while others have stickers moving
+around. If one thinks of a matrix \( A \) times a vector \( \ve{x} \) as a
+linear transformation, and matrix multiplication \( AB \) as the application
+of the same linear transformation \( A \) on each column of \( B \), then
+leaving some columns alone while permuting others is impossible in general.
 To have \( A\ve{x} = \ve{x} \) in general, then \( A \) must be the identity.
-However, if \( A \) is the identity, then it can't permuate the matrix in the other columns.
+However, if \( A \) is the identity, then it can't permute the matrix in the
+other columns.
 
-The problem I was having was that it is possible to solve for a particular solution.
-If \( AB = M \) then \( A = MB^{-1} \) which will work for a particular \( B \) and a particular \( M \).
-However, by the above logic, it won't work in general.
+The problem I was having was that it is possible to solve for
+a particular solution. If \( AB = M \) then \( A = MB^{-1} \)
+which will work for a particular \( B \) and a particular \( M
+\). However, by the above logic, it won't work in general.
 
 \section{Novel Work}
 
-\subsection{Permutation Matricies}
-If we can't transform different columns differently, put all the stickers in the same column!
-Let the cube state be represented by a 54x1 vector, in which case the transformations are 54x54.
-Now, the transformation matricies are \href{https://en.wikipedia.org/wiki/Permutation_matrix}{permutation matricies},
-since they swap entries of the state vector. A permutation matrix is defined as a matrix with exactly one 1 in each row and each column, and can be generated
-by permuting the rows of the identity matrix. Let \( \ve{e}_j \) be the jth
-row vector of the identity matrix, \textit{not} the more standard column.
+\subsection{Permutation Matrices}
+If we can't transform different columns differently, put all the stickers in
+the same column! Let the cube state be represented by a 54x1 vector, in which
+case the transformations are 54x54. Now, the transformation matrices are
+\href{https://en.wikipedia.org/wiki/Permutation_matrix}{permutation matrices},
+since they swap entries of the state vector. A permutation matrix is defined as
+a matrix with exactly one 1 in each row and each column, and can be generated
+by permuting the rows of the identity matrix. Let \( \ve{e}_j \) be the \( j
+\)th row vector of the identity matrix, \textit{not} the more standard column.
 Given a permutation \( \pi \):
 \[ \pi = \begin{pmatrix}
          1 & 2 & 3 & 4 & 5 \\
@@ -122,8 +129,9 @@ Given a permutation \( \pi \):
         \end{pmatrix}
 \]
 
-The permutation matrix \( P_{\pi} \) permutes the vector \( \ve{x} = \begin{bmatrix} 1 \\ 2 \\ 3 \\ 4 \\ 5 \end{bmatrix} \) such that \( P_{\pi}\ve{x} =
-\begin{bmatrix} 1 \\ 4 \\ 2 \\ 5 \\ 3 \end{bmatrix} \).
+The permutation matrix \( P_{\pi} \) permutes the vector
+\( \ve{x} = \begin{bmatrix} 1 \\ 2 \\ 3 \\ 4 \\ 5 \end{bmatrix} \) such that
+\( P_{\pi}\ve{x} = \begin{bmatrix} 1 \\ 4 \\ 2 \\ 5 \\ 3 \end{bmatrix} \).
 
 \[ P_{\pi} = \begin{bmatrix} \ve{e}_{\pi(1)} \\ \ve{e}_{\pi(2)} \\ \vdots \\ \ve{e}_{\pi(m)} \end{bmatrix} =
 \begin{bmatrix} \ve{e}_{1} \\ \ve{e}_{4} \\ \ve{e}_{2} \\ \ve{e}_{5}  \\ \ve{e}_{3} \end{bmatrix} =
@@ -135,16 +143,17 @@ The permutation matrix \( P_{\pi} \) permutes the vector \( \ve{x} = \begin{bmat
 0 & 0 & 1 & 0 & 0 \\
 \end{bmatrix} \]
 
-The way to understand this is that \( \ve{e}_j \cdot \ve{x} \) gives the
-jth entry in \( \ve{x} \). Thus, to match the permutation it suffices to
-add corresponding \( \ve{e}_{\pi(j)} \) rows to \( P \), one by one.
+The way to understand this is that \( \ve{e}_j \cdot \ve{x} \) gives the \(
+j \)th entry in \( \ve{x} \). Thus, to match the permutation it suffices
+to add corresponding \( \ve{e}_{\pi(j)} \) rows to \( P \), one by one.
 
 \subsection{Application to Cubing}
 
-First we need to generate the permutation matricies from a cube with completely
-distinct stickers, not the standard solved cube (because it's not possible to infer
-all the sticker swaps from a solved cube - doing a U move swaps the white stickers,
-but it's impossible to tell). All code is given \href{https://github.com/stephen-huan/Cube-Solver/blob/master/linear.py}{here}.
+First we need to generate the permutation matrices from a cube with
+completely distinct stickers, not the standard solved cube (because it's not
+possible to infer all the sticker swaps from a solved cube - doing a U move
+swaps the white stickers, but it's impossible to tell). All code is given
+\href{https://github.com/stephen-huan/Cube-Solver/blob/master/linear.py}{here}.
 
 \begin{minted}{python}
 def import_cube(data: list) -> cube.Cube:
@@ -162,8 +171,8 @@ def distinct_cube() -> cube.Cube:
     return import_cube(list(range(54)))
 \end{minted}
 
-Then, we can flatten the cube into a 54x1 vector and generate the equivalent
-permutation matrix from the vector.
+Then, we can flatten the cube into a 54x1 vector and
+generate the equivalent permutation matrix from the vector.
 
 \begin{minted}{python}
 def flatten(c: cube.Cube) -> np.array:
@@ -180,7 +189,7 @@ def perm_mat(perm: list) -> np.array:
 \end{minted}
 
 However, note that when I create a cube object from a 54x1 vector,
-it natually permutes the order, because I read in this format:
+it naturally permutes the order, because I read in this format:
 \begin{minted}{text}
        W W W
        W W W
@@ -201,7 +210,8 @@ which encapsulates the reading permutation.
 M = np.linalg.inv(perm_mat(flatten(distinct_cube())))
 \end{minted}
 
-\( M \) is the inverse of the permutation matrix of the just reading in the cube.
+\( M \) is the inverse of the permutation
+matrix of the just reading in the cube.
 
 \begin{minted}{python}
 c = distinct_cube()
@@ -216,8 +226,9 @@ T = R @ M
 assert np.array_equal(T @ x, y)
 \end{minted}
 
-The transformation matrix \( T \) now encapsulates the R move,
-and it's equal to \( R \) times \( M \) in order to cancel out the natural permutation of reading in the cube.
+The transformation matrix \( T \) now encapsulates the R
+move, and it's equal to \( R \) times \( M \) in order to
+cancel out the natural permutation of reading in the cube.
 
 To make a move with this new matrix,
 
@@ -229,8 +240,9 @@ c = import_cube(M @ T @ x)
 
 Again, multiplying by \( M \) cancels the transformation in import\_cube.
 
-Now, we can generate the 18 standard moves (U, D, F, B, R, L and their double moves
-and inverses). To generate the double moves for a move \( A \), compute \( A^2 \) and to calculate the inverse compute \( A^{-1} = A^T \).
+Now, we can generate the 18 standard moves (U, D, F, B, R, L and their
+double moves and inverses). To generate the double moves for a move \( A \),
+compute \( A^2 \) and to calculate the inverse compute \( A^{-1} = A^T \).
 
 \begin{minted}{python}
 def gen_moves() -> dict:
@@ -247,11 +259,10 @@ def gen_moves() -> dict:
     return d
 \end{minted}
 
-As mentioned earlier, a sequence of moves can become a single matrix.
-If applying R U R\dash \ U\dash \ with matrix multiplication, then
-the actual order will be \( U^{-1}(R^{-1}(U(R\ve{x}))) \)
-and by matrix multiplication associativity we can compute \( U^{-1} R^{-1} U R \).
-
+As mentioned earlier, a sequence of moves can become a single matrix. If
+applying R U R\dash \ U\dash \ with matrix multiplication, then the actual
+order will be \( U^{-1}(R^{-1}(U(R\ve{x}))) \) and by matrix multiplication
+associativity we can compute \( U^{-1} R^{-1} U R \).
 \begin{minted}{python}
 def move_mat(seq: str) -> np.array:
     """ Turns a sequence of moves into a transformation matrix. """
@@ -262,7 +273,6 @@ def move_mat(seq: str) -> np.array:
 \end{minted}
 
 To apply a transformation, we use the logic given earlier.
-
 \begin{minted}{python}
 def apply(T: np.array, x: cube.Cube) -> cube.Cube:
     """ Applies the given transformation matrix to the cube. """
@@ -300,7 +310,7 @@ def pretty(T: np.array) -> str:
         \includegraphics[scale=0.30]{U2}
         \caption{U2}
     \end{subfigure}
-    \caption{Matricies for selected standard moves}
+    \caption{Matrices for selected standard moves}
 \end{figure}
 
 \newpage
@@ -316,7 +326,7 @@ def pretty(T: np.array) -> str:
       \includegraphics[scale=0.3]{superflip}
       \caption{Superflip}
   \end{subfigure}
-  \caption{Matricies for selected algorithms}
+  \caption{Matrices for selected algorithms}
 \end{figure}
 
 \begin{figure}[h!]
@@ -328,19 +338,18 @@ def pretty(T: np.array) -> str:
 Personally, checkerboard is my favorite.
 
 \newpage
-\newpage
 
 \subsection{Miscellaneous Uses}
 
-What state is the cube in after U100000? Since 100000 is divisable by 4,
-the cube must be solved. In general, each series of moves has a given ``order'',
-the the amount of times it can be repeated before the cube is solved again.
-One application of matricies is to compute these orders quickly,
-as matrix exponentation can be done quickly with repeated squaring.
+What state is the cube in after U100000? Since 100000 is divisible by 4, the
+cube must be solved. In general, each series of moves has a given ``order'',
+the amount of times it can be repeated before the cube is solved again.
+One application of matrices is to compute these orders quickly, as matrix
+exponentiation can be done quickly with repeated squaring.
 
 \begin{minted}{python}
 def mat_exp(A: np.array, k: int) -> list:
-    """ Does fast matrix exponentation """
+    """ Does fast matrix exponentiation """
     v = np.identity(len(A))
     while k > 0:
         if k & 1 == 1:
@@ -375,9 +384,9 @@ each column in \( A \) and each row in \( A^T \).
 \begin{bmatrix} row_1(A^T) \\ row_2(A^T) \\ \dots \\ row_n(A^T) \end{bmatrix} \]
 \[ = col_1(A) row_1(A^T) + \dots + col_n(A) row_n(A^T) \]
 
-Each \( col_j(A) row_j(A^T) \) product yields a matrix of all 0's except
-for a single 1 at the index where there is a 1 in \( col_j(A) \).
-Adding them up yields a matrix which has a 1 on each entry on the diagonal (because each 1
+Each \( col_j(A) row_j(A^T) \) product yields a matrix of all 0's except for
+a single 1 at the index where there is a 1 in \( col_j(A) \). Adding them up
+yields a matrix which has a 1 on each entry on the diagonal (because each 1
 position in the columns of \( A \) is distinct).
 
 Thus, \( col_1(A) row_1(A^T) + \dots + col_n(A) row_n(A^T) = I_n \)
@@ -390,29 +399,29 @@ Because every matrix can be transposed, every permutation matrix is invertible.
 \newpage
 
 \begin{lemma}
-The mutiplication of permutation matricies is closed,
-that is, for a permutation matrix \( A \) and permutation matrix \( B \),
-\( AB \) is a permutation matrix.
+The multiplication of permutation matrices is closed,
+that is, for a permutation matrix \( A \) and permutation
+matrix \( B \), \( AB \) is a permutation matrix.
 \end{lemma}
 
 \begin{proof}
 An alternative definition of a permutation matrix is a matrix containing
 exactly one entry of 1 in each row and each column and 0s elsewhere.
-Multiplying a matrix by a permutation matrix is equivalent to
-permuting the rows of the matrix. If the rows are swapped, then they
-must still have exactly one 1 in each row. Since swapping rows doesn't
-change the number of 1's in each column, each column must also still
-have exactly one 1. Thus, the product is a permutation matrix.
+Multiplying a matrix by a permutation matrix is equivalent to permuting
+the rows of the matrix. If the rows are swapped, then they must still
+have exactly one 1 in each row. Since swapping rows doesn't change the
+number of 1's in each column, each column must also still have exactly
+one 1. Thus, the product is a permutation matrix.
 \end{proof}
 
 \begin{lemma}
-There are a finite number of permutation matricies,
-namely, there are \( N! \) permutation matricies for matricies of size NxN.
+There are a finite number of permutation matrices, namely, there are
+\( N! \) permutation matrices for matrices of size \( N \)x\( N \).
 \end{lemma}
 
 \begin{proof}
-Each permutation matrix is uniquely determined by \( \pi \).
-There are \( N! \) possible \( \pi \)'s, so there are \( N! \) permutation matricies.
+Each permutation matrix is uniquely determined by \( \pi \). There are \(
+N! \) possible \( \pi \)'s, so there are \( N! \) permutation matrices.
 \end{proof}
 
 \begin{lemma}
@@ -439,12 +448,13 @@ so \( P^z (P^{-1})^y = I \), thus \( P^{z - y} = I \), completing the proof.
 \end{proof}
 
 \begin{corollary}
-Repeating any sequence of moves on a solved Rubik's cube will bring
-the cube back to a solved state eventually.
+Repeating any sequence of moves on a solved Rubik's cube
+will bring the cube back to a solved state eventually.
 \end{corollary}
 
 \begin{theorem}
-The inverse of a series of moves is the the series formed by reversing the original series, inversing each move.
+The inverse of a series of moves is the series formed
+by reversing the original series, inverting each move.
 \end{theorem}
 
 \begin{proof}
@@ -472,8 +482,9 @@ Repeating these operations,
 \end{proof}
 
 Thus, one can either think of the scramble as \( ABCD \) and the solution as
-\( pqrs \), or the scramble as \( qrsA \) and the solution as \( BCDp \),
-or any variant, so as long the scramble plus the solution is a cyclic rotation of the original scramble and solution.
+\( pqrs \), or the scramble as \( qrsA \) and the solution as \( BCDp \), or
+any variant, so as long the scramble plus the solution is a cyclic rotation
+of the original scramble and solution.
 
 \section{Future Work}
 
