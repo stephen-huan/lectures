@@ -448,17 +448,18 @@ Obviously,
 \begin{frame}
 \frametitle{Back to \( k \)-means}
 \framesubtitle{}
-Recall that we got \( k \)-means's cost function into the
-form \( \E[\Var[X \mid S]] \). Let's see what that means. \pause
-
-Define \( S \) to be a random variable (a function from outcomes to
-real numbers) that assigns integer values to each point \( \bm{x} \in
-X \), such that two points have the same \( S(\bm{x}) \) if and only
-if they're in the same partition. \pause
-
-It may not seem morally correct to have \( S \) be a random variable when it
-has no \enquote{randomness} whatsoever. Well, we converted all the sums to
-expectation and variance already, so we can just fit it into the tools we have.
+\begin{itemize}[<+->]
+  \item Recall that we got \( k \)-means's cost function into the
+    form \( \E[\Var[X \mid S]] \). Let's see what that means.
+  \item Define \( S \) to be a random variable (a function from outcomes
+    to real numbers) that assigns integer values to each point
+    \( \bm{x} \in X \), such that two points have the same \( S(\bm{x}) \)
+    if and only if they're in the same partition.
+  \item It may not seem morally correct to have \( S \) be a random
+    variable when it has no \enquote{randomness} whatsoever. Well, we
+    converted all the sums to expectation and variance already, so we
+    can just fit it into the tools we have.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -479,16 +480,17 @@ expectation and variance already, so we can just fit it into the tools we have.
 \begin{frame}
 \frametitle{\( k \)-means interpretation}
 \framesubtitle{}
-\( k \)-mean's cost function is \( \E[\Var[X \mid S]] \), or the inter-class
-variance (we want to make the points inside each group as close to each other
-as possible). But we know from the law of total variance that \( \Var[X] =
-\E[\Var[X \mid S]] + \Var[\E[X \mid S]] \) \pause
-
-So \textit{minimizing} \textit{inter}-class variance is equivalent to
-\textit{maximizing} \textit{intra}-class variance. Making each group
-as similar as possible must make the groups different from each other.
-
-There's only so much variance to go around!
+\begin{itemize}
+  \item \( k \)-mean's cost function is \( \E[\Var[X \mid S]] \), or the
+    inter-class variance (we want to make the points inside each group as close
+    to each other as possible).
+  \item But we know from the law of total variance that \(
+    \Var[X] = \E[\Var[X \mid S]] + \Var[\E[X \mid S]] \). \pause
+  \item So \emph{minimizing} \emph{inter}-class variance is equivalent
+    to \emph{maximizing} \emph{intra}-class variance. Making each group as
+    similar as possible must make the groups different from each other.
+  \item There's only so much variance to go around!
+\end{itemize}
 \end{frame}
 
 \section{Otsu's Binarization}
@@ -519,38 +521,34 @@ There's only so much variance to go around!
 \begin{frame}
 \frametitle{Cost Function}
 \framesubtitle{}
-  How should we measure the effectiveness? \pause
-  
-  Well, we're splitting the pixels into two groups. Minimize the
-  variance of each group, weighted by the size of the group. \pause
-
-  This is identical to \( k \)-means with \( k = 2 \). \pause
-
-  However, the standard \( k \)-means algorithm is suboptimal and
-  may take longer than we want. Can we do optimal \( k \)-means
-  efficiently if we know the data is one-dimensional and \( k = 2 \)?
+\begin{itemize}[<+->]
+    \item How should we measure the effectiveness?
+    \item Well, we're splitting the pixels into two groups.
+      Minimize the variance of each group, weighted by the
+      size of the group (to minimize the expected variance).
+    \item This is identical to \( k \)-means with \( k = 2 \).
+    \item  However, the standard \( k \)-means algorithm is suboptimal and
+      may take longer than we want. Can we do optimal \( k \)-means
+      efficiently if we know the data is one-dimensional and \( k = 2 \)?
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Otsu's Binarization, Justification}
 \framesubtitle{}
-  There are efficient algorithms for 1D \( k \)-means, see
-  \href{https://arxiv.org/abs/1701.07204} {\textit{Fast Exact
-  k-Means, k-Medians and Bregman Divergence Clustering in 1D}}. \pause
-
-  However, these algorithms are pretty complicated. 
-
-  Can we make use of \( k = 2 \)? \pause
-
-  We will never make a non-contiguous group, since if a group is split
-  we might as well assign those points to the other group. Another, more
-  precise observation, is that if we place two centers, there's only
-  one point equidistant to those centers, the midpoint of the centers.
-  Anything to the left of the midpoint is assigned to one center and
-  anything to the right the other. \pause
-
-  In 1D and with \( k = 2 \), we have exactly one \textit{threshold} value.
-  How many possible thresholds are there?
+\begin{itemize}[<+->]
+  \item There are efficient algorithms for 1D \( k \)-means, see
+    \href{https://arxiv.org/abs/1701.07204} {\textit{Fast Exact k-Means,
+    k-Medians and Bregman Divergence Clustering in 1D}}.
+  \item However, these algorithms are pretty complicated. 
+  \item Can we make use of \( k = 2 \)?
+  \item The key observation is that if we place two centers, there's only
+    one point equidistant to those centers, at their midpoint. Anything to
+    the left of the midpoint is assigned to one center and anything to the
+    right the other.
+  \item In 1D and with \( k = 2 \), we have exactly one
+    \textit{threshold} value. How many possible thresholds are there?
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -692,12 +690,12 @@ Whether it's \( > \) or \( \geq \) is arbitrary, just needs to be consistent.
 \begin{frame}
 \frametitle{Intra-class Variance}
 \framesubtitle{}
-We just spent a lot of time deriving inter-class variance.
-
-We needed to use the law of total variance to show that it's the same as
-minimizing intra-class variance.
-
-Why not just directly attack intra-class variance?
+\begin{itemize}
+  \item We just spent a lot of time deriving inter-class variance.
+  \item We needed to use the law of total variance to show
+    that it's the same as minimizing intra-class variance.
+  \item Why not just directly attack intra-class variance?
+\end{itemize}
 \begin{align*}
   \shortintertext{By the definition of expectation,}
   \E[\Var[X \mid Y]] &= \sum_i P(Y = i) \Var[X \mid Y = i]

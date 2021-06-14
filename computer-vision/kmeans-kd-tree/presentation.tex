@@ -86,63 +86,56 @@
 \framesubtitle{Reducing the number of colors}
 \begin{columns}
 \column{0.5\textwidth}
-\uncover<1-> {
-  \alert{Color quantization} is the process of reducing
-  the number of colors in an image.
-}
-
-\uncover<2-> {
-  For example, a typical RGB image stores 1 byte per color,
-  so 24 bits over 3 colors.
-}
-
-\uncover<3-> {
-  This has applications in compression, but is most often used for legacy
-  hardware (whose memory is limited,
-  so the number of bits/pixel must be limited).
-}
+  \begin{itemize}[<+->]
+    \item \alert{Color quantization} is the
+      reduction of the number of colors in an image.
+    \item For example, a typical RGB image stores 1 byte per
+      channel, so 24 bits over 3 colors \( = 2^{24} \) colors.
+    \item This has applications in compression, but is
+      most often used for legacy hardware (whose memory is
+      limited, so the number of bits/pixel must be limited).
+  \end{itemize}
 
 \column{0.5\textwidth}
-\uncover<1->{
-  \begin{exampleblock}{An image amenable to color quantization} 
+  \begin{exampleblock}{Image amenable to quantization} 
     \begin{figure}[h!]
       \centering
       \includegraphics[scale=0.15]{cover_image.png}
       \caption{A summary of this lecture}
     \end{figure}
   \end{exampleblock}
-}
 \end{columns}
 \end{frame}
 
 \begin{frame}
 \frametitle{Techniques}
 \framesubtitle{}
-Suppose we want to decompose an image into \( k \) distinct colors. \pause
-
-One simple approach would be to find the \( k \)
-most frequent colors and use those. \pause
-
-This has a pretty obvious failure mode. \pause
-
-\begin{exampleblock}{Failure mode for the frequency heuristic}
-  Suppose we have an image with 4 colors: dark red has 50 pixels, light red
-  has 49, dark blue has 48, and light blue has 47. If \( k = 2 \), then we 
-  would choose dark red and light red, which would be problematic for the blues.
-  A better selection would probably be to pick a normal red and a normal blue,
-  at the cost of not showing the dark/light contrast within the colors.
-\end{exampleblock}
+\begin{itemize}[<+->]
+  \item Suppose we want to decompose an image into \( k \) colors.
+  \item One simple approach would be to find the
+    \( k \) most frequent colors and use those.
+  \item This has a pretty obvious failure mode.    
+    \begin{exampleblock}{Failure mode for the frequency heuristic}
+      Suppose we have an image with 4 colors: dark red has 50 pixels, light red
+      has 49, dark blue has 48, and light blue has 47. If \( k = 2 \), then we
+      would choose dark red and light red, which would be problematic for the
+      blues. A better selection would probably be to pick a normal red and a
+      normal blue, at the cost of not showing the dark/light contrast within
+      the colors.
+    \end{exampleblock}
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Techniques, continued}
 \framesubtitle{}
-We could address this by splitting our color space into color ranges, or using
-a different algorithm like the \textit{median cut} algorithm, which constructs
-a kd-tree on the color space. \pause
-
-Today, we will discuss applying the  \textit{k}-means clustering technique
-(an AI/ML lab here at TJ).
+\begin{itemize}[<+->]
+  \item We could address this by splitting our color space into
+    color ranges, or using a different algorithm like the \emph{median cut}
+    algorithm, which constructs a kd-tree on the color space.
+  \item Today, we will discuss applying the \textit{k}-means
+    clustering technique (an AI/ML lab here at TJ).
+\end{itemize}
 \end{frame}
 
 \section{\textit{k}-means clustering}
@@ -170,37 +163,37 @@ distance between each point to its closest center, i.e.
 This problem is NP-hard, necessitating a greedy algorithm. \pause
 
 \begin{block}{\textit{k}-means algorithm}
-The standard algorithm alternates between two steps until convergence:
+The standard greedy algorithm alternates between two steps until convergence:
 Given \textit{k} initial center points,
 \begin{enumerate}[<+->]
   \item Assign each point to its closest center
   \item Update each center to the \alert{centroid} of the points assigned to it,
     where the centroid is the arithmetic mean.
 \end{enumerate}
-
 \end{block}
 
-Intuitively, if the center points are fixed, then the best possible assignment
-is to assign each point to its closest center. \pause
-In the dual case, if the assignment of points to centers is fixed,
-then the best possible center position is the mean point, i.e.
-\[ E[S] = \frac{1}{\norm{S}} \sum_{\vec{p} \in S} \vec{p}  \]
+\begin{itemize}[<+->]
+  \item Intuitively, if the center points are fixed, then the best
+    assignment is to assign each point to its closest center.
+  \item In the dual case, if the assignment of points to centers is
+    fixed, then the best center position is the mean point, i.e.
+    \[ \text{E}[S] = \frac{1}{\norm{S}} \sum_{\vec{p} \in S} \vec{p} \]
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{\textit{k}-means, continued}
 \framesubtitle{}
-\enquote{Convergence} is when after the centers are updated,
-the assignment of points to their closest center 
-is the same as the assignment before the update.
-(the next center update would be the same). \pause
-
-This finds a local optimum, not necessarily the global optimum. \pause
-
-The number of iterations until convergence is also superpolynomial
-in the worst case, but in general works quite well in practice.
-
-Our pick for the initial \textit{k} centers is quite important!
+\begin{itemize}[<+->]
+  \item \enquote{Convergence} is when after the centers are updated,
+    the assignment of points to their closest center is the same as the
+    assignment before the update (the next center update would be the same).
+  \item This finds a local optimum, which
+    is not necessarily the global optimum.
+  \item The number of iterations until convergence is also superpolynomial
+    in the worst case, but in general works quite well in practice.
+  \item Our pick for the initial \textit{k} centers is quite important!
+\end{itemize}
 \end{frame}
 
 \subsection{\textit{k}-means++}
@@ -216,10 +209,10 @@ Our pick for the initial \textit{k} centers is quite important!
 \end{enumerate}
 \end{block}
 
-\textit{k}-means++ fixes the latter problem, it guarantees an \( O(\log k) \) 
+\textit{k}-means++ fixes the latter problem; it guarantees an \( O(\log k) \) 
 approximation bound in expectation (i.e., over expectation the clusters
 generated by \textit{k}-means++ has a distance of at most \( O(\log k) \)
-times greater than the optimal cluster). \pause
+times greater than the optimal clustering). \pause
 
 How does it work?
 \end{frame}
@@ -238,13 +231,13 @@ How does it work?
     \item Run \textit{k}-means as usual \pause
   \end{enumerate}
 \end{block}
-Intuitively, picking centers far away from each other is a good thing, so the
-weighting favors points that are far away from the existing centers. \pause
-
-Also, it's impossible to have two identical centers, since the distance of a
-point to itself is 0, so its weighting would be 0. \pause
-
-How do we sample this probability distribution?
+\begin{itemize}[<+->]
+  \item Intuitively, picking centers far away from each other is a good thing,
+    so the weighting favors points that are far away from the existing centers.
+  \item Also, it's impossible to have two identical centers, since the
+    distance of a point to itself is 0, so its weight would be 0.
+  \item How do we sample this probability distribution?
+\end{itemize} 
 \end{frame}
 
 \begin{frame}[fragile]
@@ -308,32 +301,33 @@ represented by p by definition! \pause
 \begin{frame}
 \frametitle{Notes on \textit{k}-means++}
 \framesubtitle{}
-Yes, \textit{k}-means++ adds an additional \( k \) passes over the data
-compared to picking \( k \) points at random. \pause
-
-First, as stated earlier \textit{k}-means++ bounds the amount of error and will
-generally produce higher quality clusters. \pause
-
-Second, the better initialization also reduces the number of iterations until
-convergence for \textit{k}-means, making it actually faster in practice.
+\begin{itemize}[<+->]
+  \item Yes, \textit{k}-means++ adds an additional \( k \) passes
+    over the data compared to picking \( k \) points at random.
+  \item First, as stated earlier, \textit{k}-means++ bounds the amount
+    of error and will generally produce higher quality clusters.
+  \item Second, the better initialization also reduces
+    the number of iterations until convergence for
+    \textit{k}-means, making it actually faster in practice.
+\end{itemize} 
 \end{frame}
 
 \begin{frame}
 \frametitle{Notes on \textit{k}-means for color quantization}
 \framesubtitle{}
-Let's go back to the original problem, color quantization.
-How do we apply \textit{k}-means for color quantization? \pause
-
-If we want to reduce an image to \( k \) colors, we simply run \textit{k}-means,
-where our points are the RGB values. This finds \( k \) colors,
-and we assign each color in the original image
-to the closest color in our \( k \) colors as usual, except we need to round
-our \( k \) centers to integer pixel values. \pause 
-
-Note 1: Euclidean distance is not the best in terms of
-color difference perception (a smaller Euclidean distance does not necessarily
-imply that the colors look closer compared to a larger distance).
-We can change to the Lab color space or change distance measures.
+\begin{itemize}[<+->]
+  \item Let's go back to the original problem, color quantization.
+  \item How do we apply \textit{k}-means for color quantization?
+  \item If we want to reduce an image to \( k \) colors, we simply run
+    \textit{k}-means, where our points are the RGB values. This finds
+    \( k \) colors, and we assign each color in the original image to
+    the closest color in our \( k \) colors as usual, except we need
+    to round our \( k \) centers to integer pixel values.
+  \item Note 1: Euclidean distance is not the best in terms of color
+    difference perception (a smaller Euclidean distance does not necessarily
+    imply that the colors look closer compared to a larger distance). We
+    can change to the Lab color space or change distance measures.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -347,18 +341,20 @@ We use \texttt{dist} in two ways:
   \item To find the closest center point to a given point
   \item To weight the probability distribution in \textit{k}-means++
 \end{enumerate} \pause 
-
-\( f(x) = x^2 \) is a \textit{monotonic} function,
-i.e. if \( x < y \) then \( f(x) < f(y) \) (if \( x \) is nonnegative,
-and distances are always nonnegative by definition).
-Therefore, minimizing \( f(x) \) is equivalent to  minimizing \( x \).
-The same trick is frequently used in machine learning loss functions. \pause
-
-For use case 2, we weight a point by its squared distance.
-
-Thus, what I call \enquote{\texttt{dist}} is in fact
-\[ \texttt{dist}(\vec{u}, \vec{v}) = \norm{\vec{u} - \vec{v}}^2
-= (u_1 - v_1)^2 + (u_2 - v_2)^2 + \dots \]
+Performing a case-by-case analysis,
+\begin{enumerate}[<+->]
+  \item For case 1, \( f(x) = x^2 \) is a \textit{monotonic} function, i.e.
+    if \( x < y \) then \( f(x) < f(y) \) (if \( x \) is nonnegative, and
+    distances are always nonnegative by definition). Therefore, minimizing \(
+    f(x) \) is equivalent to minimizing \( x \). The same trick is frequently
+    used in machine learning loss functions.
+  \item For use case 2, we weight a point by its squared distance.
+\end{enumerate}
+\uncover<5>{
+  Thus, what I call \enquote{\texttt{dist}} is in fact
+  \[ \texttt{dist}(\vec{u}, \vec{v}) = \norm{\vec{u} - \vec{v}}^2
+  = (u_1 - v_1)^2 + (u_2 - v_2)^2 + \dots \]
+}
 \end{frame}
 
 \subsection{Practical Example}
@@ -366,23 +362,23 @@ Thus, what I call \enquote{\texttt{dist}} is in fact
 \begin{frame}
 \frametitle{Pokémon profile picture month}
 \framesubtitle{}
-As per TJ tradition, December is for \enquote{Pokémon profile pictures},
-where people update their Facebook profile pictures (\enquote{pfp}'s)
-to their favorite Pokémon.
+Per TJ tradition, December is \enquote{Pokémon profile
+picture month}, when people change their Facebook profile
+pictures (\enquote{pfp}s) to their favorite Pokémon.
 
 \begin{figure}[h!]
     \centering
-    \begin{subfigure}[h]{0.3 \textwidth}
+    \begin{subfigure}[h]{0.32 \textwidth}
       \includegraphics[scale=0.1]{shaymin-sky.jpg}
       \caption{The image I like, original Shaymin}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[h]{0.3 \textwidth}
+    \begin{subfigure}[h]{0.32 \textwidth}
       \includegraphics[scale=1.17]{shaymin-color.png}
       \caption{The color scheme of a shiny Shaymin}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[h]{0.3 \textwidth}
+    \begin{subfigure}[h]{0.32 \textwidth}
       \includegraphics[scale=0.1]{shaymin.png}
       \caption{First image with the second's color}
     \end{subfigure}
@@ -429,15 +425,17 @@ Can I use \textit{k}-means to transfer the color?
 \frametitle{Making \textit{k}-means faster}
 \framesubtitle{}
 
-Back to theory. If \textit{k}-means takes \( I \) iterations to converge
-and there are \( N \) points, then the computational complexity is \( O(NKI) \)
-as on each iteration, we need to compute the closest center to a point,
-and the easiest way to do that is to iterate over each center point. There
-are \( N \) points and \( K \) center points, so it takes \( O(NK) \). \pause
-
-We can speed this up if we can compute the closest center point quicker,
-which we can do with \alert{kd-trees}. 
-
+\begin{itemize}[<+->]
+  \item Back to theory. Suppose \textit{k}-means takes \( I \)
+    iterations to converge and there are \( N \) points.
+  \item Each iteration we need to compute the closest center for every point,
+    and the easiest way to do that is to iterate over every center point.
+  \item There are \( N \) points and \( K \) center points,
+    so it takes \( O(NK) \), making the overall computational
+    complexity \( O(NKI) \) over \( I \) iterations.
+  \item We can speed this up if we can compute the closest
+    center point quicker, which we can do with \alert{kd-trees}.
+\end{itemize}
 \end{frame}
 
 \section{kd-Trees}
@@ -450,14 +448,16 @@ which we can do with \alert{kd-trees}.
   A kd-tree is essentially a binary search tree (BST) generalized to multiple
   dimensions. Each node has at most 2 children.
 \end{block}
-In a BST, to insert a value we compare it against the root's value, if it's less
-we recur on the left subtree, if greater on the right subtree. \pause
 
-A kd-tree is similar except each node holds a \textit{point}, not a value.
-This point has \( D \) dimensions, and at each layer of the kd-tree we compare
-against a particular \enquote{cutting dimension} \( d \). \pause
-
-We typically cycle through cutting dimensions. 
+\begin{itemize}[<+->]
+  \item In a BST, to insert a value we compare it against the root's value; if
+    it's less we recur on the left subtree, if greater, on the right subtree.
+  \item A kd-tree is similar, except nodes hold a \emph{point}, not a value.
+  \item A point has multiple dimensions \( D \), so at each
+    level of the kd-tree we pick and compare on a particular
+    \enquote{cutting dimension} \( d \), where \( 0 \leq d < D \).
+  \item We typically cycle through cutting dimensions. 
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -509,9 +509,8 @@ We typically cycle through cutting dimensions.
         return t
 
     def add(self, p: tuple) -> None:
-        # empty tree, simply change our own point
-        if self.point is None:
-            self.__init__(p)
+        if self.point is None: # empty tree
+            self.__init__(p)   # update the root
         self.__add(self, p)
   \end{minted}
 \end{algorithm}
@@ -520,21 +519,20 @@ We typically cycle through cutting dimensions.
 \begin{frame}
 \frametitle{Runtime Analysis}
 \framesubtitle{}
-Like a BST, we would expect insert to take \( O(\log n) \), since we do a path
-from root to leaf and in a balanced tree the depth is \( \log n \), where
-\( n \) is the number of nodes (equivalent to the number of points). \pause 
-
-However, there is a clear degenerate case: if each point increases along every
-dimension, then the tree becomes a line with height \( O(n) \).
-\( 1 + 2 + \dots + n = O(n^2) \), so it might take quadratic time to build
-a kd-tree in the worst case. \pause
-
-Common BST tricks like AVL trees seem difficult (are rotations even possible
-if they change the cutting dimension?). \pause 
-
-In practice, the points are commonly known ahead of time. Can we guarantee
-an \( O(n \log n) \) build over \( n \) points if we know the \( n \) points
-ahead of time?
+\begin{itemize}[<+->]
+  \item Like a BST, we would expect insert to take \( O(\log n) \), since we do
+    a path from root to leaf and in a balanced tree the depth is \( \log n \),
+    where \( n \) is the number of nodes (equivalent to the number of points).
+  \item However, there is a clear degenerate case: if each point increases
+    along every dimension, then the tree becomes a line with height \( O(n) \).
+    \( 1 + 2 + \dots + n = O(n^2) \), so it might take quadratic time to build
+    a kd-tree in the worst case.
+  \item Common BST tricks like AVL trees seem difficult (are
+    rotations even possible if they change the cutting dimension?).
+  \item In practice, the points are commonly known ahead of
+    time. Can we guarantee an \( O(n \log n) \) build over \( n \)
+    points if we know the \( n \) points ahead of time?
+\end{itemize}
 \end{frame}
 
 \subsection{Median-based Construction}
@@ -542,17 +540,17 @@ ahead of time?
 \begin{frame}
 \frametitle{Pre-sort algorithm}
 \framesubtitle{}
-Observation: Splitting the points perfectly in half between the left and right
-subtrees is the best possible split. Obviously, we split the points in half
-based off the \textit{median} value. \pause
-
-To efficiently keep track of the median, we make \( D \) copies of the \( N \)
-points. We sort each copy on a different dimension. \pause
-
-Finally, we pass this list of lists to the kd-Tree build function,
-find the median point, split our list of lists into a left and right side,
-and recursively build the tree. As long as we maintain the sorted invariant,
-we can compute the median point on any dimension in \( O(1) \).
+\begin{itemize}[<+->]
+  \item The key insight is that splitting the points perfectly
+    in half between the two subtrees is the best possible split.
+    This means we should split based on the \emph{median} value.
+  \item To efficiently keep track of the median, we make \( D \) copies
+    of the points. We sort each copy on a different dimension.
+  \item Finally, we pass this list of lists to the kd-tree build function, find
+    the median point, split our list of lists into a left and right side, and
+    recursively build the tree. As long as we maintain the sorted invariant, we
+    can compute the median point on any dimension in \( O(1) \).
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -621,43 +619,55 @@ we can compute the median point on any dimension in \( O(1) \).
 \begin{frame}
 \frametitle{Runtime Analysis}
 \framesubtitle{}
-The running time is dominated by \texttt{subsplit}, which must split the \( D \)
-copies of \( N \) points. Determining whether a point is in the left or right
-set is at least an \( O(D) \) operation since the hash needs to take into
-account each value of the point. There are \( O(ND) \) checks,
-so \texttt{subsplit} runs in \( O(D^2 N) \).
-Over the \( \log N \) levels of the tree, the pre-sort algorithm runs in
-\( O(D^2 N \log N) \) (each level of the tree must split \( N \) points). \pause
+\begin{itemize}
+  \item The running time is dominated by \texttt{subsplit},
+    which must split the \( D \) copies of \( N \) points.
+  \item Determining whether a point is in the left or
+    right set is at least an \( O(D) \) operation, since the
+    hash needs to take into account each value of the point.
+  \item There are \( O(ND) \) checks, so
+    \texttt{subsplit} runs in \( O(D^2 N) \).
+  \item Over the \( \log N \) levels of the tree, the
+    pre-sort algorithm runs in \( O(D^2 N \log N) \) (each
+    level of the tree must split \( N \) points in total).
+\end{itemize}
+\end{frame}
 
-We can improve \texttt{subsplit}'s performance by noticing that we don't
-actually need to copy the points with all their dimensions; we can assign
-an arbitrary distinct ID to each point and maintain the \( D \) lists
-based off this integer ID. The simplest ID to use is the point's index
-in the points list, as to go from an ID to a point is just indexing the list.
-Since we only need the point values when comparing to the cutting dimension,
-we can find the cutting dimension in \( O(1) \) by looking up the point and then
-indexing the point at that cutting dimension.
+\begin{frame}
+\frametitle{Runtime Improvement}
+\framesubtitle{}
+\begin{itemize}
+  \item We can improve \texttt{subsplit}'s performance by noticing that we
+    don't actually need to copy the points with all their dimensions; we can
+    assign an arbitrary distinct ID to each point and maintain the \( D \)
+    lists based off this integer ID.
+  \item The simplest ID to use is the point's index in the points
+    list, as to go from an ID to a point is just indexing the list.
+  \item Since we only need a point's values when comparing on a cutting
+    dimension, we can find the cutting dimension value in \( O(1) \) by looking
+    up the point and then indexing the point at that cutting dimension.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Runtime Analysis, continued}
 \framesubtitle{}
-This optimization shaves off a \( D \) factor, so our running time goes from
-\( O(D^2 N \log N) \) to \( O(D N \log N) \) where the running time
-is dominated by the \( D \) initial \( O(N \log N) \) sorts. \pause
-
-Recall that we need to do the sorts to find the median efficiently. Can we
-shave off another \( D \) factor if we find the median a different way? \pause
-
-We could maintain a single list of points, and simply sort this list on the
-cutting dimension at each level. That adds a \( \log N \) factor at every level,
-so the running time is \( O(N \log^2 N) \). \pause
-
-We could also just pick a random point to split on. This is equivalent to just
-calling \texttt{add} repeatedly on each point, so it has the same quadratic
-worst case running time. \pause
-
-Luckily, there is a way to find the median of a list in linear time!
+\begin{itemize}[<+->]
+  \item This optimization shaves off a \( D \) factor, so our running
+    time goes from \( O(D^2 N \log N) \) to \( O(D N \log N) \) where the
+    runtime is dominated by the \( D \) initial \( O(N \log N) \) sorts.
+  \item Recall that we need to do the sorts to find the
+    median efficiently. Can we shave off another \( D \)
+    factor if we find the median a different way?
+  \item We could maintain a single list of points, and simply sort this
+    list on the cutting dimension at each level. That adds a \( \log N \)
+    factor at every level, so the running time is \( O(N \log^2 N) \),
+    which is slower if \( \log N > D \).
+  \item We could also just pick a random point to split on. This is
+    equivalent to just calling \texttt{add} repeatedly on each point,
+    so it has the same quadratic worst case running time.
+  \item Luckily, there is a way to find the median in linear time!
+\end{itemize}
 \end{frame}
 
 \section{Finding Medians}
@@ -676,51 +686,50 @@ The median is a special case of the problem of \alert{order statistics}.
 \begin{exampleblock}{Special cases}
   For example, \( i = 0 \) is the minimum and \( i = n - 1 \) is the maximum.
 \end{exampleblock} \pause
-
-The median for a list with an odd number of elements is at
-\( i = \floor{\frac{n}{2}} \). When \( n \) is even, then the median is
-ambiguous, with the \enquote{upper median} occurring at \( \frac{n}{2} \)
-and \enquote{lower median} occurring at \( \frac{n}{2} - 1 \). \pause
-
-Since \( \floor{\frac{n}{2}} \) is always a median regardless of the parity of
-\( n \), for simplicity \enquote{median} will always refer to the upper median.
+\begin{itemize}
+  \item When \( n \) is odd, then the median is
+    uniquely at \( i = \floor{\frac{n}{2}} \).
+  \item When \( n \) is even, then the median is ambiguous, with the
+    \enquote{upper median} occurring at \( \frac{n}{2} \) and
+    \enquote{lower median} occurring at \( \frac{n}{2} - 1 \). \pause
+  \item Since \( \floor{\frac{n}{2}} \) is always a median
+    regardless of the parity of \( n \), for simplicity
+    \enquote{median} will refer to the upper median.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Select Algorithm}
 \framesubtitle{}
-We also initially assume that each element is distinct, although we will see
-what to do if that is not the case. \pause
-
-Suppose we are trying to find the \( i \)th order statistic.
-
-The approach will be very similar to quicksort. We pick a pivot value, and
-split the list into two halves, the left with values less than the pivot and
-the right with values greater than the pivot (since we assume the elements
-are distinct, there are no elements equal to the pivot). \pause
+\begin{itemize}[<+->]
+  \item We also initially assume that each element is distinct,
+    although we will see what to do if that is not the case.
+  \item Suppose we are trying to find the \( i \)th order statistic.
+  \item The approach will be very similar to quicksort. We pick a pivot
+    value, and split the list into two halves, the left with values less than
+    the pivot and the right with values greater than the pivot (since we assume
+    the elements are distinct, there are no elements equal to the pivot).
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Select Algorithm, continued}
 \framesubtitle{}
-We look at the size of the left list, which I'll call \( k \).
-
-If \( k = i \), then the pivot is greater than \( i \) elements,
-so it is the \( i \)th order statistic by definition. Return the pivot. \pause
-
-If \( i < k \), then our pivot is too big, so we recur on the left list.
-We keep the same value of \( i \). \pause
-
-Finally, if \( i > k \), then our pivot is not big enough so we recur on the
-right list. Unlike the left case, we already \enquote{beat} \( k \) elements
-so we need to look for the \( i - k - 1 \)th element in the right list,
-where the \( 1 \) comes from the pivot value.  \pause
-
-For simplicity, we use additional memory
-although the algorithm is able to be done in-place. \pause
-
-We also don't technically need a base case, but if the length of the list is 1,
-there's only one possible element to return.
+\begin{itemize}[<+->]
+  \item Look at the size of the left list, which I'll call \( k \).
+  \item If \( k = i \), then the pivot is greater than \( i \) elements,
+    so it is the \( i \)th order statistic by definition. Return the pivot.
+  \item If \( i < k \), then our pivot is too big, so we recur
+    on the left list. We keep the same value of \( i \).
+  \item Finally, if \( i > k \), then our pivot is not big enough, so we
+    recur on the right list. Unlike the left case, we already \enquote{beat}
+    \( k \) elements so we need to look for the \( (i - k - 1) \)th element
+    in the right list, where the \( 1 \) comes from the pivot.
+  \item For simplicity, we use additional memory
+    although the algorithm is able to be done in-place.
+  \item We also don't technically need a base case, but if the
+    length is 1, there's only one possible element to return.
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -766,31 +775,35 @@ there's only one possible element to return.
 \begin{frame}
 \frametitle{Select, with duplicate elements}
 \framesubtitle{}
-If there are duplicates, we could just run the standard select algorithm
-as usual. It has a problem though: it is sometimes impossible to get a good
-split if the median value has many duplicates - the many duplicates will
-carry over, slowing down the algorithm. The way we've implemented it, it could
-even infinitely recur! \pause
-
-Instead, we partition the list into \textit{three} sublists: one for elements
-less than the pivot, one for elements equal to the pivot, and one for elements
-greater than the pivot (left, mid, and right, respectively).
+\begin{itemize}
+  \item If there are duplicates, we could just
+    run the standard select algorithm as usual.
+  \item It has a problem though: it is sometimes impossible to
+    get a good split if the pivot value has many duplicates ---
+    the many duplicates carry over, slowing down the algorithm.
+  \item With our implementation, it could even infinitely recur! \pause
+  \item Instead, we partition the list into \emph{three} sublists: one for
+    elements less than the pivot, one for elements equal to the pivot, and one
+    for elements greater than the pivot (left, mid, and right, respectively).
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Select, with duplicate elements, continued}
 \framesubtitle{}
-Call the length of the left sublist \( k \) and the mid sublist \( m \).
-Everything is exactly the same except instead of seeing whether \( i = k \),
-we can return the pivot if \( k \leq i \leq k + m - 1 \) as the pivot value 
-takes up more indexes: the first pivot value is greater than \( k \) elements,
-the second is greater than \( k + 1 \), and so on.
-(if \( m = 1 \), this reduces to \( i = k \), like in the distinct case). \pause
-
-Also, if we recur on the right sublist we update \( i \) to \( i - k - m \),
-since we remove \( k \) elements in the left sublist and \( m \) elements
-in the middle list.
-(if \( m = 1 \), this reduces to \( i - k - 1 \) like in the distinct case).
+\begin{itemize}
+  \item Call the length of the left sublist
+    \( k \) and the mid sublist \( m \).
+  \item Everything is exactly the same except instead of seeing whether \(
+    i = k \), we can return the pivot if \( k \leq i \leq k + m - 1 \), as the
+    pivot value takes up more indexes: the first pivot value is greater than \(
+    k \) elements, the second is greater than \( k + 1 \), and so on (if \( m
+    = 1 \), this reduces to \( i = k \), like in the distinct case). \pause
+  \item Also, if we recur on the right sublist, we update \( i \) to \( i -
+    k - m \), since we remove \( k \) elements in the left sublist and \( m \)
+    elements in the middle list (if \( m = 1 \), this reduces to \( i - k - 1
+    \) like in the distinct case).
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -831,22 +844,23 @@ in the middle list.
 \begin{frame}
 \frametitle{Runtime Analysis}
 \framesubtitle{}
-The runtime is analyzed very similarity to quicksort or kd-tree construction.
-As usual, the selection of the pivot is very important. In the best case,
-we split the list perfectly in half every iteration, so we take
-\( N + \frac{1}{2}N + \frac{1}{4}N + \ldots = 2N \rightarrow O(N) \). \pause
-
-In the worst case, we remove a single element every time, so we take
-\( N + (N - 1) + (N - 2) + \ldots = \frac{N(N + 1)}{2} \rightarrow O(N^2) \).
-\pause
-
-Importantly, as long as we split the list by some constant multiple less than
-1, the geometric series will converge into \( O(n) \).
-For example, for a \( 0.9 \) split where we remove 10\%: 
-\[ N + 0.9N + 0.81N + \ldots = \frac{1}{1 - 0.9} N = 10N \rightarrow O(N) \]
-\pause
-
-Is there a heuristic that guarantees a constant multiple?
+\begin{itemize}
+  \item The runtime is analyzed very similarly to quicksort or
+    kd-tree construction --- pivot selection is very important.
+  \item In the best case, we split the list perfectly in
+    half every iteration, so we take
+    \( N + \frac{1}{2}N + \frac{1}{4}N + \ldots = 2N
+      \rightarrow O(N) \). \pause
+  \item In the worst case, we remove a single element every time, taking
+    \( N + (N - 1) + (N - 2) + \ldots = \frac{N(N + 1)}{2}
+      \rightarrow O(N^2) \). \pause
+  \item Importantly, as long as we split the list by some multiple
+    less than 1, the geometric series will converge to \( O(N) \).
+  \item For example, for a \( 0.9 \) split where we remove 10\%:
+    \[ N + 0.9N + 0.81N + \ldots = \frac{1}{1 - 0.9} N = 10N
+      \rightarrow O(N) \] \pause
+  \item Is there a heuristic that guarantees a constant multiple?
+\end{itemize}
 \end{frame}
 
 \subsection{Median of Medians}
@@ -903,37 +917,38 @@ contributing 3 elements per group.
 \begin{frame}
 \frametitle{Runtime Analysis, continued}
 \framesubtitle{}
-There are \( \ceil{\frac{n}{5}} \) groups in total, but for simplicity we ignore
-the group with \( x \) and the group with less than 5 elements,
-so the number of elements less than \( x \)
-is at least \( 3 (\ceil{\frac{1}{2} \ceil{\frac{n}{5}}} - 2) \)
-or bounded below by \( \frac{3n}{10} - 6 \). \pause
-
-Thus, in the worst case we recur on a list of size
-\( n - (\frac{3n}{10} - 6) = \frac{7n}{10} + 6 \) \pause
-
-This is basically a constant multiple!
-Don't get too excited just yet, we added an additional recursive step because
-\texttt{pivot} calls \texttt{select} to find the median
-of a list of size \( \ceil{\frac{n}{5}} \).
+\begin{itemize}[<+->]
+  \item There are \( \ceil{\frac{n}{5}} \) groups in total, but
+    for simplicity we ignore the group with \( x \) and the group
+    with less than 5 elements, so the number of elements less than
+    \( x \) is at least \( 3 (\ceil{\frac{1}{2} \ceil{\frac{n}{5}}} - 2) \)
+    or bounded below by \( \frac{3n}{10} - 6 \).
+  \item Thus, in the worst case we recur on a list of size
+    \( n - (\frac{3n}{10} - 6) = \frac{7n}{10} + 6 \).
+  \item This is basically a constant multiple!
+  \item Don't get too excited just yet, we added an additional
+    recursive step because \texttt{pivot} calls \texttt{select} to
+    find the median of a list of size \( \ceil{\frac{n}{5}} \).
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Runtime Analysis, continued}
 \framesubtitle{}
-First of all, we can decompose a list into groups of 5 and compute the
-median of each group in linear time, since a sort of a list of size 5 is
-\( O(1) \) and we perform \( \ceil{\frac{n}{5}} \) such sorts.
-Thus, this median decomposition adds no asymptotic overhead
-to the existing linear time partition step. \pause
-
-If \( T(n) \) is the runtime of the algorithm on a list of size \( n \),
-it fulfills the recurrence relation
-\[ T(n) = O(n) + T(\ceil{\frac{n}{5}}) + T(\frac{7n}{10} + 6) \] \pause
-
-Is \( T(n) \) \( O(n) \)? According to \textit{Introduction to Algorithms}, yes!
-
-We can find the median of a list in linear time.
+\begin{itemize}[<+->]
+  \item First of all, we can decompose a list into groups of 5
+    and compute the median of each group in linear time, since a
+    sort of a list of constant length is \( O(1) \) by definition,
+    and we perform \( \ceil{\frac{n}{5}} \) such sorts.
+  \item Thus, this median decomposition adds no asymptotic
+    overhead to the existing linear time partition step.
+  \item If \( T(n) \) is the runtime of the algorithm on a list
+    of size \( n \), it fulfills the recurrence relation
+    \[ T(n) = O(n) + T(\ceil{\frac{n}{5}}) + T(\frac{7n}{10} + 6) \]
+  \item Is \( T \) \( O(n) \)?
+    According to \textit{Introduction to Algorithms}, yes!
+  \item We can find the median of a list in linear time.
+\end{itemize}
 \end{frame}
 
 \subsection{Decision Tree}
@@ -941,64 +956,69 @@ We can find the median of a list in linear time.
 \begin{frame}
 \frametitle{Decision Tree}
 \framesubtitle{}
-In practice, there's a large constant factor that could be optimized if we
-could find the median of a list of size 5 quickly. \pause
-
-We could model this problem as a \alert{decision tree}, where each internal node
-contains a comparison, represented by two indexes to compare in the array,
-i.e. \mintinline{python}{a[i] > a[j]}.
-If the comparison is false, we recur on the left node
-and if the comparison is true, we recur on the right node.
-We continue until we reach a leaf node,
-which simply contains the index of the median.
+\begin{itemize}[<+->]
+  \item In practice, there's a large constant factor that could be
+    reduced if we could find the median of a size 5 list quickly.
+  \item We could model this problem as a \alert{decision tree}, where
+    each internal node contains a comparison, represented by two indexes
+    to compare in the array, i.e. \mintinline{python}{a[i] > a[j]}.
+  \item If the comparison is false, we recur on the left node
+    and if the comparison is true, we recur on the right node.
+  \item We continue until we reach a leaf node,
+    which simply contains the index of the median.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Decision Tree, construction}
 \framesubtitle{}
-Suppose we build a decision tree to find the median of a particular list
-containing \( n \) arbitrary and distinct elements. \pause
+\begin{itemize}[<+->]
+  \item Suppose we build a decision tree to find the median of a
+    particular list containing \( n \) arbitrary and distinct elements.
+  \item Claim: If the decision tree works on all \( n! \)
+    permutations of this list, then it works on \emph{any} list of
+    \( n \) elements, even lists that contain duplicate elements.
+  \item Intuitively, we don't care about the actual values in
+    the lists; if the relative comparisons between the indexes are
+    the same, then we will take the same path down the tree.
+  \item A set of \enquote{relative comparisons} defines an ordering
+    of the list, or a permutation. Thus, all lists have been \enquote{covered}
+    by a corresponding permutation of our particular list.
+\end{itemize}
+\end{frame}
 
-Claim: If the decision tree works on all \( n! \) permutations of this list,
-then it works on \textit{any} list of \( n \) elements, even lists that contain
-duplicate elements. \pause
-
-Intuitively, we don't care about the actual values in the lists;
-if the relative comparisons between the indexes are the same then we will
-take the same path down the tree. \pause
-
-Each set of \enquote{relative comparisons} defines an ordering of the list,
-or a permutation. Thus, all lists have already been \enquote{covered}
-by an corresponding permutation of our particular list. \pause
-
-What about duplicate elements? \pause
-
-I don't care how duplicate values compare to each other, because that just
-determines the relative order of duplicates, which is arbitrary.
-I can just pick any permutation that is correct for distinct value comparisons.
+\begin{frame}
+\frametitle{Decision Tree, construction}
+\framesubtitle{}
+\begin{itemize}
+  \item What about duplicate elements?
+  \item I don't care how duplicate values compare to each other, because that
+    just determines the relative order of duplicates, which is arbitrary. I can
+    just pick any permutation that is correct for distinct value comparisons.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Decision Tree, construction example}
 \framesubtitle{}
-The simplest particular list to pick is \( a = [0, 1, 2, 3, 4] \).
-Suppose we have a decision tree which correctly identifies the median index
-for each permutation of \( a \). \pause
-
-Will this give the correct median for \( x = [0, 0.3, 0.2, 0.4, 0.1] \)?
-Well, we can define the mapping \( 0 \rightarrow 0 \), \( 0.1 \rightarrow 1 \),
-and so on. We know the decision tree works for \( [0, 3, 2, 4, 1] \),
-a permutation of \( a \). Thus, it should work for \( x \). \pause
-
-In general, we can construct this mapping by sorting the list and
-mapping the value at \( x[0] \) to 0, \( x[1] \) to 1, and so on.
-Thus, any list \( x \) has a corresponding permutation of \( a \)
-with the same relative comparisons between any pair of indexes. \pause
-
-If \( x \) has duplicate entries, then we can still apply the sorting algorithm
-to generate a mapping. Of course, the corresponding permutation of \( a \)
-\textit{won't} have the same relative comparisons, but this is acceptable
-because relative comparisons between duplicate elements is arbitrary. 
+\begin{itemize}[<+->]
+  \item The simplest particular list to pick is \( a = [0, 1, 2, 3, 4] \).
+  \item Suppose we have a decision tree which correctly identifies
+    the median index for every permutation of \( a \). Will this
+    give the correct median for \( x = [0, 0.3, 0.2, 0.4, 0.1] \)?
+  \item Well, we can define the mapping \( 0 \rightarrow 0 \),
+    \( 0.1 \rightarrow 1 \), and so on. We know the decision tree works for
+    \( [0, 3, 2, 4, 1] \), a permutation of \( a \).
+    Thus, it should work for \( x \).
+  \item In general, we can construct this mapping by sorting the list
+    and mapping the value at \( x[0] \) to 0, \( x[1] \) to 1, and so on.
+  \item Thus, any list \( x \) has a corresponding permutation of \( a \)
+    with the same relative comparisons between any pair of indexes.
+  \item If \( x \) has duplicate entries, then we can still apply sorting to
+    generate a mapping. Of course, the corresponding permutation of \( a \)
+    \emph{won't} have the same relative comparisons, but this is acceptable
+    because relative comparisons between duplicate elements is arbitrary.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -1018,23 +1038,22 @@ How do we actually build such a decision tree?
 \begin{frame}
 \frametitle{Decision Tree, construction}
 \framesubtitle{}
-Likely NP-hard in general, at least decision trees in a machine learning
-context greedily maximize information gain at each level instead of trying
-to globally optimize information gain. \pause
-
-We could just generate every possible decision tree.
-\( N = 5 \), how hard could it be?
-Well, I have no clue because it takes at least 30 minutes,
-at which point I terminated the program. \pause
-
-We could prune trees by considering \textit{isomorphic} trees,
-that is, we can take advantage of symmetry
-(for example, the very first comparison is necessarily symmetric,
-since there is no difference between any two pair of indexes). \pause
-
-Instead, we'll use the greedy approach, and pick comparisons
-that split the permutations between the left and right subtrees as evenly
-as possible (very similar to kd-tree construction).
+\begin{itemize}[<+->]
+  \item Likely NP-hard in general, at least decision trees in
+    a machine learning context greedily maximize information
+    gain at each level instead of trying to globally optimize.
+  \item We could just generate every possible decision
+    tree. \( N = 5 \), how hard could it be?
+  \item Well, I have no clue because it takes at least
+    30 minutes, at which point I terminated the program.
+  \item We could prune trees by considering \textit{isomorphic}
+    trees, that is, we can take advantage of symmetry (for example,
+    the very first comparison is necessarily symmetric, since there
+    is no difference between any two pair of indexes).
+  \item Instead, we'll use the greedy approach, and pick comparisons
+    that split the permutations between the left and right subtrees
+    as evenly as possible (very similar to kd-tree construction).
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -1052,24 +1071,27 @@ def median(l: list) -> float:
 \begin{frame}[fragile]
 \frametitle{Decision Tree, disappointment}
 \framesubtitle{}
-First, decision trees use on average 1.5 less comparisons than sorting,
-and use at most 7 comparisons to find the median:
-\begin{minted}[frame=none]{text}
-Average value: 6.267, max depth: 7
-Python sorted comparisions: 7.775
-\end{minted}
-According to \href{https://docs.python.org/3/library/timeit.html}{timeit},
-decision trees win over sorting!
-\begin{minted}[frame=none]{text}
-ternary: 0.266674
-   sort: 0.380404
-\end{minted}
-The difference is magnified with PyPy, about 26x faster:
-\begin{minted}[frame=none]{text}
-ternary: 0.002689
-   sort: 0.070296
-\end{minted}
-In practice, however, decision trees are slower.
+\begin{itemize}
+  \item Decision trees use on average 1.5 less comparisons than
+    sorting, and at most 7 comparisons to find the median:
+    \begin{minted}[frame=none]{text}
+    Average value: 6.267, max depth: 7
+    Python sorted comparisions: 7.775
+    \end{minted}
+  \item According to
+    \href{https://docs.python.org/3/library/timeit.html}{timeit},
+    decision trees win over sorting!
+    \begin{minted}[frame=none]{text}
+    ternary: 0.266674
+       sort: 0.380404
+    \end{minted}
+  \item The difference is magnified with PyPy, about 26x faster:
+    \begin{minted}[frame=none]{text}
+    ternary: 0.002689
+       sort: 0.070296
+    \end{minted}
+  \item In practice, however, decision trees are slower.
+\end{itemize}
 \end{frame}
 
 \section{kd-Trees, Revisited}
@@ -1078,18 +1100,19 @@ In practice, however, decision trees are slower.
 \begin{frame}
 \frametitle{kd-Tree construction}
 \framesubtitle{}
-Back to kd-Trees. In order to use the linear time median algorithm derived
-in the last section, we first generate a list of scalars from our list of points
-by indexing each point at the current cutting dimension.
-
-We then apply our median algorithm, and obtain a median \textit{value} in linear
-time. Finally, we iterate through the points again, and pick any point with the
-median value along the cutting dimension. \pause
-
-Our construction complexity is now \( O(n \log n) \), since we avoid
-the initial \( D \) sorts. Note how \( D \) does not appear in the complexity.
-Claim: This complexity for (optimal) kd-tree
-construction is asymptotically optimal.
+\begin{itemize}
+  \item Back to kd-trees.
+  \item In order to use the linear time median algorithm derived in the last
+    section in kd-tree construction, we first generate a list of scalars from
+    our list of points by indexing each point at the current cutting dimension.
+  \item We then apply our median algorithm, and obtain a median \emph{value}
+    in linear time. Finally, we iterate through the points again, and pick
+    any point with the median value along the cutting dimension. \pause
+  \item Our build complexity is now \( O(n \log n) \), since we avoid the
+    initial \( D \) sorts. \( D \) also no longer appears in the complexity.
+  \item Claim: This complexity for (optimal)
+    kd-tree construction is asymptotically optimal.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -1099,9 +1122,12 @@ construction is asymptotically optimal.
   A \alert{nearest neighbor query} is given a point \( Q \) and a set of points
   \( P \), find the closest point to \( Q \) in \( P \). \pause
 \end{block}
-Suppose we build a kd-tree on \( P \). A kd-tree is helpful in the sense that
-it gives us spatial data, as it successively partitions a space on hyperplanes
-defined by points in the tree. \pause
+\begin{itemize}
+  \item Suppose we build a kd-tree on \( P \).  
+  \item A kd-tree is helpful in the sense that it gives
+    us spatial data, as it successively partitions a space
+    by hyperplanes defined by points in the tree. \pause
+\end{itemize}
 
 We can take advantage of this by conducing a tree search,
 with two important modifications:
@@ -1115,14 +1141,16 @@ with two important modifications:
 \begin{frame}
 \frametitle{Bounding Boxes}
 \framesubtitle{}
-Each subtree has a \alert{bounding box}, or the possible values it could take
-on each dimension (i.e., a minimum and maximum value for each dimension).
-If the distance between \( Q \) and the closest point in this bounding box
-is greater than the distance between \( Q \) and \( C \), then there's
-no point to search this subtree.
+\begin{itemize}
+  \item Each subtree has a \alert{bounding box}, or the minimum
+    and maximum values it could take on for each dimension.
+  \item If the distance between \( Q \) and the closest point in
+    this bounding box is greater than the distance between \( Q \)
+    and \( C \), then there's no point to search this subtree.
+\end{itemize}
 \begin{figure}[h!]
   \centering
-  \includegraphics[scale=0.4]{nearest_neighbor_query.png}
+  \includegraphics[scale=0.38]{nearest_neighbor_query.png}
   \caption{Justification for pruning subtrees}
 \end{figure}
 \end{frame}
@@ -1130,10 +1158,12 @@ no point to search this subtree.
 \begin{frame}
 \frametitle{Bounding Boxes, distance}
 \framesubtitle{}
-Question 1: How do we compute the distance between a point and a bounding box?
-Let the bounding box be a list of tuples, each tuple being the minimum and
-maximum value on that dimension.
-
+\begin{itemize}
+  \item Question 1: How do we compute the
+    distance between a point and a bounding box?
+  \item Let the bounding box be a list of tuples, each tuple
+    being the minimum and maximum value on that dimension.
+\end{itemize}
 \begin{exampleblock}{Bounding Box}
   The bounding box \( [(0, 5), (-2, 3)] \) defines a rectangle in the x-y plane,
   where \( x \) can be between 0 and 5 and \( y \) can be between -2 and 3.
@@ -1143,13 +1173,15 @@ maximum value on that dimension.
 \begin{frame}
 \frametitle{Bounding Boxes, distance}
 \framesubtitle{}
-As stated previously, the distance between a bounding box and a point \( Q \)
-is the distance between \( Q \) and the closest point in the bounding box
-to \( Q \). We can find this \enquote{closest point} by considering
-each dimension separately, since in Euclidean distance each dimension
-is independent of the others. \pause
-
-Suppose we are on dimension \( d \). We have three cases to consider:
+\begin{itemize}
+  \item As stated previously, the distance between a bounding
+    box and a point \( Q \) is the distance between \( Q \)
+    and the closest point in the bounding box to \( Q \).
+  \item We can find this \enquote{closest point} by considering
+    each dimension separately, since in Euclidean distance
+    each dimension is independent of the others. \pause
+  \item Suppose we are on dimension \( d \). We have three cases to consider:
+\end{itemize}
 \begin{enumerate}
   \item \( Q[d] < bb[0] \), i.e. the point is left of the bounding box.
     In this case, we pick \( bb[0] \) along this dimension.
@@ -1176,19 +1208,20 @@ Suppose we are on dimension \( d \). We have three cases to consider:
 \begin{frame}
 \frametitle{Bounding Boxes, computation}
 \framesubtitle{}
-Question 2: How do we keep track of these bounding boxes?
-Well, we could say the initial bounding box at the root is completely unbounded,
-i.e. \( (-\infty, \infty) \) on each dimension. When we traverse the
-left and right subtrees, we must have split on some plane.
-
-\begin{exampleblock}{Maintaining bounding boxes}
-  Suppose we split on the value \( 5 \) along cutting dimension \( 1 \).
-  Then for the left subtree we update \( bb[1] \) to be \( (-\infty, 5) \),
-  and for the right we update \( bb[1] \) to be \( (5, \infty) \).
-\end{exampleblock}
-
-Note that these bounds are known \textit{a posteriori}, i.e. generated
-online during the nearest neighbor search.
+\begin{itemize}
+  \item Question 2: How do we keep track of bounding boxes?
+  \item Well, we could say the initial bounding box at the root is completely
+    unbounded, i.e. \( (-\infty, \infty) \) on each dimension.
+  \item When we traverse the left and right
+    subtrees, we must have split on some plane.
+    \begin{exampleblock}{Maintaining bounding boxes}
+      Suppose we split on the value \( 5 \) along cutting dimension \( 1 \).
+      Then for the left subtree we update \( bb[1] \) to be \( (-\infty, 5) \),
+      and for the right we update \( bb[1] \) to be \( (5, \infty) \).
+    \end{exampleblock}
+  \item Note that these bounds are known \textit{a posteriori},
+    i.e. generated online during the nearest neighbor search.
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -1206,10 +1239,12 @@ online during the nearest neighbor search.
 \begin{frame}
 \frametitle{Subtree Order}
 \framesubtitle{}
-Lastly, we need to determine the order to search the subtrees.
-
-It makes sense to first visit the subtree we would visit if we were inserting
-the point in the kd-tree, i.e. the subtree which would contain the point.
+\begin{itemize}
+  \item Lastly, we need to determine the subtree search order.
+  \item It makes sense to first visit the subtree we
+    would visit if we were inserting the point in the
+    kd-tree, i.e. the subtree which would contain the point.
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -1243,28 +1278,31 @@ the point in the kd-tree, i.e. the subtree which would contain the point.
 \begin{frame}
 \frametitle{Runtime Analysis}
 \framesubtitle{}
-In the worst case, we need to traverse the entire tree, \( O(n) \).
-In practice the runtime is closer to
-\( O(\underbrace{2^d}_{\text{points in the neighborhood}} + 
-\underbrace{\log n}_{\text{points \enquote{near} query}}) \)
-
-If \( d \) is small, this is faster than \( O(nd) \) per query with the naive
-method of searching every point. \pause
-
-Note that we in fact introduce another \( d \) factor when we trim the bounding
-boxes. However, the bounding boxes are the same regardless of the point we're
-traversing the tree on, since the bounding boxes are a function of the tree
-which doesn't change.
+\begin{itemize}
+  \item In the worst case, we need to traverse the entire tree, \( O(n) \).
+  \item In practice, the runtime is closer to
+    \[ O(\underbrace{2^d}_{\text{points in the neighborhood}} + 
+      \underbrace{\log n}_{\text{points \enquote{near} query}}) \]
+  \item If \( d \) is small, this is faster than \( O(nd) \) per
+    query with the naive method of searching every point. \pause
+  \item Note that we introduce another \( d \)
+    factor when trimming the bounding boxes.
+  \item However, the bounding boxes are the same regardless of
+    the point we're traversing the tree on, since the bounding
+    boxes are a function of the tree, which doesn't change.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Bounding Box, tight}
 \framesubtitle{}
-We can pre-compute bounding boxes, also taking advantage of \enquote{tighter}
-boxes. The bounding boxes generated by the plane trim method generate boxes
-that are too big - the real bounds are determined by the extrema of the 
-\textit{points} contained in the subtree, not just the path to the subtree.
-\pause
+\begin{itemize}
+  \item We can pre-compute bounding boxes, also
+    taking advantage of \enquote{tighter} boxes.
+  \item The bounding boxes generated by the plane trim method generate boxes
+    that are too big --- the real bounds are determined by the extrema of the 
+    \textit{points} contained in the subtree, not just the path to the subtree.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -1272,7 +1310,7 @@ that are too big - the real bounds are determined by the extrema of the
 \framesubtitle{}
 \begin{figure}[h!]
   \centering
-  \includegraphics[scale=0.4]{bounding_boxes.png}
+  \includegraphics[scale=0.38]{bounding_boxes.png}
   \caption{Difference between the default (in red)
 and tight bounding boxes (in green). Subtree is circled in red.}
 \end{figure}
@@ -1281,9 +1319,9 @@ and tight bounding boxes (in green). Subtree is circled in red.}
 \begin{frame}
 \frametitle{Bounding Box, tight, computation}
 \framesubtitle{}
-The observation is that if we have a bounding box for both children of a node,
-we can merge these efficiently since going up the tree means the bounding boxes
-join together.
+The observation is that if we have a bounding box for both
+children of a node, we can merge these efficiently, since
+going up the tree means the bounding boxes join together.
 
 We have 3 cases:
 \begin{enumerate}
@@ -1314,9 +1352,8 @@ We have 3 cases:
         # one child, inherit box of child
         elif l is None or r is None:
             t.bb = l.bb if l is not None else r.bb
-            # add node's point
             t.bb = [(min(box[0], v), max(box[1], v))
-                    for box, v in zip(t.bb, t.point)]
+                    for box, v in zip(t.bb, t.point)] # add point
         # two children, combine boxes
         else:
             t.bb = [(min(bbl[0], bbr[0], v), max(bbl[1], bbr[1], v))
@@ -1328,20 +1365,19 @@ We have 3 cases:
 \begin{frame}
 \frametitle{Bounding Box, tight, runtime analysis}
 \framesubtitle{}
-After constructing a kd-tree, we can run \texttt{tighten} on the tree
-to generate bounding boxes for each node.
-
-\texttt{tighten} runs in \( O(ND) \) since we visit each node in the tree,
-and at each node we do \( O(D) \) operations 
-to do accounting on the bounding box. \pause
-
-We assume that \( \log N > D \) or \( N > 2^D \), if \( D \) is very large
-or \( N \) very small then kd-trees are not a good choice.
-Thus, \texttt{tighten} is dominated by the \( O(N \log N) \) initial
-construction time. \pause
-
-We can run a nearest neighbor search as usual,
-with the bounding box trimming logic removed.
+\begin{itemize}[<+->]
+  \item After constructing a kd-tree, we can run \texttt{tighten}
+    on the tree to generate bounding boxes for each node.
+  \item \texttt{tighten} runs in \( O(ND) \) since we
+    visit each node in the tree, and at each node we do \( O(D) \)
+    operations to do accounting on the bounding box.
+  \item We assume that \( \log N > D \) or \( N > 2^D \), if \( D \) is
+    very large or \( N \) very small then kd-trees are not a good choice.
+    Thus, \texttt{tighten} is dominated by the \( O(N \log N) \) initial
+    construction time.
+  \item We can run a nearest neighbor search as usual,
+    with the bounding box trimming logic removed.
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -1374,46 +1410,54 @@ with the bounding box trimming logic removed.
 \begin{frame}
 \frametitle{Runtime Analysis}
 \framesubtitle{}
-First, we save the \( D \) factor because we no longer need to trim bounding
-boxes, each node stores its boxes known \textit{a priori}. \pause
-
-If we determine the bounding boxes based off the points in the tree,
-then it is a subset of the original bounding box.
-Thus, the distance between any point and our tight bounding box must be
-greater than or equal to the distance between the point and the original
-bounding box. We prune if the distance between the bounding box is greater
-than the best distance, so our tight bounding box can only prune more
-since it doesn't change the best distance found so far.
-
-Pruning more means nearest neighbor searches run even faster.
+\begin{itemize}
+  \item First, we save the time to trim bounding boxes, now
+    each node stores its boxes known \textit{a priori}. \pause
+  \item If we determine the bounding boxes based off the points in the tree,
+    then it is a subset of the original bounding box.
+  \item Thus, the distance between any point and our
+    tight bounding box must be greater than or equal to the
+    distance between the point and the original bounding box.
+  \item We prune if the distance between the bounding box is greater
+    than the best distance, so our tight bounding box can only prune more
+    since it doesn't change the best distance found so far.
+  \item Pruning more means the search runs even faster.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Wrapping it All Up}
 \framesubtitle{}
-We finally apply kd-trees to speeding up
-\textit{k}-means/\textit{k}-means++.
+\begin{itemize}
+  \item We finally apply kd-trees to speeding
+    up \textit{k}-means/\textit{k}-means++.
+  \item Simply build a kd-tree on the centers,
+    re-building every time the centers change.
+  \item Whenever we need to find the closest center to a point,
+    we do a nearest neighbor query with the kd-tree. \pause
+  \item Per iteration, our running time is
+    \[ O(\underbrace{K \log K}_{\text{kd-tree construction}} + 
+         \underbrace{N \log K}_{\text{\( N \) nearest-neighbor queries}}) \]
+  \item \( N \geq K \) so this is \( O(N \log K) \) per iteration,
+    compared to \( O(N K) \) for the naive algorithm.
+\end{itemize}
+\end{frame}
 
-Simply build a kd-tree on the centers,
-re-building every time the centers change.
-Whenever we need to find the closest center to a point, we do a nearest neighbor
-query with the kd-tree. \pause
+\begin{frame}
+\frametitle{Tempering Optimism}
+\framesubtitle{}
 
-Per iteration, our running time is
-\( O(\underbrace{K \log K}_{\text{kd-tree construction}} + 
-\underbrace{N \log K}_{\text{\( N \) nearest-neighbor queries}}) \)
-
-\( N \geq K \) so this is \( O(N \log K) \) per iteration, compared to
-\( O(N K) \) for the naive algorithm. \pause
-
-This is overly optimistic.
-\begin{enumerate}
-  \item Building a kd-tree naturally adds more memory consumption and overhead
-  \item If \( D \) is very large, kd-trees become impractical
-  \item kd-tree is \textit{expected} \( O(\log K) \), it could be \( O(K) \)
-\end{enumerate}
-
-TODO: Voronoi diagrams?
+\begin{itemize}
+  \item This is overly optimistic.
+    \begin{enumerate}
+      \item Building a kd-tree naturally adds
+        more memory consumption and overhead
+      \item If \( D \) is very large, kd-trees become impractical
+      \item kd-tree is \textit{expected} \(  O(\log K) \),
+        it could be \( O(K) \)
+    \end{enumerate}
+  \item TODO: Voronoi diagrams?
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -1421,18 +1465,18 @@ TODO: Voronoi diagrams?
 \framesubtitle{}
 \begin{figure}[h!]
     \centering
-    \begin{subfigure}[h]{0.3 \textwidth}
-      \includegraphics[scale=0.17]{hanekawa.png}
+    \begin{subfigure}[h]{0.32 \textwidth}
+      \includegraphics[scale=0.16]{hanekawa.png}
       \caption{Original image}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[h]{0.3 \textwidth}
-      \includegraphics[scale=0.17]{hanekawa8.png}
+    \begin{subfigure}[h]{0.32 \textwidth}
+      \includegraphics[scale=0.16]{hanekawa8.png}
       \caption{\(k = 8 \)}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[h]{0.3 \textwidth}
-      \includegraphics[scale=0.17]{hanekawa256.png}
+    \begin{subfigure}[h]{0.32 \textwidth}
+      \includegraphics[scale=0.16]{hanekawa256.png}
       \caption{\( k = 256 \)}
     \end{subfigure}
     \caption{\textit{k}-means on an image. Can you tell the difference

@@ -13,6 +13,7 @@
 # minted code output
 *.pygstyle
 *.pygtex
+*.loa
 
 # beamer presentation files
 *.snm
@@ -22,4 +23,5 @@
 
 # archive
 archive
+*.tmp
 

@@ -82,11 +82,14 @@
 \begin{frame}
 \frametitle{Introduction}
 \framesubtitle{}
-The Fast Fourier Transform (FFT) is a common technique for signal processing
-and has many engineering applications. It also has a fairly deep mathematical
-basis, but we will ignore both those angles in favor of accessibility.
-Instead, we will approach the FFT from the most intuitive angle,
-\alert{polynomial multiplication}. \pause
+\begin{itemize}
+  \item The Fast Fourier Transform (FFT) is a common technique for signal
+    processing and has many engineering applications. It also has a fairly
+    deep mathematical basis, but we will ignore both those angles in favor
+    of accessibility.
+  \item Instead, we will approach the FFT from the most
+    intuitive angle, \alert{polynomial multiplication}. \pause
+\end{itemize}
 
 First, we represent polynomials by a list of coefficients,
 where the number at index 0 represents the coefficient of \( x^0 \),
@@ -99,12 +102,16 @@ the number at index 1 represents the coefficient of \( x^1 \), and so on.
 \begin{frame}
 \frametitle{Definition of the Convolution}
 \framesubtitle{}
-The multiplication of two polynomials \( f \) and \( g \) is then simply
-each term of \( f \) multiplied with each term of \( g \) and then added up.
-We can also assume that \( f \) and \( g \) are the same length \( N \),
-where the polynomial of lesser degree is padded with zeros.
-If we say the product is \( p \), we can give an formula
-for an index in \( p \) in the following way:
+\begin{itemize}
+  \item The multiplication of two polynomials \( f \)
+    and \( g \) is then simply each term of \( f \)
+    multiplied with each term of \( g \) and then added up.
+  \item We can also assume that \( f \) and \( g \) are the same length
+    \( N \), where the polynomial of lesser degree is padded with zeros.
+  \item If we say the product is \( p \), we can give an
+    formula for an index in \( p \) in the following way:
+\end{itemize}
+
 \begin{alertblock}{Definition of the convolution}
   \[ p[n] = (f * g)[n] = \sum^n_{i = 0} f[i]g[n - i] \]
 \end{alertblock}
@@ -113,38 +120,43 @@ for an index in \( p \) in the following way:
 \begin{frame}
 \frametitle{Intuition Behind a Convolution}
 \framesubtitle{}
-\( p[n] \) is the coefficient of \( x^n \) in the product, and it is formed
-by adding up all the possible ways to get to \( x^n \), i.e. \( f[0] x^0 \)
-times \( g[n] x^n \), \( f[1] x^1 \) times \( g[n - 1] x^{n - 1} \), etc.
-Intuitively, this \enquote{flips} \( g \), and then the resulting product
-is computed by \enquote{sliding} \( g \) over \( f \) and then computing
-the dot product between the two lists, or a weighted average.
+\begin{itemize}
+  \item \( p[n] \) is the coefficient of \( x^n \) in the product,
+    and it is formed by adding up all the possible ways to get to \(
+    x^n \), i.e. \( f[0] x^0 \) times \( g[n] x^n \), \( f[1] x^1 \)
+    times \( g[n - 1] x^{n - 1} \), etc.
+  \item Intuitively, this \enquote{flips} \( g \), and then the resulting
+    product is computed by \enquote{sliding} \( g \) over \( f \) and then
+    computing the dot product between the two lists, or a weighted average.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Example}
+\frametitle{Multiplication as Convolution Example}
 \framesubtitle{}
-Suppose we have the polynomial \( 3 + 2x + 4x^2 \) = [3, 2, 4]
-and the polynomial \( 1 + 3x + 2x^2 \) = [1, 3, 2]. To compute their
-product, we first flip the second list to get [2, 3, 1]. \pause
+\begin{itemize}[<+->]
+  \item Suppose we have the polynomial \( 3 + 2x + 4x^2 \) =
+    [3, 2, 4] and the polynomial \( 1 + 3x + 2x^2 \) = [1, 3, 2].
+  \item We first flip
+    the second list to get [2, 3, 1].
+  \item We then slide [2, 3, 1] over [3, 2, 4], imagining
+    there are zeros such that the parts of [2, 3, 1] that
+    don't overlap with [3, 2, 4] aren't counted.
+\end{itemize}
 
-We then slide [2, 3, 1] over [3, 2, 4],
-imagining there are zeros such that the parts of [2, 3, 1]
-that don't overlap with [3, 2, 4] aren't counted. \pause
+\begin{enumerate}[<+->]
+  \item For the first value, 1 overlaps with 3 so we get 3.
+  \item Then, [3, 1] overlaps with [3, 2] so
+    we get \( 3 \cdot 3 + 1 \cdot 2 = 11 \).
+  \item \( [ \)2, 3, 1] overlaps with [3, 2, 4] \( = 16 \)
+  \item \( [ \)2, 3] overlaps [2, 4] \( = 16 \),
+  \item and finally [2] overlaps with [4] to give 8.
+\end{enumerate}
 
-For the first value, 1 overlaps with 3 so we get 3. \pause
-
-Then, [3, 1] overlaps with [3, 2] so we get \( 3 \cdot 3 + 1 \cdot 2 = 11 \).
-\pause
-
-[2, 3, 1] overlaps with [3, 2, 4] \( = 16 \) \pause
-
-[2, 3] overlaps [2, 4] \( = 16 \), \pause
-
-and finally [2] overlaps with [4] to give 8. \pause
-
-Our final answer is then [3, 11, 16, 16, 8] = \( 3 + 11x + 16x^2 + 16x^3 + 8x^4
-= (3 + 2x + 4x^2)(1 + 3x + 2x^2) \).
+\uncover<8>{ 
+  Our final answer is then [3, 11, 16, 16, 8] =
+  \( 3 + 11x + 16x^2 + 16x^3 + 8x^4 = (3 + 2x + 4x^2)(1 + 3x + 2x^2) \).
+}
 \end{frame}
 
 \begin{frame}
@@ -177,13 +189,16 @@ in descending order, so \( \sum^n_{i = 0} = \sum^n_{k = 0} \)
 \begin{frame}
 \frametitle{The Fast Fourier Transform}
 \framesubtitle{}
-This operation is known as a \alert{convolution}, which is equivalent to
-polynomial multiplication in the discrete case and is denoted \( f * g \).
-Its relevance to image processing will be expounded on later
-(for now, this puts the \enquote{convolutional}
-in \enquote{Convolutional Neural Networks}).
-Today's lecture is about the \alert{Fast Fourier Transform}, an efficient
-algorithm to perform convolutions.
+\begin{itemize}
+  \item This operation is known as a \alert{convolution},
+    which is equivalent to polynomial multiplication
+    in the discrete case and is denoted \( f * g \).
+  \item Its relevance to image processing will be expounded
+    on later (for now, this puts the \enquote{convolutional}
+    in \enquote{Convolutional Neural Networks}).
+  \item Today's lecture is about the \alert{Fast Fourier Transform},
+    an efficient algorithm to perform convolutions.
+\end{itemize}
 \end{frame}
 
 \section{Algorithms}
@@ -191,22 +206,22 @@ algorithm to perform convolutions.
 \begin{frame}
 \frametitle{Naive}
 \framesubtitle{}
-A naive approach to the convolution of two lists of length \( N, M \) will have
-runtime \( O(NM) \) using the standard polynomial multiplication algorithm (each
-term of the first list multiplied with each term of the second list). \pause
-
-What will be the length of the resulting list? \pause
-
-The first list is a polynomial of degree \( N - 1 \),
-the second of degree \( M - 1 \), so the resulting polynomial has degree 
-\( (N - 1) + (M - 1) = N + M - 2 \). \pause 
-
-A polynomial of degree \( D \) has \( D + 1 \) coefficients, 
-so the length of the product is \( N + M - 1 \). Thus, \pause
-\begin{block}{Lower bound for the runtime of a convolution}
-  The length of the convolution is \( N + M - 1 \), which is linear,
-  so a better runtime than quadratic could exist. 
-\end{block}
+\begin{itemize}[<+->]
+  \item A naive approach to the convolution of two lists of length \(
+    N, M \) will have runtime \( O(NM) \) using the standard polynomial
+    multiplication algorithm (each term of the first list multiplied with
+    each term of the second list).
+  \item What will be the length of the resulting list?
+  \item The first list is a polynomial of degree \( N - 1 \),
+    the second of degree \( M - 1 \), so the resulting polynomial
+    has degree \( (N - 1) + (M - 1) = N + M - 2 \).
+  \item A polynomial of degree \( D \) has \( D + 1 \) coefficients, 
+    so the length of the product is \( N + M - 1 \). Thus,
+    \begin{block}{Lower bound for the runtime of a convolution}
+      The length of the convolution is \( N + M - 1 \), which is linear,
+      so a better runtime than quadratic could exist. 
+    \end{block}
+\end{itemize}
 \end{frame}
 
 \subsection[FTT]{Fast Fourier Transform}
@@ -214,10 +229,13 @@ so the length of the product is \( N + M - 1 \). Thus, \pause
 \begin{frame}
 \frametitle{Point-Value Representation}
 \framesubtitle{An alternative way to express a polynomial}
-The key observation is that we can represent polynomials in a different form
-than a coefficient list. In particular, we can use a \alert{point-value}
-representation, or a list of \( (x, y) \) pairs that give an input and the
-corresponding output of a polynomial. 
+\begin{itemize}
+  \item The key observation is that we can represent
+    polynomials in a different form than a coefficient list.
+  \item In particular, we can use a \alert{point-value}
+    representation, or a list of \( (x, y) \) pairs that give
+    an input and the corresponding output of a polynomial.
+\end{itemize}
 \begin{alertblock}{Point-value representation}
   A point-value representation for a polynomial \( p \) is a list of distinct
   \( x \) values and their corresponding \( y \) values, e.g.
@@ -239,25 +257,33 @@ Likewise, we call the process of going from a point-value representation
 to a coefficient representation \emphasis{interpolation}, since we are finding
 a polynomial which \enquote{fits} the data. 
 \end{alertblock} \pause
-Suppose we have a polynomial of degree \( n \). We then need
-a certain number of points for evaluation and interpolation to be well-defined.
+\begin{itemize}
+  \item Suppose we have a polynomial of degree \( n \). 
+  \item We then need a certain number of points for
+    evaluation and interpolation to be well-defined.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Well-defined Representations}
 \framesubtitle{}
-Evaluation is always well-defined, because we can always evaluate a polynomial
-of any degree or coefficient representation. However, if we don't have
-enough points, interpolation is not necessarily possible. \pause 
+\begin{itemize}
+  \item Evaluation is always well-defined, because we can always
+    evaluate a polynomial of any degree or coefficient representation.
+  \item However, if we don't have enough points,
+    interpolation is not necessarily possible. \pause
+\end{itemize}
 \begin{exampleblock}{Ill-defined representation}
 Consider the point-value representation \( [(0, 0), (1, 1)] \)
 and a degree of 2. This could be the polynomial \( x^2 \) or \( 2x^2 - x \).
 \end{exampleblock} \pause
-So for a polynomial of degree \( n \), we need at least \( n + 1 \)
-distinct points (since each point gives another linear equation constraining
-the \( n + 1 \) coefficients of the polynomial). 
-We can in fact prove that if we have \( n + 1 \) points, that uniquely
-determines a polynomial of degree \( n \).
+\begin{itemize}
+  \item So for a polynomial of degree \( n \), we need at least \( n + 1 \)
+    distinct points (since each point gives another linear equation
+    constraining the \( n + 1 \) polynomial coefficients).
+  \item We can in fact prove that if we have \( n + 1 \) points,
+    that uniquely determines a polynomial of degree \( n \).
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -300,8 +326,8 @@ Those constraints determine the following matrix equation:
 }
 \only<2| handout:2>{
 The leftmost matrix is known as the \textit{Vandermonde matrix},
-denoted \( V(x_0, x_1, \dots, x_{n - 1}) \) which has the determinant
-(left as an exercise for the reader)
+denoted \( V(x_0, x_1, \dots, x_{n - 1}) \) which has the
+following determinant (left as an exercise for the reader):
 \[ \prod_{0 \leq j < i \leq n - 1} (x_i - x_j) \]
 A matrix is invertible if and only if its determinant is nonzero,
 so this matrix is invertible if each \( x_i \) is distinct.
@@ -315,63 +341,81 @@ matrix is a \alert{bijective} transformation between a vector space and itself.
 \begin{frame}
 \frametitle{Lagrange's Formula}
 \framesubtitle{}
-This proof directly gave an easy construction of the interpolating polynomial,
-by \( V^{-1} \vec{y} \). Matrix inverses can be computed in \( O(n^3) \) as
-an easy upper bound, but that can be improved with
-\alert{Lagrange's interpolating formula} to yield a \( O(n^2) \) time
-algorithm. I will not elaborate on Lagrange's formula in this lecture
-but a good Wikipedia page is available
-\href{https://en.wikipedia.org/wiki/Lagrange\_polynomial}{here}.
+\begin{itemize}
+  \item This proof directly gave an easy construction of
+    the interpolating polynomial, by \( V^{-1} \vec{y} \).
+  \item Matrix inverses can be computed in \( O(n^3) \) as an easy
+    upper bound, but that can be improved with \alert{Lagrange's
+    interpolating formula} to yield a \( O(n^2) \) time algorithm.
+  \item I will not elaborate on Lagrange's formula in
+    this lecture, but a good Wikipedia page is available
+    \href{https://en.wikipedia.org/wiki/Lagrange\_polynomial}{here}.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Evaluation}
 \framesubtitle{}
-If we have a list of \( N \) coefficients, then the polynomial is of degree
-\( N - 1 \) and thus we need \( N \) distinct points.
-We first figure out how to evaluate polynomial at a single point,
-and will repeat the process for all the points.
+\begin{itemize}
+  \item If we have a list of \( N \) coefficients, then the polynomial
+    is of degree \( N - 1 \) and thus we need \( N \) distinct points.
+  \item We first figure out how to evaluate a polynomial at a
+    single point, and will repeat the process for all the points.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Evaluating a Polynomial}
 \framesubtitle{}
-Suppose we have a polynomial of the form
-\( p(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_{n - 1} x^{n - 1} \). 
-If we evaluate at a particular \( x_0 \), we compute each \( a_i {x_0}^i \) term
-which would take \( O(N^2) \) time with repeated multiplication
-and \( O(N \log N) \) time with fast exponentiation. 
+\begin{itemize}
+  \item Suppose we have a polynomial of the form
+    \( p(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_{n - 1} x^{n - 1} \).
+  \item If we evaluate at a particular \( x_0 \), we compute
+    each \( a_i {x_0}^i \) term, of which there are \( N \).
+  \item This would take \( O(N^2) \) time with repeated multiplication
+    and \( O(N \log N) \) time with fast exponentiation.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Horner's Rule}
 \framesubtitle{}
-But we can do better with \alert{Horner's rule}.
-We notice that the degree in coefficient form is monotonically increasing,
-so we can successively factor out a multiplication by \( x \).
+\begin{itemize}
+  \item But we can do better with \alert{Horner's rule}.
+  \item We notice that the degree in coefficient form is monotonically
+    increasing, so we can successively factor out a multiplication by \( x \).
+\end{itemize}
 \begin{alertblock}{Horner's rule}
   \[ p(x) = a_0 + x (a_1 + x(a_2 + \dots + x(a_{n - 2} + x a_{n - 1}))) \] 
 \end{alertblock} \pause
-We do \( N \) multiplications and \( N \) additions, so the algorithm runs in
-\( O(N) \). Evaluating a polynomial at \( N \) points then takes
-\( O(N \cdot N) = O(N^2) \) time.
+\begin{itemize}
+  \item We do exactly \( N - 1 \) multiplications and
+    additions, so the algorithm runs in \( O(N) \).
+  \item Evaluating a polynomial at \( N \) points then takes
+    \( O(N \cdot N) = O(N^2) \) time.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{}
+\frametitle{Summary}
 \framesubtitle{}
-So we can do both evaluation and interpolation in \( O(n^2) \) and both are
-well-defined if we have enough points. Why did we figure this out?
-We can multiply two polynomials efficiently if we have the point-value
-representations of each! 
+\begin{itemize}
+  \item So we can do both evaluation and interpolation in
+    \( O(n^2) \) and both are well-defined if we have enough points.
+  \item Why did we figure this out?
+  \item We can multiply two polynomials efficiently
+    if we have the point-value representations of each!
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Multiplying in Linear Time}
 \framesubtitle{}
-Suppose we have polynomials \( f, g \) in
-coefficient form. We also assume that the polynomials are evaluated at the
-\textit{same} points, so we have 
+\begin{itemize}
+  \item Suppose we have polynomials \( f, g \) in coefficient form. 
+  \item We also assume that the polynomials are
+    evaluated at the \textit{same} points, so we have
+\end{itemize}
 \begin{align*}
   &[(x_0, f(x_0)), (x_1, f(x_1)), \dots]
   \shortintertext{and}
@@ -386,7 +430,7 @@ or the element-wise multiplication of the two lists.
 \end{frame}
 
 \begin{frame}
-\frametitle{Summary}
+\frametitle{Overall Framework}
 \framesubtitle{}
 So our algorithm for polynomial multiplication is as follows:
 \begin{enumerate}[<+->]
@@ -398,13 +442,16 @@ representation back to coefficients.
 \end{frame}
 
 \begin{frame}
-\frametitle{}
+\frametitle{Need for Picking Special Points}
 \framesubtitle{}
-The speed of this algorithm is contingent on our ability to quickly
-evaluate and interpolate a polynomial. Currently, with our \( O(n^2) \) time
-evaluation and interpolation algorithms we match the \( O(n^2) \) naive
-algorithm. However, under this framework we can improve the time if we pick
-our points cleverly rather than arbitrarily.
+\begin{itemize}
+  \item The speed of this algorithm is contingent on our
+    ability to quickly evaluate and interpolate a polynomial.
+  \item Currently, with our \( O(n^2) \) time evaluation and
+    interpolation algorithms, we match the \( O(n^2) \) naive algorithm.
+  \item However, under this framework, we can improve the time
+    if we pick our points cleverly rather than arbitrarily.
+\end{itemize}
 \end{frame}
 
 \subsubsection[Complex Roots]{Complex Roots of Unity}
@@ -440,22 +487,21 @@ So we can take a \( n \)th root by simply raising
 \begin{frame}
 \frametitle{Properties of Complex Roots}
 \framesubtitle{}
-However, note that we can rewrite 1 in many different ways
-since sine and cosine are periodic. \pause
-
-Since adding \( 2 \pi \) doesn't change the value of sine and cosine, \\
-1 is also equal to \( e^{4 \pi i} \), \( e^{6 \pi i} \), and so on. \pause
-
-In general, \( e^{2 \pi k i} \) is equal to 1 for any integer \( k \), so if we
-take the \( n \)th root, \( e^{\frac{2 \pi k i}{n}} \)
-is also going to be a valid root of unity. \pause 
-
-However, not every \( k \) gives a distinct root of unity. \\
-\( k = n + 1 \) is equivalent to \( k = 1 \) since
-\[ \cos(\frac{2 \pi(n + 1)}{n}) = \cos(2 \pi + \frac{2 \pi}{n})
-= \cos(\frac{2 \pi}{n}) \]
-This generalizes such that an power \( k \) equivalent to \( j \) mod \( n \)
-will have the same root.
+\begin{itemize}[<+->]
+  \item However, note that we can rewrite 1 in many
+    different ways since sine and cosine are periodic.
+  \item Since adding \( 2 \pi \) doesn't change the value of sine and cosine,
+    1 is also equal to \( e^{4 \pi i} \), \( e^{6 \pi i} \), and so on.
+  \item In general, \( e^{2 \pi k i} \) is equal to 1 for
+    any integer \( k \), so if we take the \( n \)th root,
+    \( e^{\frac{2\pi k i}{n}} \) is also going to be a valid root.
+  \item However, not every \( k \) gives a distinct root of unity.
+    \( k = n + 1 \) is equivalent to \( k = 1 \) since
+    \[ \cos(\frac{2 \pi(n + 1)}{n}) = \cos(2 \pi + \frac{2 \pi}{n})
+    = \cos(\frac{2 \pi}{n}) \]
+  \item This generalizes such that an power \( k \) equivalent
+    to \( j \) mod \( n \) will have the same root.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -478,78 +524,80 @@ a power of this root of unity since
 \begin{frame}
 \frametitle{Properties of a Principle Root}
 \framesubtitle{}
-Note that every power of the principle root of unity is itself a root of unity,
-because \[ (\omega^k_n)^n = (\omega^n_n)^k = 1^k = 1 \] \pause 
-
-We now come to an observation that will be instrumental in developing the FFT -
-that the square of a \( n \)th principle root of unity is a \( \frac{n}{2} \)th
-principle root of unity. \\
-This follows nearly from definition:
-\begin{align*}
-  \omega_n^2 &= (e^{\frac{2 \pi i}{n}})^2 \\
-             &= e^{\frac{4 \pi i}{n}} \\
-             &= e^{\frac{2 \pi i}{\frac{n}{2}}} \\
-             &= \omega_{\frac{n}{2}}
-\end{align*}
+\begin{itemize}
+  \item Note that every power of the principle root of unity is itself a root
+    of unity, because \[ (\omega^k_n)^n = (\omega^n_n)^k = 1^k = 1 \] \pause
+  \item We now come to an observation that will be instrumental in
+    developing the FFT --- that the square of a \( n \)th principle root
+    of unity is a \( \frac{n}{2} \)th principle root of unity.
+  \item This follows nearly from definition:
+    \begin{align*}
+      \omega_n^2 &= (e^{\frac{2 \pi i}{n}})^2 \\
+                &= e^{\frac{4 \pi i}{n}} \\
+                &= e^{\frac{2 \pi i}{\frac{n}{2}}} \\
+                &= \omega_{\frac{n}{2}}
+    \end{align*}
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{}
+\frametitle{Setting up a Recurrence Relation}
 \framesubtitle{}
-We now show that evaluating a polynomial at \( n \) distinct \( n \)th roots of
-unity can be written as a recurrence relation.
-Our observation is a clever rewrite of a polynomial into two parts.
+\begin{itemize}
+  \item We now show that evaluating a polynomial at \( n \) distinct \( n \)th
+    roots of unity can be written as a recurrence relation.
+  \item First, cleverly rewrite a polynomial into two parts.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Splitting a Polynomial}
 \framesubtitle{}
-Suppose we have the polynomial
-\[ p(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_{n - 1} x^{n - 1} \]
-
-We divide the coefficient list of \( p \) into two parts,
-one with even powers and the other with odd powers,
-the left and right halves respectively. \pause
-
-We assume that \( n \) is a power of 2 so that \( p \)
-can always be divided in such a manner. 
-
-If \( n \) isn't, we can always pad with 0's. \pause
-\begin{align}
-  p(x) &= a_0 + a_1 x + a_2 x^2 + \dots + a_{n - 1} x^{n - 1} \\
-  L(x) &= a_0 + a_2 x + a_4 x^2 + \dots \\
-  R(x) &= a_1 + a_3 x + a_5 x^2 + \dots \\
-  \shortintertext{It follows that \( p \) can be written
-  in terms of \( L \) and \( R \):}
-  p(x) &= L(x^2) + x R(x^2) \label{eq:recurrence} 
-\end{align}
+\begin{itemize}
+  \item Suppose we have the polynomial
+    \[ p(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_{n - 1} x^{n - 1} \]
+  \item We divide the coefficient list of \( p \) into
+    two parts, one with even powers and the other with odd
+    powers, the left and right halves respectively. \pause
+  \item We assume that \( n \) is a power of 2 so that \( p \)
+    can always be divided in such a manner. 
+  \item If \( n \) isn't, we can always pad with 0's. \pause
+    \begin{align}
+      p(x) &= a_0 + a_1 x + a_2 x^2 + \dots + a_{n - 1} x^{n - 1} \\
+      L(x) &= a_0 + a_2 x + a_4 x^2 + \dots \\
+      R(x) &= a_1 + a_3 x + a_5 x^2 + \dots \\
+      \shortintertext{It follows that \( p \) can be written
+      in terms of \( L \) and \( R \):}
+      p(x) &= L(x^2) + x R(x^2) \label{eq:recurrence} 
+    \end{align}
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Recurrence Relation}
 \framesubtitle{}
-Recall that we are trying to evaluate \( p \) at \( n \) roots of unity. \pause
-
-Suppose we have a function that takes as input a list of coefficients
-and returns the evaluation at \( n \) roots of unity. \pause
-
-We can define this function in terms of itself, because we have a recurrence
-relation - divide the list in two, giving us \( L \) evaluated at 
-\( \frac{n}{2} \)th roots of unity and the same for \( R \)
-(from the fact that a \( n \)th root of unity squared
-is a \( \frac{n}{2} \)th root of unity). \pause
-
-Finally, we can reconstruct \( p \) from \( L \) and \( R \)
-according to \eqref{eq:recurrence}.
+\begin{itemize}[<+->]
+  \item Recall that we are trying to evaluate
+    \( p \) at \( n \) roots of unity.
+  \item Suppose we have a function that takes as input a list of
+    coefficients and returns the evaluation at \( n \) roots of unity.
+  \item We can define this function in terms of itself, because we
+    have a recurrence relation --- divide the list in two, giving us
+    \( L \) evaluated at \( \frac{n}{2} \)th roots of unity and the
+    same for \( R \) (from the fact that a \( n \)th root of unity
+    squared is a \( \frac{n}{2} \)th root of unity).
+  \item Finally, we can reconstruct \( p \) from
+    \( L, R \) according to \eqref{eq:recurrence}.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Accounting for Edge Cases}
 \framesubtitle{}
-This works directly for \( \omega^0_n \)
-to \( \omega^{\frac{n}{2} - 1}_n \), however for a power greater than
-\( \frac{n}{2} - 1 \) we need to put it in terms of a power less than
-\( \frac{n}{2} \) (since \( L \) and \( R \) are only \( \frac{n}{2} \) long).
+This works directly for \( \omega^0_n \) to \( \omega^{\frac{n}{2} - 1}_n \),
+however for a power greater than \( \frac{n}{2} - 1 \), we need to put it in
+terms of a power less than \( \frac{n}{2} \) (since \( L \) and \( R \) are
+only \( \frac{n}{2} \) long).
 \end{frame}
 
 \begin{frame}
@@ -571,7 +619,7 @@ Luckily,
 So, for some power \( k \) of the base root of unity we can compute
 \begin{align*}
   p(\omega^k_n) &= L(\omega^{2k}_n) + \omega^k_n R(\omega^{2k}_n) \\
-  \shortintertext{and, using the negative property derived before,}
+  \shortintertext{and, using the negative property just derived,}
   p(\omega^{k + \frac{n}{2}}_n) &= L(\omega^{2k}_n) - \omega^k_n R(\omega^{2k}_n) \\
 \end{align*}
 \end{frame}
@@ -579,82 +627,79 @@ So, for some power \( k \) of the base root of unity we can compute
 \begin{frame}
 \frametitle{Base Case}
 \framesubtitle{}
-We compute \( L \) and \( R \) recursively, and we're done! \\
-However, we need to have a base case for the function to work. \pause
-
-Recall our function takes in a coefficient list of length \( n \) representing a
-polynomial, and returns the evaluation of that polynomial at each of the
-\( n \) distinct \( n \)th roots of unity. \pause
-
-The simplest base case is probably \( n = 1 \), at which we can stop dividing the
-list in half and just evaluate the polynomial directly. \pause 
-
-The only \( 1 \)st root of unity is \( 1 \), and evaluating a polynomial
-at \( x = 1 \) is equal the sum of the coefficients, which for a
-polynomial with one coefficient is just its singular coefficient. \pause
-
-\begin{block}{Base case}
-  Thus, we can just return the coefficient list of the polynomial,
-  or the input to the function when \( n = 1 \). 
-\end{block}
+\begin{itemize}[<+->]
+  \item We compute \( L \) and \( R \) recursively, and we're done!
+  \item However, we need to have a base case.
+  \item Recall our function takes in a coefficient list of length \( n \)
+    representing a polynomial, and returns the evaluation of that polynomial
+    at each of the \( n \) distinct \( n \)th roots of unity.
+  \item The simplest base case is just \( n = 1 \), at which point
+    we can stop dividing the list in half and evaluate directly.
+  \item The only \( 1 \)st root of unity is \( 1 \), and evaluating a
+    polynomial at \( x = 1 \) is equal the sum of the coefficients, which
+    for a polynomial with one coefficient is just its singular coefficient.
+    \begin{block}{Base case}
+      Thus, we can just return the coefficient list of the polynomial,
+      or the input to the function when \( n = 1 \). 
+    \end{block}
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Analysis of Runtime}
 \framesubtitle{}
-At every level of the recursion we divide the list in half,
-making the depth of the recursive tree \( \log n \). \pause
-
-At a particular level \( k \), we have \( 2^k \) nodes and
-each node has a list of length \( \frac{n}{2^k} \), so the total cost of
-merging the lists together on that level is \( 2^k \frac{n}{2^k} = n \). \pause
-
-Thus, \( O(\log n \cdot n) = O(n \log n) \).
-
-This algorithm has the same recursive pattern as merge sort.
+\begin{itemize}[<+->]
+  \item This algorithm has the same recursion as merge sort.
+  \item At every level of the recursion, we divide the list in half,
+    making the depth of the recursive tree \( \log n \).
+  \item At a particular level \( k \), we have \( 2^k \) nodes, and each node
+    has a list of length \( \frac{n}{2^k} \), so the total cost of merging
+    the lists together on that level is \( 2^k \frac{n}{2^k} = n \).
+  \item Thus, \( O(\log n \cdot n) = O(n \log n) \).
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{}
 \framesubtitle{}
-So we can evaluate a polynomial at \( n \) roots of unity in \( O(n \log n) \)
-with the above algorithm, called the \alert{FFT}. \pause
-
-If we want to multiply two polynomials \( f \) and \( g \), we can compute
-\( \FFT(f) \circ \FFT(g) \), where \( \circ \) is the element-wise multiplication
-of the outputs in the point-value representations.
+\begin{itemize}[<+->]
+  \item So we can evaluate a polynomial at \( n \) roots of unity in
+    \( O(n \log n) \) with the above algorithm, called the \alert{FFT}.
+  \item If we want to multiply two polynomials \( f \) and \( g \), we can
+    compute \( \FFT(f) \circ \FFT(g) \), where \( \circ \) is the element-wise
+    multiplication of the outputs in the point-value representations.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Inverse FFT}
 \framesubtitle{}
-How do we interpolate coefficients from this point-value representation to
-complete our convolution? \pause
-
-We need the inverse FFT, which luckily can be written
-in terms of the FFT. Recall that the FFT essentially computes the 
-multiplication of the Vandermonde matrix with the coefficients to get to the
-outputs, e.g. \( V \vec{a} = \vec{y} \). \pause
-
-To go from the outputs to the coefficients, we can simply multiply
-by \( V^{-1} \), i.e. \( \vec{a} = V^{-1} \vec{y} \).
+\begin{itemize}[<+->]
+  \item How do we interpolate coefficients from this point-value
+    representation to complete our convolution?
+  \item We need the inverse FFT, which luckily can be written in
+    terms of the FFT. Recall that the FFT essentially computes the
+    multiplication of the Vandermonde matrix with the coefficients
+    to get to the outputs, e.g. \( V \vec{a} = \vec{y} \).
+  \item To go from the outputs to the coefficients, we can simply
+    multiply by \( V^{-1} \), i.e. \( \vec{a} = V^{-1} \vec{y} \).
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Inverse FFT}
 \framesubtitle{}
-Computing \( V^{-1} \) is tedious and I don't
-have much insight (read \textit{Introduction to Algorithms} for a proper proof),
-but it essentially involves just the definition of matrix inverse and more
-properties of roots of unity. \pause 
-
-It turns out that \( V^{-1} \) is essentially \( V \) but evaluated
-at \( x^{-1} \) instead of \( x \). Also, divide by \( n \). \pause 
-
-So we can just use the FFT but take the inverse of the root of unity,
-and divide each element by \( n \) at the end. \pause
-
-Finally, we arrive at the FFT formulation of convolutions.
+\begin{itemize}[<+->]
+  \item Computing \( V^{-1} \) is tedious and I don't have much insight
+    (read \textit{Introduction to Algorithms} for a proper proof), but
+    it essentially involves just the definition of matrix inverse and
+    more properties of roots of unity.
+  \item It turns out that \( V^{-1} \) is essentially \( V \) but evaluated
+    at \( x^{-1} \) instead of \( x \). Also, divide by \( n \).
+  \item So we can just use the FFT but take the inverse of the root of unity,
+    and divide each element by \( n \) at the end.
+  \item Finally, we arrive at the FFT formulation of convolutions.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -676,26 +721,27 @@ A concrete implementation can be found
 \begin{frame}
 \frametitle{Iterative FFT}
 \framesubtitle{}
-The recursive algorithm can be made iterative surprisingly elegantly from a
-pattern in binary form of the indexes when recursively subdividing. \pause
-
-I omit the details here, although it makes the algorithm \( O(n) \) in memory
-instead of \( O(n \log n) \) and will likely
-run faster than the recursive algorithm. \pause
-
-An implementation is above.
+\begin{itemize}[<+->]
+  \item The recursive algorithm can be made iterative surprisingly elegantly
+    from a pattern in binary form of the indexes when recursively subdividing.
+  \item I omit the details here, although it makes the
+    algorithm \( O(n) \) in memory instead of \( O(n \log n) \)
+    and will likely run faster than the recursive algorithm.
+  \item An implementation is above.
+\end{itemize}
 \end{frame}
 
 \subsubsection[NTT]{Number Theoretic Transform}
 \begin{frame}
 \frametitle{Number Theoretic Transform (NTT)}
 \framesubtitle{}
-Another improvement on the FFT comes from the observation that complex
-roots of unity were an arbitrary pick, any \alert{field} with sufficient
-properties will do. \pause 
-
-In particular, we can pick a large prime number \( p \) 
-and find an equivalent to a root of unity under the field modulo \( p \).
+\begin{itemize}
+  \item Another improvement on the FFT comes from the observation
+    that complex roots of unity were an arbitrary pick, any
+    \alert{field} with sufficient properties will do. \pause
+  \item In particular, we can pick a large prime number \( p \) and
+    find an equivalent to a root of unity under the field modulo \( p \).
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -748,12 +794,13 @@ and a 10 second clip from that song. We wish to compute:
       \caption{Generating a clip from an anime intro.}
     \end{subfigure}
     
-    \begin{subfigure}[h]{0.4 \textwidth}
+    \begin{subfigure}[h]{0.48 \textwidth}
       \includegraphics[scale=0.3]{compare.png}
-      \caption{Comparison between songs; finds it occurs exactly 35.2 seconds in.}
+      \caption{Comparison between songs; finds that
+      it occurs exactly 35.2 seconds into the song.}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[h]{0.4 \textwidth}
+    \begin{subfigure}[h]{0.48 \textwidth}
       \includegraphics[scale=0.3]{result.png}
       \caption{Song with the lowest loss.}
     \end{subfigure}
@@ -764,56 +811,64 @@ and a 10 second clip from that song. We wish to compute:
 \begin{frame}
 \frametitle{Audio Information}
 \framesubtitle{}
-First, some basics about the representation of audio data. \pause
-
-We will use the mp3 file format at a sample rate of 48kHz. \pause 
-
-Audio is fundamentally just a list of numbers, where each number represents
-the amplitude of the sound wave at that time. A 48kHz sample rate means 
-there are 48,000 of these measurements per second. \pause
-
-Each number is a 16-bit number in the range \( [0, 1) \), which we
-will transform to an integer in the range \( [0, 2^{16}) \) for the NTT.
+\begin{itemize}[<+->]
+  \item First, some basics about the representation of audio data.
+  \item We will use the mp3 file format at a sample rate of 48kHz.
+  \item Audio is fundamentally just a list of numbers, where each number
+    represents the amplitude of the sound wave at that time. A 48kHz
+    sample rate means there are 48,000 of these measurements per second.
+  \item Each number is a 16-bit float in the range \( [0, 1) \), which we
+    change into an integer in \( [0, 2^{16}) \) for the NTT.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Modeling the Problem}
 \framesubtitle{}
-So we have two lists of integers, and now wish to find where the smaller list
-\enquote{fits} into the larger list the best. \pause
-
-One way to do this is to compute the \alert{\( \ell^2 \) norm},
-or the vector difference between the two lists. \pause
-
-So we slide the smaller list over the larger list, computing the sum of squares
-error as we go. Note that this is very similar to the convolution, except
-we to calculate the sum of squares instead of the element-wise product.
-We also need to flip one of the lists because the convolution flips a list.
+\begin{itemize}
+  \item So we have two lists of integers, and now wish to find where
+    the smaller list \enquote{fits} into the larger list the best. \pause
+  \item One way to do this is to compute the \alert{\( \ell^2 \) norm},
+    or the vector difference between the two lists. \pause
+  \item So we slide the smaller list over the larger
+    list, computing the sum of squares error as we go.
+  \item This seems very similar to the convolution, except we
+    calculate the sum of squares instead of the dot product.
+  \item We also need to flip one of the lists
+    because the convolution flips a list.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Turning Sum of Squares into Convolutions}
 \framesubtitle{}
-How do we reduce sum of squares to an element-wise product?
-\pause
-We notice that for elements of the lists \( a, b \)
-\[ (a_i - b_j)^2 = a_i^2 - 2a_i b_j + b_j^2 \]
-\pause 
-When we sum over the length of \( a \),
-assuming \( a \) is the smaller list, we get:
-\[ \norm{a}^2 - 2 a \cdot b' + \norm{b'}^2 \] 
-where \( b' \) is the slice that \( a \) overlaps.
-\pause
-\( \norm{a} \) is a constant, so it can be ignored.
-Thus, we only need to compute \( a \cdot b' \) and \( \norm{b'} \).
-\pause
-\( a \cdot b' \) directly follows from a convolution and
-can be read from \( a * b^r \), where \( b^r \) is the reverse of \( b \).
-\pause
-Lastly, if we make sure to scan from left to right, then we can compute
-\( \norm{b'} \) by storing an intermediate value, and updating it when we slide 
-\( a \) an additional index by subtracting out the front of \( b' \), where
-\( a \) left from, and adding the new value that \( a \) covers.
+\begin{itemize}[<+->]
+  \item How do we reduce sum of squares to a dot product?
+  \item We notice that for elements of the lists \( a, b \)
+    \[ (a_i - b_j)^2 = a_i^2 - 2a_i b_j + b_j^2 \]
+  \item When we sum over the length of \( a \),
+    assuming \( a \) is the smaller list, we get:
+    \[ \norm{a}^2 - 2 a \cdot b' + \norm{b'}^2 \]
+    where \( b' \) is the slice that \( a \) overlaps.
+  \item \( \norm{a} \) is a constant, so it can be ignored.
+    Thus, we only need to compute \( a \cdot b' \) and \( \norm{b'}^2 \).
+  \item \( a \cdot b' \) directly follows from a convolution and
+    can be read from \( a * b^r \), where \( b^r \) is the reverse of \( b \).
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Turning Sum of Squares into Convolutions}
+\framesubtitle{}
+\begin{itemize}
+  \item Lastly, we can compute \( \norm{b'}^2 \) with two-pointer logic.
+  \item First, compute the very first value of \( \norm{b'}^2 \) as usual.
+  \item If we make sure to scan from left to right, then
+    only two things change in \( b' \): it loses a value
+    from the left and it gains a new value from the right.
+  \item We can account for this in \( \norm{b'}^2 \) by subtracting out the
+    left value squared and adding in the right value squared.
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -842,57 +897,57 @@ Lastly, if we make sure to scan from left to right, then we can compute
 \begin{frame}
 \frametitle{NTT Considerations}
 \framesubtitle{}
-We need to be careful about a few things. If we don't pick \( p \) for the NTT
-large enough, then it won't work. \pause
-
-If \( m \) is the largest number in a list
-and \( n \) is the length of the list, then we need \( p \) to be bigger than
-\( m^2 n \), \\ the largest a single element can become. \pause
-
-\( n \) is \( 90 \cdot 48,000 \approx 4 \cdot 10^6 \) and \( m \) is
-\( 2^{16} \). \( m^2 n = 2^{32} \cdot 4 \cdot 10^6 \approx 2^{54} \). \pause
-
-This seems fine since \( 2^{54} \) will fit in a long, but this won't work
-since we need to compute \( x^2 \) as part of the FFT, and \( (2^{54})^2 \)
-will definitely overflow. \pause
-
-We could get around this overflow by doing modulo
-multiplication instead of standard multiplication, but that would introduce
-a log factor, making the algorithm 64x slower, an unacceptable slowdown.
+\begin{itemize}[<+->]
+  \item We need to be careful about a few things. If we don't
+    pick \( p \) for the NTT large enough, then it won't work.
+  \item If \( m \) is the largest number in a list and \( n \)
+    is the length of the list, then we need \( p \) to be bigger
+    than \( m^2 n \), the largest a single element can become.
+  \item \( n \) is \( 90 \cdot 48,000 \approx 4 \cdot 10^6 \)
+    and \( m \) is \( 2^{16} \).
+  \item \( m^2 n = 2^{32} \cdot 4 \cdot 10^6 \approx 2^{54} \).
+  \item This seems fine since \( 2^{54} \) will fit in a long, but
+    this won't work since we need to compute \( x^2 \) as part of
+    the FFT, and \( (2^{54})^2 \) will definitely overflow.
+  \item We could get around this overflow by doing modulo multiplication
+    instead of standard multiplication, but that would introduce a log
+    factor, making the algorithm 64x slower, an unacceptable slowdown.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{\( \mu \)-law Companding Algorithm}
 \framesubtitle{}
-One trick is to reduce the bitrate of the mp3 at the sacrifice of audio quality,
-and go from 16-bit audio to 8-bit audio. \pause
-
-A naive way to do it would be to multiply the real number by \( 2^8 \) and
-round, but a better way is the \( \mu \)-law algorithm, a trick that preserves
-frequencies closer to the human voice. A comparison between naive scaling
-and the \( \mu \) law is presented
-\href{https://www.youtube.com/watch?v=PqkE_t5cCoA}{here}. \pause
-
-With 8-bit audio, \( m^2 n = 2^{16} \cdot 4 \cdot 10^6 \approx 2^{38} \).
-This goes over the limit of \( 2^{32} \) for \( x^2 \) to fit in a long,
-but it works in practice since mp3 audio rarely hits maximum volume and
-our clip is 10 seconds long, and we computed for 90 seconds. \pause
-
-An implementation is given
-\href{https://github.com/stephen-huan/anime-music-quiz}{here} and a video
-walkthrough \href{https://www.youtube.com/watch?v=7fUicc_lIGA}{here}.
+\begin{itemize}[<+->]
+  \item One trick is to reduce the bitrate of the mp3 at the expense
+    of audio quality, going from 16-bit audio to 8-bit audio.
+  \item A naive way to do it would be to multiply the real number by \( 2^8 \)
+    and round, but a better way is the \( \mu \)-law algorithm,
+    a trick that preserves frequencies closer to the human voice.
+  \item A comparison between scaling and the \( \mu \)-law
+    is shown \href{https://youtu.be/PqkE_t5cCoA}{here}.
+  \item With 8-bit audio, \( m^2 n = 2^{16} \cdot 4 \cdot 10^6 \approx 2^{38} \).
+    This goes over the limit of \( 2^{32} \) for \( x^2 \) to fit in a long,
+    but it works in practice since audio rarely hits maximum volume and our clip
+    is 10 seconds long; we computed for 90 seconds.
+  \item An implementation is given 
+    \href{https://github.com/stephen-huan/anime-music-quiz}{here} and
+    a demonstration \href{https://youtu.be/7fUicc_lIGA}{here}.
+\end{itemize}
 \end{frame}
 
 \subsection{2D Convolutions}
 \begin{frame}
 \frametitle{2D Convolutions}
 \framesubtitle{}
-2D convolutions, a convolution generalized to matrices, are useful in computer
-vision for a variety of reasons, including edge detection and convolutional
-neural networks. Their exact usage will not be discussed here, and instead
-we will discuss an efficient way to calculate a 2D convolution with the FFT we 
-have already developed. 
-
+\begin{itemize}
+  \item 2D convolutions, a convolution generalized to matrices,
+    are useful in computer vision for a variety of reasons,
+    including edge detection and convolutional neural networks.
+  \item Their exact usage will not be discussed here, and
+    instead we will discuss an efficient way to calculate a
+    2D convolution with the FFT we have already developed.
+\end{itemize}
 \begin{alertblock}{Definitions}
   We have an \enquote{data} matrix, representing an image,
   and we have a \emphasis{kernel} matrix, which is the matrix we imagine
@@ -903,14 +958,15 @@ have already developed.
 \begin{frame}
 \frametitle{Scipy Definition}
 \framesubtitle{}
-For 2D convolutions, the result is slightly ambiguous \\
-depending on how one defines it. 
-
-We will use
-\href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.convolve2d.html}{scipy's}
-definition, where to calculate the value of the convolution at a particular
-point, we imagine the \textit{bottom right} corner of the kernel
-placed over that point.
+\begin{itemize}
+  \item For 2D convolutions, the result is slightly
+  ambiguous, depending on the exact definition.
+  \item  We will use
+    \href{https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.convolve2d.html}{scipy's}
+    definition, where to calculate the value of the convolution
+    at a particular point, we imagine the \textit{bottom
+    right} corner of the kernel placed over that point.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -937,13 +993,16 @@ and a kernel \( h \) of size \( H \)x\( W \) as follows
 \begin{frame}
 \frametitle{}
 \framesubtitle{}
-This operation is also symmetric, so  what we call the image and the kernel
-is essentially arbitrary (by convention, the kernel is the smaller matrix).
-The resulting matrix is going to be of size \( (M + H - 1) \)x\( (N + W - 1) \)
-from the same logic as the 1D case. \pause 
-
-Thus, the time it takes to compute the convolution is \( O(MNHW) \).
-We can, however, take advantage of a trick if the kernel has a certain property.
+\begin{itemize}
+  \item This operation is also symmetric, so what we call
+    the image and the kernel is essentially arbitrary.
+  \item By convention, the kernel is the smaller matrix. 
+  \item The resulting matrix is going to be of size
+    \( (M + H - 1)\)x\( (N + W - 1) \) from the same logic as
+    the 1D case. Thus, the running time is \( O(MNHW) \).
+  \item We can, however, take advantage of a
+    trick if the kernel has a certain property.
+\end{itemize}
 \end{frame}
 
 \subsection{Separable Kernels}
@@ -976,7 +1035,7 @@ We can, however, take advantage of a trick if the kernel has a certain property.
 \end{exampleblock}
 \pause
 \begin{block}{Separating the convolution}
-  If \( M \) is separable, we can convolute with
+  If \( M \) is separable, we can convolve with
   \( \vec{u} \) and then with \( \vec{v} \).
 \end{block}
 \end{frame}
@@ -1022,45 +1081,50 @@ We can, however, take advantage of a trick if the kernel has a certain property.
 \begin{frame}
 \frametitle{Runtime Analysis}
 \framesubtitle{}
-How does this help us? \pause
-
-Well, recall the running time of \( O(MNHW) \).
-If we do two convolutions of a kernel of \( H \)x1  and another of 1x\( W \),
-the running time will be \( O(MNH + MNW) = O(MN(H + W)) \), a significant
-improvement as \( HW \) grows quadratically while \( H + W \) grows linearly.
-\pause
-
-We can also use repeated 1D convolution to compute the 2D convolution for the
-specific case of a vector, yielding a \( O(MN \log MN) \) time algorithm.
+\begin{itemize}[<+->]
+  \item How does this help us?
+  \item Well, recall the running time of \( O(MNHW) \).
+  \item If we do two convolutions of a kernel of \( H \)x1 and another of
+    1x\( W \), the running time will be \( O(MNH + MNW) = O(MN(H + W)) \).
+  \item This is a significant improvement as \( HW \)
+    grows quadratically while \( H + W \) grows linearly.
+  \item We can also use repeated 1D convolution to
+    compute the 2D convolution for the specific case of a
+    vector, yielding a \( O(MN \log MN) \) time algorithm.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{}
+\frametitle{Limits of Separability}
 \framesubtitle{}
-However, not every matrix is separable. The conditions are quite strict,
-a matrix is separable if and only if every pair of rows is a multiple of each
-other, i.e. the matrix is made up of multiples of a particular row vector.
-As a consequence, the matrix is also made up of multiples of a particular
-column vector. These matrices are relatively rare, so there is utility
-in deriving a more general algorithm.
+\begin{itemize}
+  \item However, clearly not every matrix is separable.
+  \item The conditions are quite strict, a matrix is separable if and
+    only if every pair of rows is a multiple of each other, put another
+    way, the matrix is made up of multiples of a particular row vector.
+  \item As a consequence, the matrix is also made
+    up of multiples of a particular column vector.
+  \item These matrices are relatively rare, so there
+    is utility in deriving a more general algorithm.
+\end{itemize}
 \end{frame}
 
 \subsection{FFT Algorithm}
 \begin{frame}
 \frametitle{Reduction to 1D Convolution}
 \framesubtitle{}
-We can reduce 2D convolutions to 1D convolutions if we're clever.
-The observation is that if we \alert{flatten} both matrices into a 1D list
-by reading from top to bottom, left to right, we can just convolute in 1D
-and reconstruct the matrix afterwards. \pause
-
-We need to make sure both matrices are sufficiently padded with zeros, such that
-the zeros force values in the kernel to their proper rows in the image. \pause
-
-It turns out that we can just pad both matrices
-to the final column size of the convolution, 
-\( N + W - 1 \), flatten both, convolute with the FFT, and then reshape the
-resulting list to a matrix of proper size.
+\begin{itemize}[<+->]
+  \item The idea is to reduce 2D convolutions to 1D convolutions.
+  \item The observation is that if we \alert{flatten} both matrices
+    into a 1D list by reading from top to bottom, left to right, we
+    can just convolve in 1D and reconstruct the matrix afterwards.
+  \item We need to make sure both matrices are sufficiently
+    padded with zeros, such that the zeros force values
+    in the kernel to their proper rows in the image.
+  \item It turns out that we can just pad both matrices to the final column
+    size of the convolution, \( N + W - 1 \), flatten both, convolve with
+    the FFT, and then reshape the resulting list to a matrix of proper size.
+\end{itemize} 
 \end{frame}
 
 \begin{frame}
@@ -1068,9 +1132,9 @@ resulting list to a matrix of proper size.
 \framesubtitle{}
 \begin{enumerate}[<+->]
   \item Pad the rows of both matrices with zeros such that
-    each has a width of \( N + W - 1 \)
+    each row has a width of \( N + W - 1 \)
   \item Flatten both by reading top to bottom, left to right
-  \item Convolute the resulting lists in 1D
+  \item convolve the resulting lists in 1D
   \item Reconstruct a 2D matrix, because we know its shape is
     \( (M + H - 1) \)x\( (N + W - 1) \)
 \end{enumerate}
@@ -1104,17 +1168,17 @@ resulting list to a matrix of proper size.
 \begin{frame}
 \frametitle{Trimming}
 \framesubtitle{}
-In most computer vision applications, the kernel is a square matrix
-of size \( K \)x\( K \), where \( K \) is an odd number. \pause
-
-The \textit{middle value} of the kernel is then placed over each pixel of the
-image, yielding a transformed image of the same dimensionality as the original.
-\pause
-
-We can simulate this by simply cutting off the first and last
-\( \frac{K - 1}{2} \) rows and the same for the columns.
-This transforms the resulting size from \( N + K - 1 \) to
-\( N + K - 1 - 2 \frac{K - 1}{2} = N \).
+\begin{itemize}[<+->]
+  \item In many computer vision applications, the kernel is a square
+    matrix of size \( K \)x\( K \), where \( K \) is an odd number.
+  \item The \textit{middle value} of the kernel is then
+    placed over each pixel of the image, yielding a transformed
+    image of the same dimensionality as the original.
+  \item We can simulate this by simply cutting off the first and last
+    \( \frac{K - 1}{2} \) rows and the same for the columns.
+    This transforms the resulting size from \( N + K - 1 \) to
+    \( N + K - 1 - 2 \frac{K - 1}{2} = N \).
+\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -1122,7 +1186,7 @@ This transforms the resulting size from \( N + K - 1 \) to
 \framesubtitle{}
 \begin{minted}[label=pruning]{python}
 def prune(h: list, x: list) -> list:
-    """ Prunes a convolution for the specific KxK filter case. """
+    """ Prunes a convolution for a KxK filter. """
     m, k = conv(h, x), min(len(h), len(x))
     pad = (k - 1)>>1
     return [row[pad:-pad] for row in m[pad:-pad]]
@@ -1132,20 +1196,21 @@ def prune(h: list, x: list) -> list:
 \begin{frame}
 \frametitle{Runtime Analysis}
 \framesubtitle{}
-The running time of the algorithm is going to be
-\( O(MN \log MN) = O(MN(\log N + \log M) = O(MN \log N) \) since we convolute 
-a list of length \( M(N + W - 1) \), and we assume \( N \geq M > W \). \pause
-
-This is not necessarily faster than the brute-force algorithm;
-it depends on the kernel size. For simplicity, suppose we have a \( N \)x\( N \)
-image and a \( K \)x\( K \) kernel where \( N > K \). Brute force yields
-\( O(N^2 K^2) \) while the FFT algorithm yields \( O(N^2 \log N) \). \pause
-
-Thus, if \( \log N < K^2 \) then the FFT algorithm is going to be faster.
-For \( K > 5 \) that is a fair assumption since \( K^2 = 25 \), \( 2^{25} \)
-is several million. Obviously the FFT algorithm has a much larger constant
-factor, but for a sufficiently large kernel the time savings become greater
-and greater.
+\begin{itemize}[<+->]
+  \item The running time of the algorithm is going to be \( O(MN \log MN) =
+    O(MN(\log N + \log M) = O(MN \log N) \) since we convolve a list
+    of length \( M(N + W - 1) \), and we assume \( N \geq M > W \).
+  \item This is not necessarily faster than the
+    brute-force algorithm; it depends on the kernel size.
+  \item For simplicity, suppose we have a \( N \)x\( N \) image and
+    a \( K \)x\( K \) kernel where \( N > K \). Brute force yields \(
+    O(N^2 K^2) \) while the FFT algorithm yields \( O(N^2 \log N) \).
+  \item Thus, if \( \log N < K^2 \), then the FFT is going to be
+    faster. \item For \( K > 5 \) that is a fair assumption since \( K^2 =
+    25 \), \( 2^{25} \) is several million. Obviously the FFT algorithm has
+    a much larger constant factor, but for a sufficiently large kernel the
+    time savings become greater and greater.
+\end{itemize}
 \end{frame}
 
 \section{Conclusion}
@@ -1153,28 +1218,30 @@ and greater.
 \begin{frame}
 \frametitle{Conclusion}
 \framesubtitle{}
-The convolution, an operator very useful for signal, audio, and image
-processing, can be efficiently computed with the Fast Fourier Transform, or FFT.
-\pause
-
-If the data is integer, then floating-point arithmetic can be avoided with the
-Number Theoretic Transform (NTT), a variant of the FFT which uses modulo
-instead of complex numbers, and calculates entirely in integers.
+\begin{itemize}[<+->]
+  \item The convolution, an operator very useful for
+    signal, audio, and image processing, can be efficiently
+    computed with the Fast Fourier Transform, or FFT.
+  \item If the data is integer, then floating-point arithmetic can be avoided
+    with the Number Theoretic Transform (NTT), a variant of the FFT which uses
+    modulo instead of complex numbers, and calculates entirely in integers.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Conclusion}
 \framesubtitle{}
-This lecture skips over the continuous case (what I've been calling the 
-Fast Fourier Transform is more mathematically called the
-\alert{Discrete Fourier Transform}, or DFT) but the idea is essentially the
-same, any summation turns into an integral. \pause
-
-It also skips over the mathematical interpretation of the FFT,
-involving decomposing a function into a series of sine and cosine waves.
-This is useful for signal processing and audio analysis,
-but requires a stronger mathematical background and to be honest, I haven't
-studied it at all myself. Fourier analysis goes deeper than we need here. 
+\begin{itemize}
+  \item This lecture skips over the continuous case (what I've been
+    calling the Fast Fourier Transform is more mathematically called
+    the \alert{Discrete Fourier Transform}, or DFT) but the idea is
+    essentially the same, summations turn into integrals. \pause
+  \item It also skips over the mathematical interpretation of the FFT,
+    involving decomposing a function into a series of sine and cosine waves.
+  \item This is useful for signal processing and audio analysis, but
+    requires a stronger mathematical background and to be honest, I haven't
+    studied it at all myself. Fourier analysis goes deeper than we need here.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -1304,7 +1371,7 @@ the FFT from an engineering or mathematical standpoint are not hard to find.
     negative power of \( x \) in \( p \) is \( x^{-N} \), We can simply multiply
     \( p \) by \( x^N \) to make every power positive, making a new polynomial
     \( p' \). Then, after computing \( (p')^3 \), instead of looking at the
-    coefficient of \( x^0 \), we can look at the coefficient of \( x^{-3N} \)
+    coefficient of \( x^0 \), we can look at the coefficient of \( x^{3N} \)
     (accounting for the fact that \( p' = x^N p \), \( (p')^3 = x^{3N} p^3 \),
     \( p^3 = \frac{(p')^3}{x^{3N}} \)
     \addtocounter{enumi}{-1}
