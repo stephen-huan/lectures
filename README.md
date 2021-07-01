@@ -59,5 +59,5 @@ fun applications: this [SMBC](https://www.smbc-comics.com/comic/2010-09-11),
 
 ## Videos
 
-- [_Range Minimum Query with Fischer-Heun_](https://www.youtube.com/watch?v=wqfwPICt-Tg)
+- [_Range Minimum Query with Fischer-Heun_](https://youtu.be/wqfwPICt-Tg)
 

@@ -2073,22 +2073,16 @@ Thus, because it is redundant in either case, we can remove this constraint
 as well. Finally, we notice that if \( L = 0 \), then the right side of
 \eqref{eq:glover2} reduces to \( g_i(\bm{x}, \bm{y}) \leq y'_i \), which can
 be combined with \eqref{eq:disable} to yield \( y'_i = g_i(\bm{x}, \bm{y}) \).
+Since this is an equality constraint with just one variable, we can avoid
+creating a new continuous variable for \( y'_i \) by just substituting its
+value wherever \( y'_i \) occurs, in this case just \( y'_i \leq U_i y_i \).
 
-Recall that we started by adding possibly \( n \) new constraints per
-series, where \( n \) is the number of bundles which contain the series.
-Using the re-write and Glover's linearization, we turned \( O(n) \) into
-\( O(1) \) by adding at most 5 constraints and 1 continuous variable.
-Finally, with the observations pruning extraneous constraints, we add
-just 2 additional constraints and 1 continuous variable:
-\begin{align*}
-  y'_i &\leq U_i y_i \\
-  y'_i &= g_i(\bm{x}, \bm{y})
-\end{align*}
-
-This is not mutually exclusive with our old constraint of \( y_i \geq x_j
-\), however. We can use the old constraint when \( n \leq 3 \) and use the
-new constraints when \( n > 3 \) to bound the number of constraints, taking
-the best of both worlds.
+Recall that we started by adding possibly \( n \) new constraints per series,
+where \( n \) is the number of bundles which contain the series. Using the
+re-write and Glover's linearization, we turned \( O(n) \) into \( O(1) \) by
+adding at most 5 constraints and 1 continuous variable. Finally, with the
+observations pruning extraneous constraints, we add just 1 constraint:
+\[ g_i(\bm{x}, \bm{y}) \leq U_i y_i \]
 
 After running for 2 hours on
 \href{https://documentation.tjhsst.edu/machines/other/snowy}{Snowy}, the
@@ -2154,12 +2148,12 @@ To summarize, we will compare the sizes of each of the programs developed. If
     & \( B + 2S \) & 0 & \( S + 2 \) \\
     \hline
     \multirow{2}{5em}{\hyperref[eq:expected_value]{fractional program}}
-    & \( [B + 2S] + S \) & \( S \) & \( [S + 2] + 1 + 2S + S \) \\
-    & \( B + 3S \) & \( S \) & \( 4S + 3 \) \\
+    & \( [B + 2S] + S \) & \( 0 \) & \( [S + 2] + 1 + S + S \) \\
+    & \( B + 3S \) & \( 0 \) & \( 3S + 3 \) \\
     \hline
     \multirow{2}{5em}{\hyperref[eq:milfp]{linearized program}}
-    & \( B + 3S \) & \( [S] + 2S + 1 \) & \( [4S + 3] + 3(2S) + 1 \) \\
-    & \( B + 3S \) & \( 3S + 1 \) & \( 10S + 4 \) \\
+    & \( B + 3S \) & \( 2S + 1 \) & \( [3S + 3] + 3(2S) + 1 \) \\
+    & \( B + 3S \) & \( 2S + 1 \) & \( 9S + 4 \) \\
     \hline
   \end{tabular}
   \caption{Program sizes.}
