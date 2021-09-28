@@ -35,9 +35,9 @@ fun applications: this [SMBC](https://www.smbc-comics.com/comic/2010-09-11),
     - `probability-theory`
         - [_Case Study of the Discord Mudae System_](./math/probability-theory/gacha-optimization/writeup.pdf)
         - [_Keyboard LEDs and Markov Chains_](./math/probability-theory/keyboard-markov-chains/writeup.pdf)
-    - [_Complex Eigenvectors_](./math/complex-eigenvectors/writeup.pdf)
     - [_Differential Equations and Geosystems_](./math/diffy-geosystems/geosystems.pdf)
     - [_An Efficient Privacy Attack on MyAnimeList's Affinity Oracle: Technical Notes on Score Estimation_](./math/mal-affinity-attack/writeup.pdf)
+    - [_Missile Guidance in the Presence of Constant Error_](./math/missile-guidance/missile.pdf)
     - [_Physics of Railgun_](./math/railgun/railgun.pdf)
 - `senior-computer-team`
     - `editorials`
