@@ -1,0 +1,15 @@
+#!/usr/local/bin/fish
+
+eval ~/.pyenv/versions/miniconda3-latest/bin/conda "shell.fish" "hook" | source
+conda activate ~/.conda/envs/venv
+# python animate.py input/bad_apple.mp4 -a input/bad_apple.aac -t input/text.txt -d write & 
+python animate.py input/bad_apple.mp4 -t input/text.txt -d write &
+
+# clear file
+echo > out.txt
+vim --clean -R -u vimrc out.txt
+
+# cleanup on vim exit
+pkill python
+pkill afplay
+

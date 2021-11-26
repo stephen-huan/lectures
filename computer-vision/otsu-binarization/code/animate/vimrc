@@ -1,0 +1,11 @@
+" disable syntax highlighting for performance 
+syntax off 
+set autoread " automatically reload buffer
+
+func Reload(timer)
+    execute ':silent! edit'
+endfunc
+
+" automatically reload the file at the given rate
+let timer = timer_start(5, 'Reload', {'repeat': -1})
+
