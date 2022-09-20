@@ -1,5 +1,8 @@
+---
+layout: custom
+---
+
 # Computer Science Lectures
-by: Stephen Huan
 
 See this
 [Gist](https://gist.github.com/stephen-huan/aa609965c86d750736398c28b025f9be)
@@ -9,19 +12,18 @@ for a comprehensive list of implementations for many of these algorithms.
 
 - `computer-vision`
     - [_Fast Fourier Transform and 2D Convolutions_](./computer-vision/convolution/handout.pdf),
-[full](./computer-vision/convolution/presentation.pdf),
-[lecture](./computer-vision/convolution/lecture.pdf)
+      [full](./computer-vision/convolution/presentation.pdf),
+      [lecture](./computer-vision/convolution/lecture.pdf)
     - [_k-means, kd-Trees, and Median of Medians: Color Quantization done fast_](./computer-vision/kmeans-kd-tree/handout.pdf),
-[full](./computer-vision/kmeans-kd-tree/presentation.pdf)
-    - [_Linear Algebra_](./computer-vision/linear-algebra/lecture.pdf) 
+      [full](./computer-vision/kmeans-kd-tree/presentation.pdf)
+    - [_Linear Algebra_](./computer-vision/linear-algebra/lecture.pdf)
     - [_Otsu's Binarization_](./computer-vision/otsu-binarization/handout.pdf),
-[full](./computer-vision/otsu-binarization/presentation.pdf),
-fun applications: this [SMBC](https://www.smbc-comics.com/comic/2010-09-11),
-[Bad Apple!! in vim](https://youtu.be/q7K96mFyagE)
-
+      [full](./computer-vision/otsu-binarization/presentation.pdf),
+      fun applications: this [SMBC](https://www.smbc-comics.com/comic/2010-09-11),
+      [Bad Apple!! in vim](https://youtu.be/q7K96mFyagE)
 - `cubing-lectures`
     - [_Various Computational Cube Theory Conjectures_](./cubing-lectures/computational-cube-theory/cubetheory.pdf),
-[presentation](./cubing-lectures/computational-cube-theory/ComputationalCubeTheory.pdf)
+      [presentation](./cubing-lectures/computational-cube-theory/ComputationalCubeTheory.pdf)
     - [_Eigenvalues of Permutation Matrices_](./cubing-lectures/eigenvalues-permutation-matrices/eigenvalue.pdf)
     - [_Linearization of the Rubik's Cube_](./cubing-lectures/linearization/linear.pdf)
     - [_Matricization of the Rubik's Cube_](./cubing-lectures/matricization/matrix.pdf)
@@ -29,8 +31,8 @@ fun applications: this [SMBC](https://www.smbc-comics.com/comic/2010-09-11),
 - `machine-learning`
     - [_No Game (Theory) No Life: The Machine Learning Approach to Playing Games_](./machine-learning/game-theory/lecture.pdf)
     - TJHSST Computer Systems Lab 2020--2021 project:
-[poster](./machine-learning/syslab/poster.pdf),
-[paper](./machine-learning/syslab/paper.pdf)
+      [poster](./machine-learning/syslab/poster.pdf),
+      [paper](./machine-learning/syslab/paper.pdf)
 - `math`
     - `probability-theory`
         - [_Case Study of the Discord Mudae System_](./math/probability-theory/gacha-optimization/writeup.pdf)
@@ -50,7 +52,7 @@ fun applications: this [SMBC](https://www.smbc-comics.com/comic/2010-09-11),
     - [_Monotonic Queue_](./senior-computer-team/monotonic-queue/lecture.pdf)
     - [_Range Minimum Query with Fischer-Heun_](./senior-computer-team/range-minimum-query/lecture.pdf), [abridged](./senior-computer-team/abridged-rmq/lecture.pdf)
 
-## Other Lectures
+## External Lectures
 
 - [_Accelerating Exact k-means Algorithms with Geometric Reasoning: Close reading of a paper_](https://docs.google.com/presentation/d/1U8PiAoVIe2rvfzQ_q9tECdlYfy-mHq6HnJUC45Wy9Y4/edit?usp=sharing)
 - [_Color Theory, Part 1: Color Difference Metrics_](https://docs.google.com/presentation/d/1XlxeFMDeSFhnE3O-h7EvX-LEPMq4O18Dc1llNjYITZI/edit?usp=sharing)
