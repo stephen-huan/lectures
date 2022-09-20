@@ -1,7 +1,3 @@
----
-layout: custom
----
-
 # Computer Science Lectures
 
 See this
