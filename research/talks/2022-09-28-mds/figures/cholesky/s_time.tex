@@ -1,0 +1,18 @@
+\begin{tikzpicture}[baseline, scale=0.75]
+  \begin{semilogyaxis}[
+    grid={major},
+    % title={Time with increasing \( \rho_s \)
+    %   (\( N = 65536, \rho = 4, \lambda = 1.5 \))},
+    xlabel={\( \rho_s \)},
+    ylabel={\( \log_{10} \) Time (seconds)},
+    legend entries={KL, KL (agg.), \( k \)-NN, select, select (agg.)},
+    legend pos={north west},
+    legend style={nodes={scale=0.65, transform shape}},
+  ]
+  \addplot table {figures/cholesky/s_time_KL.csv};
+  \addplot table {figures/cholesky/s_time_KL_agg.csv};
+  \addplot table {figures/cholesky/s_time_select-KNN.csv};
+  \addplot table {figures/cholesky/s_time_select.csv};
+  \addplot table {figures/cholesky/s_time_select_agg.csv};
+  \end{semilogyaxis}
+\end{tikzpicture}

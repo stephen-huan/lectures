@@ -1,0 +1,217 @@
+\documentclass{beamer}                             % presentation
+\usepackage[utf8]{inputenc}                        % utf8
+\usepackage[T1]{fontenc}                           % fix font encoding
+\usepackage[english]{babel}                        % language
+\usepackage[autostyle, english=american]{csquotes} % quotes
+\usepackage{bm}                                    % extra math packages
+\usepackage{graphicx, subcaption}                  % images
+\usepackage{tikz, pgfplots}                        % plots and graphs
+\usepackage[style=ieee]{biblatex}                  % bibliography
+\usepackage{geometry, hyperref, enumitem}          % misc.
+
+\usetikzlibrary{positioning}                       % advanced positioning
+\pgfplotsset{compat=newest}                        % version of pgfplots
+
+\graphicspath{{./figures/}}
+\addbibresource{references.bib}
+
+\renewcommand{\vec}[1]{\bm{#1}}
+
+% serif font in math mode
+\usefonttheme[onlymath]{serif}
+% customize \item in itemize
+\setitemize{label={},itemsep=0.5cm}
+
+%%% colors
+
+\definecolor{lightblue}{HTML}{a1b4c7}
+\definecolor{orange}{HTML}{ea8810}
+\definecolor{silver}{HTML}{b0aba8}
+\definecolor{rust}{HTML}{b8420f}
+\definecolor{seagreen}{HTML}{23553c}
+
+\colorlet{lightsilver}{silver!20!white}
+\colorlet{darkorange}{orange!85!black}
+\colorlet{darksilver}{silver!85!black}
+\colorlet{darklightblue}{lightblue!75!black}
+\colorlet{darkrust}{rust!85!black}
+\colorlet{darkseagreen}{seagreen!85!black}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=darkrust,
+  citecolor=darkseagreen,
+  urlcolor=darksilver
+}
+
+%%% beamer settings
+
+\usetheme{Pittsburgh}
+\usecolortheme{dolphin}
+
+% hide navigation buttons
+\setbeamertemplate{navigation symbols}{}
+% change title color
+\setbeamercolor{title}{fg=darklightblue}
+\setbeamercolor{frametitle}{fg=darklightblue}
+% change bibliography entry colors
+\setbeamercolor{bibliography entry author}{fg=darklightblue}
+\setbeamercolor{bibliography entry note}{fg=lightblue}
+
+% title page
+\title[]{Sparse Cholesky Factorization by \\ Greedy Conditional Selection}
+\subtitle{}
+\author[Huan, Sch{\"a}fer]
+{Stephen Huan \and Florian\ Sch{\"a}fer}
+\institute[Georgia Institute of Technology]
+{
+  Georgia Institute of Technology
+}
+\date[]{February 19, 2022}
+\subject{Computer Science}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+\frametitle{The Problem: Gaussian Process Regression}
+\framesubtitle{}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \begin{itemize}
+        \item<+-> Measurements \( \vec{y}_\text{Tr} \) at
+          \( N \) points \( X_\text{Tr} \)
+
+        \item<+-> Estimate unseen data \(
+          \vec{y}_\text{Pr} \) at \( X_\text{Pr} \)
+
+        \item<+-> Model as Gaussian process
+
+          \( \rightarrow \) condition on \( \vec{y}_\text{Tr} \)
+
+        \item<+-> Computational cost scales as \( N^3 \)
+
+        \item<+-> Choose \( k \) most informative points!
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{graphs/predict_all}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Conditional \( k \)-th Nearest Neighbors}
+\framesubtitle{}
+
+\begin{columns}
+  \begin{column}{0.6\textwidth}
+    \begin{itemize}
+      \item<1-> Naive: select \( k \) closest points
+
+      \item<2-> Chooses redundant information
+
+      \item<3-> Maximize \emph{mutual information}!
+
+      \item<5-> Direct computation: \( \mathcal{O}(N k^4) \)
+
+      \item<6-> Store Cholesky factor \( \rightarrow \mathcal{O}(N k^2) \)!
+    \end{itemize}
+  \end{column}
+  \begin{column}{0.4\textwidth}
+
+    \only<1>{
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{graphs/predict_knn_1}
+      \end{figure}
+    }
+
+    \only<2->{
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{graphs/predict_knn_2}
+      \end{figure}
+    }
+
+    \vspace{-0.6cm}
+
+    \uncover<3-> {
+      \only<-3>{
+        \begin{figure}
+          \centering
+          \includegraphics[width=\textwidth]{graphs/predict_cknn_1}
+        \end{figure}
+      }
+
+      \only<4-> {
+        \begin{figure}
+          \centering
+          \includegraphics[width=\textwidth]{graphs/predict_cknn_2}
+        \end{figure}
+      }
+    }
+
+  \end{column}
+\end{columns}
+
+\end{frame}
+
+% https://tex.stackexchange.com/questions/518750/beamer-how-to-make-footnote-rule-appear-later-pause
+\begingroup
+\let\oldfootnoterule\footnoterule
+\renewcommand\footnoterule{\only<3->\oldfootnoterule}
+\begin{frame}
+\frametitle{Cholesky Factorization by Selection}
+\framesubtitle{}
+
+\begin{columns}
+  \begin{column}{0.6\textwidth}
+    \begin{itemize}
+      \item<+-> Apply column-wise
+
+        \( \rightarrow \) sparse approx. of GP
+
+      \item<+-> Maximum mutual information
+
+        \( \rightarrow \) minimum KL-divergence
+
+      \item<+-> Improves approx. algorithm of \footnotemark
+    \end{itemize}
+  \end{column}
+  \begin{column}{0.4\textwidth}
+    \begin{figure}[h!]
+        \centering
+        \begin{subfigure}[h]{\textwidth}
+          \begin{tikzpicture}[scale=1/5]
+            \input{figures/cholesky_factor.tex}
+          \end{tikzpicture}
+        \end{subfigure}
+        \begin{subfigure}[h]{0.4 \textwidth}
+          \begin{tikzpicture}[overlay,remember picture]
+            \node[below left=1.25cm and 1cm] at (current page.north east) {
+                \includegraphics[width=2cm]{graphs/predict_cknn_2}
+            };
+          \end{tikzpicture}
+        \end{subfigure}
+    \end{figure}
+
+    \vspace{-0.5cm}
+
+    \begin{figure}[h!]
+      \centering
+      \includegraphics[width=\textwidth]{data/rho_kl-div}
+    \end{figure}
+  \end{column}
+\end{columns}
+
+% https://tex.stackexchange.com/questions/340058/uncovered-footnote-appears-too-early-in-beamer-presentation
+\alt<3->{\footnotetext{\fullcite{schafer2020sparse}}}
+{\let\thefootnote\relax\footnotetext{~ \newline ~}}
+\end{frame}
+\endgroup
+
+\end{document}

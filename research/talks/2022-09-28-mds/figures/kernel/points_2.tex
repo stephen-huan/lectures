@@ -1,0 +1,18 @@
+\begin{tikzpicture}[baseline]
+  \begin{axis}[
+    width={0.4\linewidth},
+    height={0.4\linewidth},
+    axis lines={none},
+    scale only axis=true,
+    legend entries={{}, \( \nu = \frac{1}{2} \)},
+    % legend pos={north east},
+    legend style={at={(0.9, 0.9)}, anchor=north east},
+  ]
+  \addplot [only marks, mark size=0.6, silver]   table
+    {figures/kernel/points.csv};
+  \addplot [only marks, mark size=0.6, seagreen] table
+    {figures/kernel/selected_2.csv};
+  \addplot [only marks, mark size=0.6, orange]   table
+    {figures/kernel/target.csv};
+  \end{axis}
+\end{tikzpicture}

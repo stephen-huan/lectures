@@ -1,0 +1,24 @@
+\begin{tikzpicture}[baseline]
+  \begin{axis}[
+    % calculated from Cholesky factor, exactly 16 cm x 16 cm
+    width={4cm},
+    height={4cm},
+    axis lines={none},
+    % force axis box to have exactly the right dimensions, ignoring labels
+    scale only axis=true,
+  ]
+  % consistent size bounding box
+  \draw [white, line width=0] (-0.1, -0.1) -- (-0.1,  1.1);
+  \draw [white, line width=0] ( 1.1, -0.1) -- ( 1.1,  1.1);
+  \draw [white, line width=0] (-0.1, -0.1) -- (-1.1, -0.1);
+  \draw [white, line width=0] (-0.1,  1.1) -- (-1.1,  1.1);
+  \addplot [only marks, mark size=1, silver]    table
+    {figures/points_cknn/all_points.csv};
+  \addplot [only marks, mark size=2, lightblue] table
+    {figures/points_cknn/candidates.csv};
+  \addplot [only marks, mark size=4, seagreen]  table
+    {figures/points_cknn/selected_02.csv};
+  \addplot [only marks, mark size=4, orange]    table
+    {figures/points_cknn/target.csv};
+  \end{axis}
+\end{tikzpicture}

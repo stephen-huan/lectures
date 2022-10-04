@@ -1,0 +1,16 @@
+\begin{tikzpicture}[baseline, scale=0.75]
+  \begin{loglogaxis}[
+    grid={major},
+    % title={Iterations with increasing \( \rho \)
+    %   (\( N = 65536, \rho_s = 2, \lambda = 1.5 \))},
+    xlabel={\( \log_{10} \) Nonzeros (nnz)},
+    ylabel={\( \log_{10} \) Iterations},
+    legend entries={KL, KL (agg.), select, select (agg.)},
+    legend pos={north east},
+  ]
+  \addplot table {figures/cg/rho_iter_KL.csv};
+  \addplot table {figures/cg/rho_iter_KL_agg.csv};
+  \addplot table {figures/cg/rho_iter_select.csv};
+  \addplot table {figures/cg/rho_iter_select_agg.csv};
+  \end{loglogaxis}
+\end{tikzpicture}

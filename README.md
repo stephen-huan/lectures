@@ -1,5 +1,23 @@
 # Index
 
+- research
+  - posters
+    - 2022-04-12
+      [Poster](./research/posters/2022-04-12-spring-symposium/poster.pdf)
+      @ [Undergraduate Research Spring
+      Symposium](https://symposium.urop.gatech.edu/)
+  - talks
+    - 2022-02-19
+      [Talk](./research/talks/2022-02-19-gscs/presentation.pdf)
+      @ [Georgia Scientific Computing
+      Symposium](https://comp-physics.group/GSCS22/)
+    - 2022-04-22
+      [Talk](./research/talks/2022-04-22-cse/presentation.pdf)
+      @ [School of Computational Science and
+      Engineering](https://cse.gatech.edu/)
+    - 2022-09-28
+      [Talk](./research/talks/2022-09-28-mds/presentation.pdf)
+      @ [SIAM Conference on Mathematics of Data Science (MDS22)](https://meetings.siam.org/sess/dsp_talk.cfm?p=122967)
 - misc
   - probability theory
     - [_Bessel's Correction and Jensen's Inequality_](./misc/bessel-correction/bessel.pdf)
@@ -10,6 +28,10 @@
     - [_Missile Guidance in the Presence of Constant Error_](./misc/missile-guidance/missile.pdf)
   - [_An Efficient Privacy Attack on MyAnimeList's Affinity Oracle_](./misc/mal-affinity-attack/writeup.pdf)
   - [_Physics of Railgun_](./misc/railgun/railgun.pdf)
+- gatech
+  - theory
+    - [_Sparse Cholesky Factorization by Greedy Conditional Selection_](./gatech/theory/cholesky/handout.pdf),
+      [full](./gatech/theory/cholesky/presentation.pdf)
 - tjhsst
   - senior computer team
     - editorials
