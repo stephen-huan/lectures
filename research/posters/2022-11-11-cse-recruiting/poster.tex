@@ -237,6 +237,7 @@ Greedy Conditional Selection}
     \vspace{0.25\baselineskip}
 
     \begin{columns}
+      \hfill
       \begin{column}{0.5\textwidth}
         The screening effect suggests that one should simply
         pick the \( k \) closest points, recovering the
@@ -268,6 +269,7 @@ Greedy Conditional Selection}
     }
     \vspace{-0.5\baselineskip}
     \begin{columns}
+      \hfill
       \begin{column}{0.5\textwidth}
         Selecting the closest point every iteration leads to redundancy.
 
@@ -386,6 +388,7 @@ Greedy Conditional Selection}
     \vspace{-0.5\baselineskip}
 
     \begin{columns}
+      \hfill
       \begin{column}{0.5\textwidth}
         For a column in isolation, \textcolor{orange}{unknown}
         point is the \textcolor{orange}{diagonal entry},
@@ -429,6 +432,7 @@ Greedy Conditional Selection}
     \blocktitle{Drop-in replacement for \textit{k}-NN on MNIST}
 
     \begin{columns}
+      \hfill
       \begin{column}{0.5\textwidth}
         We classify an image by taking the mode label in
         \( k \) selected images. C\( k \)-NN gives better
@@ -454,6 +458,7 @@ Greedy Conditional Selection}
     \blocktitle{Recovery of sparse factors}
 
     \begin{columns}
+      \hfill
       \begin{column}{0.5\textwidth}
         Motivated by compressive sensing, we generate sparse factors \( L
         \) to be recovered from measurements \( L L^{\top} \). C\( k \)-NN
@@ -485,16 +490,13 @@ Greedy Conditional Selection}
     \blocktitle{Better KL divergence with sparser factors}
 
     \begin{columns}
+      \hfill
       \begin{column}{0.5\textwidth}
         Plugging the selection algorithm into Cholesky
         factorization leads to better KL divergence for
         the same number of nonzero entries as \( k \)-NN.
       \end{column}
       \begin{column}{0.5\textwidth}
-        % \begin{figure}[h!]
-        %   \centering
-        %   \includegraphics[width=\textwidth]{data/rho_kl-div.png}
-        % \end{figure}
         \pgfplotsset{
           cycle list={
             {lightblue, style=dashed,         mark=*},
@@ -517,16 +519,13 @@ Greedy Conditional Selection}
     \blocktitle{Preconditioning with conjugate gradient}
 
     \begin{columns}
+      \hfill
       \begin{column}{0.5\textwidth}
         Because minimizing KL divergence minimizes the Kaporin condition
         number, our method needs fewer iterations of the conjugate
         gradient to solve linear systems \( \CM \vec{x} = \vec{y} \).
       \end{column}
       \begin{column}{0.5\textwidth}
-        % \begin{figure}[h!]
-        %   \centering
-        %   \includegraphics[width=\textwidth]{data/n_iter-res.png}
-        % \end{figure}
         \pgfplotsset{
           cycle list={
             {lightblue, style=dashed,         mark=*},
@@ -544,7 +543,6 @@ Greedy Conditional Selection}
       \end{column}
     \end{columns}
   \end{tcolorbox}
-
 \end{column}
 
 \end{columns}
