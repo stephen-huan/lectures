@@ -1,0 +1,16 @@
+\begin{tikzpicture}[baseline]
+  \begin{axis}[
+    width={0.45\textwidth},
+    grid={major},
+    scale only axis={true},
+    xticklabels=none,
+    yticklabels=none,
+    zticklabels=none,
+    xmin=-1.1, xmax=1.1, ymin=-1.1, ymax=1.1, zmin=-0.1, zmax=1,
+  ]
+  \addplot3 [only marks, orange, mark size=8]
+    table {figures/screening/matern_cond_points.csv};
+  \addplot3 [mesh, seagreen, ultra thick]
+    table {figures/screening/matern_cond.csv};
+  \end{axis}
+\end{tikzpicture}

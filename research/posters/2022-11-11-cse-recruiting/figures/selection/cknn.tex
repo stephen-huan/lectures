@@ -1,0 +1,22 @@
+\begin{tikzpicture}[baseline]
+  \begin{axis}[
+    width={0.95\linewidth},
+    axis lines={none},
+    scale only axis={true},
+    xmin=-1, xmax=1, ymin=-1.5, ymax=1.75,
+  ]
+  \addplot [only marks, mark size=8, lightblue]
+    table {figures/selection/train.csv};
+  \addplot [only marks, mark size=16, orange]
+    table {figures/selection/test.csv};
+  \addplot [only marks, mark size=16, seagreen]
+    table {figures/selection/cknn_selected.csv};
+  \addplot [line width=8, rust]
+    table {figures/selection/cknn_mean.csv};
+  \addplot [name path=upper, forget plot, draw=none, rust]
+    table {figures/selection/cknn_std_upper.csv};
+  \addplot [name path=lower, forget plot, draw=none, rust]
+    table {figures/selection/cknn_std_lower.csv};
+  \addplot [rust!15] fill between [of=upper and lower];
+\end{axis}
+\end{tikzpicture}

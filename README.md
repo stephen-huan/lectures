@@ -6,6 +6,10 @@
       [Poster](./research/posters/2022-04-12-spring-symposium/poster.pdf)
       @ [Undergraduate Research Spring
       Symposium](https://symposium.urop.gatech.edu/)
+    - 2022-11-11
+      [Poster](./research/posters/2022-11-11-cse-recruiting/poster.pdf)
+      @ [CSE Fall Recruiting
+      Event](https://cse.gatech.edu/fall-2022-recruting-event)
   - talks
     - 2022-02-19
       [Talk](./research/talks/2022-02-19-gscs/presentation.pdf)
