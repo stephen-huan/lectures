@@ -1,0 +1,29 @@
+#!/bin/bash
+# script to copy files from the main website
+
+MAIN=~/programs/web/stephen-huan.github.io
+
+copy() {
+    # copy the file in $1 from MAIN to here.
+    cp "$MAIN/$1" "./$1"
+}
+
+mkdir --parents "_css"
+copy "_css/main.css"
+
+mkdir --parents "_layout"
+copy "_layout/foot.html"
+copy "_layout/head.html"
+copy "_layout/head_highlight.html"
+copy "_layout/head_katex.html"
+# copy "_layout/header.html"
+touch "_layout/header.html"
+copy "_layout/page_foot.html"
+
+copy "404.md"
+copy "Project.toml"
+# copy "Manifest.toml"
+copy "package.json"
+# copy "package-lock.json"
+copy "utils.jl"
+

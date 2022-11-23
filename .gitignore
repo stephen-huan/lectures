@@ -25,3 +25,8 @@
 archive
 *.tmp
 
+# franklin.jl
+__site
+node_modules
+_rss
+

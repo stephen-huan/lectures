@@ -1,0 +1,868 @@
+/* ==================================================================
+    VARIABLES
+================================================================== */
+
+:root {
+  --text-color: #000;
+  --background: #fff;
+  --block-background:  hsl(0, 0%, 94%);
+  --output-background: hsl(0, 0%, 98%);
+  /* system font stack:
+   * - https://bitsofco.de/the-new-system-font-stack/
+   * - https://markdotto.com/2018/02/07/github-system-fonts/
+   * - https://getbootstrap.com/docs/5.2/content/reboot/#native-font-stack
+   */
+  --font:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Noto Sans",
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
+  /* there seems to be less agreement on monospace, these are from GitHub
+   * - https://www.client9.com/css-system-font-stack-monospace-v2/
+   * - https://www.digitalocean.com/community/tutorials/css-system-font-stack
+   * - https://github.com/twbs/bootstrap/blob/main/scss/_variables.scss
+   */
+  --monospace:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    "Noto Sans Mono",
+    "Liberation Mono",
+    monospace;
+  /* font scale
+   * - https://www.aleksandrhovhannisyan.com/blog/use-rems-for-font-size/
+   * - https://getbootstrap.com/docs/5.2/content/typography/
+   */
+  --font-size-h1:       2.50rem;
+  --font-size-h2:       2.00rem;
+  --font-size-h3:       1.75rem;
+  --font-size-h4:       1.50rem;
+  --font-size-h5:       1.25rem;
+  --font-size-h6:       1.1875rem;
+  --font-size-huge:     4.75rem;
+  --font-size-normal:   1.1875rem;
+  --font-size-small:    1.00rem;
+  --font-size-footnote: 0.95rem;
+  --font-weight-normal: 300;
+  --font-weight-thick:  400;
+  --font-weight-bold:   700;
+  /* adding the Florian colorscheme colors */
+  --theme-silver-color:        #9e9997;
+  --theme-lightblue-color:     #a1b4c7;
+  --theme-seagreen-color:      #23553c;
+  --theme-orange-color:        #ea8810;
+  --theme-rust-color:          #b8420f;
+
+  --theme-lightsilver-color:   #e7e6e5;
+  --theme-darksilver-color:    #96918f;
+  --theme-darklightblue-color: #8999a9;
+  --theme-darkseagreen-color:  #1e4833;
+  --theme-darkorange-color:    #c7740e;
+  --theme-darkrust-color:      #9c380d;
+  /* styling */
+  --box-shadow:
+    0 2px  5px 0 rgba(0, 0, 0, 0.16),
+    0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  --rule: 1px solid lightgrey;
+}
+
+body {
+  /* counters for KaTeX equation numbers and figures */
+  counter-reset: eqnum fignum;
+}
+
+/* ==================================================================
+    DEFAULT FONT AND LAYOUT
+================================================================== */
+
+body {
+  font-family: var(--font);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  color: var(--text-color);
+}
+
+/* ==================================================================
+    TEXT GEOMETRY
+================================================================== */
+
+.franklin-content {
+  position: relative;
+  padding-left: 12.5%;
+  padding-right: 12.5%;
+  /* https://developer.mozilla.org/en-US/docs/Web/CSS/line-height */
+  line-height: 1.35;
+}
+
+/* On wide screens, fix content width to a max value. */
+@media (min-width: 940px) {
+  .franklin-content {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* On narrow device, reduce margins. */
+@media (max-width: 480px) {
+  .franklin-content {
+    padding-left: 6%;
+    padding-right: 6%;
+  }
+}
+
+/* ==================================================================
+    GENERAL FORMATTING
+================================================================== */
+
+.centering { text-align: center; }
+
+.font-weight-bold { font-weight: var(--font-weight-bold); }
+
+/* links */
+
+.franklin-content a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--theme-silver-color);
+  /* text-decoration: none; */
+  /* border-bottom: 1px solid var(--theme-silver-color); */
+}
+
+.franklin-content            a:hover { text-decoration: underline; }
+.franklin-content .showhover a:hover { text-decoration: underline; }
+
+/* lists */
+
+/* Spacing between bullet points. */
+.franklin-content li p { margin: 0.5rem 0; }
+
+/* tables */
+
+.franklin-content table {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1.5em;
+  border-collapse: collapse;
+  text-align: center;
+  line-height: 1em;
+}
+
+.franklin-content th,
+.franklin-content td {
+  font-size: var(--font-size-small);
+  padding: 0.5rem;
+  border: var(--rule);
+}
+
+tbody tr:nth-child(even) { background-color: var(--output-background); }
+
+tr:first-of-type > th { text-align: center; /* background: #eae9f4; */ }
+
+.clean-table table { margin-left: 0; }
+
+.clean-table tr, .clean-table table tbody tr td { border: none; }
+
+.clean-table tbody tr:nth-child(even) { background-color: var(--background); }
+
+/* blockquote */
+
+.franklin-content blockquote {
+  /* background: var(--output-background); */
+  border-left: 0.125rem solid var(--theme-darksilver-color);
+  margin: 0.5rem 0.625rem;
+  padding: 0.5rem 0.625rem;
+  /* font-style: italic; */
+}
+
+.franklin-content blockquote p {
+  /* display: inline; */
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* horizontal rule */
+
+hr { border-top: var(--rule); border-bottom: 0; }
+
+/* ==================================================================
+    TITLES
+================================================================== */
+
+.franklin-content h1 { font-size: var(--font-size-h1); }
+.franklin-content h2 { font-size: var(--font-size-h2); }
+.franklin-content h3 { font-size: var(--font-size-h3); }
+.franklin-content h4 { font-size: var(--font-size-h4); }
+.franklin-content h5 { font-size: var(--font-size-h5); }
+.franklin-content h6 { font-size: var(--font-size-h6); }
+
+.franklin-content h1,
+.franklin-content h2,
+.franklin-content h3,
+.franklin-content h4,
+.franklin-content h5,
+.franklin-content h6 {
+  text-align: left;
+  font-weight: var(--font-weight-normal);
+  margin-top: var(--font-size-normal);
+  margin-bottom: var(--font-size-normal);
+}
+
+.franklin-content h1 {
+  padding-bottom: 0.5rem;
+  border-bottom: 3px double lightgrey;
+}
+
+.franklin-content h2 {
+  padding-bottom: 0.25rem;
+  border-bottom: var(--rule);
+}
+
+.franklin-content h1 a,
+.franklin-content h2 a,
+.franklin-content h3 a,
+.franklin-content h4 a,
+.franklin-content h5 a,
+.franklin-content h6 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.franklin-content h1 a:hover,
+.franklin-content h2 a:hover,
+.franklin-content h3 a:hover,
+.franklin-content h4 a:hover,
+.franklin-content h5 a:hover,
+.franklin-content h6 a:hover {
+  text-decoration: none;
+}
+
+.franklin-content .title h1 {
+  font-weight: var(--font-weight-normal);
+  padding-bottom: 0.5em;
+  margin-top: 0em;
+  margin-bottom: 0em;
+  border-bottom: none;
+}
+
+.franklin-content .title strong { font-weight: var(--font-weight-bold); }
+
+/* ==================================================================
+    HYPERREFS AND FOOTNOTES
+================================================================== */
+
+/* table of contents */
+
+/* Avoid clickable elements being too close together. */
+.franklin-toc li    { margin: 0.5rem 0; }
+.franklin-toc li a  { text-decoration: none; }
+.franklin-toc ol ol { list-style-type: lower-alpha; }
+
+/* inline citations and equation numbering */
+
+.franklin-content .eqref  a { color: var(--theme-darkrust-color); }
+/* this may seem a bit odd but it's how SIAM \cref looks for equations */
+.franklin-content .cref     { color: var(--theme-darkrust-color); }
+.franklin-content .bibref a { color: var(--theme-darkseagreen-color); }
+
+.franklin-content .eqref  a,
+.franklin-content .bibref a {
+  text-decoration: none;
+}
+
+/* references */
+
+.references ol {
+  list-style: none;
+  padding-left: 1rem;
+}
+
+.references h2 { text-align: center; }
+.references p  { text-indent: -4rem; padding-left: 4rem; }
+
+/* footnotes */
+
+.franklin-content .footnote {
+  position: relative;
+  top: -0.5rem;
+  font-size: var(--font-size-footnote);
+}
+
+.franklin-content sup {
+  color: var(--theme-darkrust-color);
+  font-size: var(--font-size-footnote);
+  vertical-align: super;
+  line-height: 0;
+}
+
+.franklin-content sup a { text-decoration: none; }
+
+.franklin-content table.fndef {
+  margin: 0;
+  margin-bottom: 1rem;
+}
+
+.franklin-content .fndef tr,
+.franklin-content .fndef td {
+  padding: 0;
+  border: 0;
+  text-align: left;
+}
+
+.franklin-content .fndef tr {
+  /* border-left: 0.125rem solid var(--theme-darksilver-color); */
+}
+
+.franklin-content .fndef td.fndef-backref {
+  color: var(--theme-darkrust-color);
+  vertical-align: top;
+  font-size: var(--font-size-footnote);
+  padding-left: 0.25rem;
+}
+
+.franklin-content .fndef td.fndef-backref a { text-decoration: none; }
+
+.franklin-content .fndef td.fndef-content {
+  font-size: var(--font-size-footnote);
+  padding-left: 0.5rem;
+  width: 100%;
+}
+
+/* ==================================================================
+    BASIC GRID FOR PROFILE PIC
+================================================================== */
+
+.franklin-content .row {
+  display: block;
+}
+
+.franklin-content .left {
+  float: left;
+  margin-right: 1rem;
+}
+
+.franklin-content .right {
+  float: right;
+  margin-left: 1rem;
+}
+
+/* ==================================================================
+    IMAGES in CONTENT
+================================================================== */
+
+.franklin-content .border img {
+  border-radius: 4px;
+  box-shadow: var(--box-shadow);
+}
+
+.franklin-content .img-large img {
+  width: 80%;
+  margin-left: 10%;
+  text-align: center;
+}
+
+.franklin-content .img-small img {
+  width: 60%;
+  margin-left: 20%;
+  text-align: center;
+}
+
+/* captions with automatic numbering */
+
+.franklin-content figcaption::before {
+  counter-increment: fignum;
+  content: "Figure " counter(fignum) ": ";
+}
+
+.franklin-content .nonumber figcaption::before {
+  counter-increment: nothing;
+  content: "";
+}
+
+.franklin-content figcaption {
+  /* text-align: center; */
+}
+
+/* ==================================================================
+    KATEX
+================================================================== */
+
+.katex { font-size: 1em !important; }
+
+.katex-display .katex {
+  /* Overwrite KaTeX settings. */
+  display: inline-block;
+
+  /* Allow display equations to wrap on small screens. */
+  white-space: normal;
+}
+
+.katex-display::after {
+  counter-increment: eqnum;
+  content: "(" counter(eqnum) ")";
+  position: relative;
+  float: left;
+  padding-left: 0;
+}
+
+.nonumber .katex-display::after {
+  counter-increment: nothing;
+  content: "";
+}
+
+/* ==================================================================
+    CODE & HIGHLIGHT.JS
+================================================================== */
+
+code {
+  background-color: var(--output-background);
+  padding: 0.1em 0.2em;
+  border-radius: 2px;
+  font-family: var(--monospace);
+  font-size: var(--font-size-small);
+}
+
+/* Franklin does not annotate code output with the
+ * "code-output" class when using prerender=true
+ * instead, use "plaintext" for code output and can
+ * substitute actual plaintext with "text" or "txt"
+ * https://highlightjs.readthedocs.io/en/latest/supported-languages.html
+ */
+.plaintext {
+  background: var(--output-background);
+  border: 1px dashed lightgrey;
+}
+
+.hljs {
+  font-family: var(--monospace);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-thick);
+  border-radius: 10px;
+  background: var(--background);
+}
+
+/* colors from https://julialang.org/assets/infra/logo.svg */
+.hljs-meta.prompt_ {font-weight: bold; color: #389826;}
+.hljs-metas        {font-weight: bold; color: #cb3c33;}
+.hljs-metap        {font-weight: bold; color: #4063d8;}
+
+/* ==================================================================
+    BOXES
+================================================================== */
+
+.franklin-content .colbox-blue {
+  background-color: #eef3f5;
+  padding-top: 5px;
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-bottom: 5px;
+  margin-left: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-radius: 0 10px 10px 0;
+  border-left: 5px solid #4c9cf1;
+}
+
+/* ==================================================================
+    HEADER AND NAV
+================================================================== */
+
+nav {
+  width: 65%;
+  display: inline-block;
+}
+
+nav ul {
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+nav li { display: inline-block; }
+
+nav li a {
+  color: black;
+  text-decoration: none;
+  display: inline-block;
+  float: center;
+  padding-top: 0.5rem;
+  padding-right: 0.125rem;
+  padding-left: 0.125rem;
+  padding-bottom: 0.25rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+nav li:last-of-type a { margin-right: 0px; }
+
+nav .active {
+  color: var(--text-color);
+  font-weight: var(--font-weight-thick);
+}
+
+nav li a:hover { color: var(--theme-darksilver-color); }
+
+header {
+  text-align: right;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+}
+
+header .blog-name {
+  width: 35%;
+  display: inline-block;
+  text-align: left;
+  font-size: var(--font-size-h5);
+  /* font-family: var(--monospace); */
+  padding-top: 0.5rem;
+}
+
+header .blog-name a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+#menu-icon { display: none; }
+
+@media (max-width: 480px) {
+  header {
+    padding-left: 6%;
+    padding-right: 6%;
+  }
+}
+
+@media (min-width: 481px) {
+  header {
+    padding-left: 12.5%;
+    padding-right: 12.5%;
+  }
+}
+
+/* wide display: enforce maximum width of header to match content */
+@media (min-width: 940px) {
+  header {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* medium display: nav goes under name */
+@media (max-width: 940px) {
+  header { display: block; }
+
+  header .blog-name {
+    display: block;
+    width: 100%;
+    padding-bottom: 0.5rem;
+  }
+
+  nav {
+    width: 100%;
+  }
+}
+
+/*
+narrow display: collapse the header (don't show the menu items)
+instead, display a burger menu.
+*/
+@media (max-width: 760px) {
+  header {
+    height: 2rem;
+    display: flex;
+    align-items: center;
+  }
+
+  header .blog-name {
+    display: inline-block;
+    width: 70%;
+  }
+
+  nav {
+    display: inline-block;
+    width: 27%;
+  }
+
+  nav ul,
+  nav:active ul {
+    display: none;
+    position: absolute;
+
+    /* padding: 0.5rem; */
+    background: var(--background);
+    border: 1px solid black;
+    right: 12.5%;
+    top: 3.3rem;
+    width: 8rem;
+    border-radius: 4px 0 4px 4px;
+    z-index: 1;
+  }
+
+  nav li {
+    text-align: left;
+    display: block;
+    padding: 0;
+    margin: 0;
+  }
+
+  nav:hover ul { display: block; }
+
+  #menu-icon {
+    display: inline-block;
+    margin-right: 0.5rem;
+    margin-top: 0.25rem;
+  }
+}
+
+/* ==================================================================
+    FOOT / COPYRIGHT
+================================================================== */
+
+.page-foot {
+  font-size: var(--font-size-footnote);
+  color: var(--theme-silver-color);
+  text-align: right;
+  margin-top: 2rem;
+  border-top: 1px solid lightgrey;
+  padding-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* ==================================================================
+    ABOUT
+================================================================== */
+
+.pgp { font-size: var(--font-size-small); overflow-wrap: break-word; }
+
+.pgp samp { font-family: var(--monospace); }
+
+.pgp a { text-decoration: none; }
+
+.address p {
+  font-family: var(--monospace);
+  font-size: var(--font-size-small);
+  margin-top: 0.5rem;
+  margin-bottom: 0rem;
+}
+
+.franklin-content .profile img {
+  width: 265px;
+  border-radius: 4px;
+  box-shadow: var(--box-shadow);
+}
+
+@media (max-width: 760px) {
+  .franklin-content .profile img {
+    min-width: 100%;
+  }
+
+  .franklin-content .right {
+    margin-left: 0;
+    float: none;
+    text-align: center;
+  }
+}
+
+/* ==================================================================
+    NEWS
+================================================================== */
+
+.news table tbody tr th { display: none; }
+
+.news td:first-of-type { font-weight: var(--font-weight-thick); }
+
+/* ==================================================================
+    BLOG POSTS and TAG PAGES
+================================================================== */
+
+.blog-title h1 {
+  font-size: var(--font-size-huge);
+  font-weight: var(--font-weight-normal);
+  text-align: center;
+  padding-bottom: 0;
+  border-bottom: none;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.blog-title h2 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-normal);
+  text-align: center;
+  border-bottom: none;
+  margin-top: 0;
+}
+
+.blog-tags {
+  text-align: center;
+  display: center;
+  padding-top: 1.75rem;
+  padding-bottom: 1.75rem;
+  border-top: var(--rule);
+  border-bottom: var(--rule);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.blog-tags ul { padding-left: 0; margin-top: 0; margin-bottom: 0; }
+
+.blog-tags li, .blog-tags p {
+   display: inline-block;
+   margin-top: 0;
+   margin-bottom: 0;
+}
+
+.blog-tags p { margin-left: 0.25rem; margin-right: 0.25rem; }
+
+.blog-tags a {
+  color: var(--theme-darksilver-color);
+  text-decoration: none;
+}
+
+.blog-posts ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.blog-posts li {
+  padding-bottom: var(--font-size-normal);
+  border-bottom: var(--rule);
+}
+
+.blog-posts li:last-of-type {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.blog-posts p {
+  font-size: var(--font-size-small);
+}
+
+.blog-posts h3 {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-normal);
+  margin-bottom: 0;
+}
+
+.blog-posts h3 a:hover { color: var(--theme-darksilver-color); }
+
+.post-meta, .post-tags {
+  color: var(--theme-darksilver-color);
+  font-size: var(--font-size-small);
+}
+
+.post-tags a { text-decoration: none; }
+
+/* tag page */
+
+.tagged-posts a { text-decoration: none; }
+
+.tagged-posts th:first-of-type {
+  font-weight: var(--font-weight-thick);
+  border: none;
+}
+
+/* ==================================================================
+    PROJECTS
+================================================================== */
+
+.category h2 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-normal);
+  color: var(--theme-lightsilver-color);
+  text-align: right;
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout */
+
+@media (min-width: 760px) {
+  .inference { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 940px) {
+  .inference { grid-template-columns: repeat(3, 1fr); }
+}
+
+.inference {
+  display: grid;
+  grid-auto-rows: auto;
+  gap: var(--font-size-normal);
+}
+
+.card {
+  box-shadow: var(--box-shadow);
+  width: 100%;
+  transition: all 0.55s ease-in-out;
+}
+
+.card:hover {
+  box-shadow:
+    0 8px 17px 0 rgba(0, 0, 0, 0.20),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.card a {
+  color: var(--text-color);
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+}
+
+.card a:hover {
+  color: var(--theme-darksilver-color);
+  text-decoration: none;
+}
+
+.card img {
+  padding-left: 0;
+  width: 100%;
+}
+
+.card-body {
+  padding: var(--font-size-normal);
+}
+
+.card h2 {
+  font-size: var(--font-size-h2);
+  text-transform: lowercase;
+  margin-top: 0;
+  margin-bottom: 0;
+  border: none;
+}
+
+.card p {
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-thick);
+  color: var(--theme-darksilver-color);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* ==================================================================
+    PUBLICATIONS
+================================================================== */
+
+.year h2 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-normal);
+  color: var(--theme-lightsilver-color);
+  text-align: right;
+  margin-top: 0;
+  margin-bottom: 0;
+  /* padding-top: 1rem; */
+  border-top: var(--rule);
+  border-bottom: none;
+}
+

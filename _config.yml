@@ -1,7 +1,0 @@
-defaults:
-  -
-    scope:
-      path: ""
-    values:
-      layout: "custom"
-

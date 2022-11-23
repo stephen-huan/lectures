@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "highlight.js": "^11.6.0",
+    "katex": "^0.16.3"
+  }
+}
