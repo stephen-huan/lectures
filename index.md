@@ -1,7 +1,3 @@
-+++
-title = "Index | lectures"
-+++
-
 # Index
 
 - research
