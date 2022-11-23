@@ -15,8 +15,11 @@ ignore = ["Project.toml", "Manifest.toml",
           "bin/",
          ]
 
-# RSS (the website_{title, descr, url} must be defined to get RSS)
+generate_sitemap = false
+generate_robots = false
 generate_rss = false
+
+# RSS (the website_{title, descr, url} must be defined to get RSS)
 website_title = "Lectures"
 website_descr = "Lectures on computer science and mathematics"
 website_url   = "https://stephen-huan.github.io/"
