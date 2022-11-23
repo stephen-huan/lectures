@@ -1,0 +1,24 @@
+\begin{tikzpicture}[baseline]
+  \begin{semilogyaxis}[
+    width={0.87\textwidth},
+    grid={major},
+    title={Residual over iterations},
+      % (\( N = 65536, \rho = 4, \rho_s = 2, \lambda = 1.5 \))},
+    % xlabel={Iterations},
+    % ylabel={\( \log_{10} \) Residual \( \norm{\vec{x} - \vec{x}_i} \)},
+    ytick distance={1e2},
+    xtick distance={10},
+    % legend entries={KL, KL (agg.), \( k \)-NN, select, select (agg.)},
+    legend entries={\( k \)-NN, \( k \)-NN (agg.),
+      C\( k \)-NN, C\( k \)-NN (agg.)
+    },
+    legend style={font=\small},
+    legend pos={north east},
+  ]
+  \addplot table {figures/cg/n_iter-res_KL.csv};
+  \addplot table {figures/cg/n_iter-res_KL_agg.csv};
+  % \addplot table {figures/cg/n_iter-res_select-KNN.csv};
+  \addplot table {figures/cg/n_iter-res_select.csv};
+  \addplot table {figures/cg/n_iter-res_select_agg.csv};
+  \end{semilogyaxis}
+\end{tikzpicture}

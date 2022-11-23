@@ -1,0 +1,17 @@
+\begin{tikzpicture}[baseline]
+  \begin{axis}[
+    width={0.87\textwidth},
+    grid={major},
+    title={Accuracy varying \( k \)},
+    %   (\( n = 100, m = 100, l = 1024, \nu = 1.5 \))},
+    % xlabel={\( k \)},
+    % ylabel={Accuracy (\%)},
+    ytick distance={0.05},
+    xtick distance={10},
+    legend entries={\( k \)-NN, C\( k \)-NN},
+    legend pos={south west},
+  ]
+  \addplot table {figures/mnist/k_acc_scikit-knn.csv};
+  \addplot table {figures/mnist/k_acc_conditional-knn.csv};
+  \end{axis}
+\end{tikzpicture}

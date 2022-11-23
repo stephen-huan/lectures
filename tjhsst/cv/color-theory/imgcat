@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+"""
+Re-write of catimg.
+"""
+import argparse, os
+from scale import change_size, downscale
+from colorlib import rectify, color_esc
+import colorlib
+
+SQUARE = "▀"       # character used as a pixel
+LAST = "[?25h" # ending token
+EOL = "[m"     # stop a color code
+
+if __name__ == "__main__":
+    # color space, color difference metric 
+    spaces, metrics = colorlib.conv["srgb"], colorlib.metrics
+
+    parser = argparse.ArgumentParser(description="Display image as text.")
+    parser.add_argument("path", metavar="PATH",
+                        help="path to image")
+    parser.add_argument("-H", "--height", type=int,
+                        help="height, teriminal height by default")
+    parser.add_argument("-w", "--width", type=int,
+                        help="width, terminal width by default")
+    parser.add_argument("-f", "--ffmpeg", default="area",
+                        help="ffmpeg algorithm for downscaling, default area")
+    parser.add_argument("-n", "--no-ffmpeg", action="store_true",
+                        help="homemade algorithm for downscaling")
+    parser.add_argument("-c", "--color", default="cam02ucs", choices=spaces.keys(),
+                        help="color space, default cam02ucs")
+    parser.add_argument("-m", "--metric", default="euclidean", choices=metrics.keys(),
+                        help="color difference metric, default euclidean")
+    parser.add_argument("-p", "--power", action="store_true",
+                        help="use the power transform")
+    args = parser.parse_args()
+
+    to_color, m = spaces[args.color], args.metric
+    metric = colorlib.power(args.color, m) if args.power else metrics[m]
+
+    try:
+        term_width, term_height = os.get_terminal_size()
+    except OSError:
+        term_width, term_height = 0, 0
+    term_height *= 2 # characters are twice as tall as their width 
+    h, w = args.height, args.width
+    if h == 0: h = term_height
+    if w == 0: w = term_width
+    if h is not None or w is not None: # user provided size
+        height, width = (h, -1) if h is not None else (-1, w)
+    else:                              # default to terminal height
+        height, width = term_height, -1
+
+    if args.no_ffmpeg:
+        im = downscale(args.path, height, width, args.color)
+        M, N = len(im), len(im[0])
+        grid = [[rectify(im[x][y], args.color, metric)
+                 for y in range(N)] for x in range(M)]
+    else:
+        im = change_size(args.path, height, width, args.ffmpeg)
+        N, M, data = im.size[0], im.size[1], list(im.getdata())
+        grid = [[rectify(to_color(data[x + y*N]), args.color, metric)
+                for x in range(N)] for y in range(M)]
+
+    # join two pixels vertically together, if odd skip last line
+    codes = [[color_esc((grid[i][j], grid[i + 1][j]))
+              for j in range(N)] for i in range(0, M - (M % 2), 2)]
+    if M % 2 != 0:
+        codes.append([color_esc((grid[-1][i],)) for i in range(N)])
+
+    print(f"{SQUARE}{EOL}\n".join(SQUARE.join(row) for row in codes), end="")
+    print(f"{SQUARE}{EOL}\n{LAST}", end="")
+

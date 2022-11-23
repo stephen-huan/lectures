@@ -1,0 +1,16 @@
+\begin{tikzpicture}[baseline, scale=0.55]
+  \begin{axis}[
+    grid={major},
+    % title={Nonzero entries per column with increasing \( N \)
+    %   (\( \text{iters} = 50, \rho = 4, \rho_s = 2, \lambda = 1.5 \))},
+    xlabel={\( N \)},
+    ylabel={Nonzeros per column},
+    % legend entries={KL, KL (agg.), select, select (agg.)},
+    % legend pos={north west},
+  ]
+  \addplot table {figures/cg/nnz_nnz_KL.csv};
+  \addplot table {figures/cg/nnz_nnz_KL_agg.csv};
+  \addplot table {figures/cg/nnz_nnz_select.csv};
+  \addplot table {figures/cg/nnz_nnz_select_agg.csv};
+  \end{axis}
+\end{tikzpicture}

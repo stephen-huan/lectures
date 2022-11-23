@@ -1,0 +1,17 @@
+\begin{tikzpicture}[baseline, scale=0.55]
+  \begin{semilogyaxis}[
+    grid={major},
+    % title={KL divergence with increasing \( \rho \)
+    %   (\( N = 65536, \rho_s = 2, \lambda = 1.5 \))},
+    xlabel={\( \rho \)},
+    ylabel={\( \log_{10} \) KL divergence},
+    % legend entries={KL, KL (agg.), \( k \)-NN, select, select (agg.)},
+    % legend pos={north east},
+  ]
+  \addplot table {figures/cholesky/rho_kl_div_KL.csv};
+  \addplot table {figures/cholesky/rho_kl_div_KL_agg.csv};
+  \addplot table {figures/cholesky/rho_kl_div_select-KNN.csv};
+  \addplot table {figures/cholesky/rho_kl_div_select.csv};
+  \addplot table {figures/cholesky/rho_kl_div_select_agg.csv};
+  \end{semilogyaxis}
+\end{tikzpicture}

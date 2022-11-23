@@ -1,0 +1,22 @@
+\begin{tikzpicture}[baseline, scale=0.75]
+  \begin{axis}[
+    grid={major},
+    % title={Accuracy with increasing \( s \)
+    %   (\( N = 256 \))},
+    xlabel={\( s \)},
+    % ylabel={Accuracy (IOU)},
+    legend entries={\( \var = 0.00 \), \( \var = 0.01 \),
+      \( \var = 0.10 \), \( \var = 0.20 \)},
+    legend pos={south east},
+    ymin=0.9, ymax=1.01,
+  ]
+  \addplot [very thick, orange, style=solid]
+    table {figures/recover/noise-s_score_cknn-0.00.csv};
+  \addplot [very thick, orange, style=dashed]
+    table {figures/recover/noise-s_score_cknn-0.01.csv};
+  \addplot [very thick, orange, style=dotted]
+    table {figures/recover/noise-s_score_cknn-0.10.csv};
+  \addplot [very thick, orange, style=dashdotted]
+    table {figures/recover/noise-s_score_cknn-0.20.csv};
+  \end{axis}
+\end{tikzpicture}

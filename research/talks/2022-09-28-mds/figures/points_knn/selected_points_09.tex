@@ -1,0 +1,28 @@
+\begin{tikzpicture}[baseline]
+  \begin{axis}[
+    % calculated from Cholesky factor, exactly 16 cm x 16 cm
+    width={4cm},
+    height={4cm},
+    axis lines={none},
+    % force axis box to have exactly the right dimensions, ignoring labels
+    scale only axis=true,
+  ]
+  % consistent size bounding box
+  \draw [white, line width=0] (-0.1, -0.1) -- (-0.1,  1.1);
+  \draw [white, line width=0] ( 1.1, -0.1) -- ( 1.1,  1.1);
+  \draw [white, line width=0] (-0.1, -0.1) -- (-1.1, -0.1);
+  \draw [white, line width=0] (-0.1,  1.1) -- (-1.1,  1.1);
+  \draw [seagreen!15, fill, radius=0.452634334564209] (0.29840122301687566, 0.3139860020343368) circle;
+  \draw [seagreen, radius=0.452634334564209] (0.29840122301687566, 0.3139860020343368) circle;
+  \draw [orange!25, fill, radius=0.2263171672821045] (0.29840122301687566, 0.3139860020343368) circle;
+  \draw [orange, radius=0.2263171672821045] (0.29840122301687566, 0.3139860020343368) circle;
+  \addplot [only marks, mark size=1, silver]    table
+    {figures/points_knn/all_points.csv};
+  \addplot [only marks, mark size=2, lightblue] table
+    {figures/points_knn/candidates_09.csv};
+  \addplot [only marks, mark size=4, seagreen]  table
+    {figures/points_knn/selected_09.csv};
+  \addplot [only marks, mark size=4, orange]    table
+    {figures/points_knn/target_09.csv};
+  \end{axis}
+\end{tikzpicture}

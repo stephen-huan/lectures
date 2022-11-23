@@ -1,0 +1,14 @@
+\begin{tikzpicture}[baseline, scale=0.55]
+  \begin{axis}[
+    grid={major},
+    % title={Accuracy with increasing \( k \)
+    %   (\( n = 100, m = 100, l = 1024, \nu = 1.5 \))},
+    xlabel={\( k \)},
+    ylabel={Accuracy (\%)},
+    % legend entries={\( k \)-NN, C\( k \)-NN},
+    % legend pos={north east},
+  ]
+  \addplot table {figures/mnist/k_acc_scikit-knn.csv};
+  \addplot table {figures/mnist/k_acc_conditional-knn.csv};
+  \end{axis}
+\end{tikzpicture}

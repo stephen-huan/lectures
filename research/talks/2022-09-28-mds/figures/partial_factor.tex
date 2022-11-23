@@ -1,0 +1,25 @@
+\begin{tikzpicture}[scale=3]
+  % left matrix
+  \fill[lightsilver, opacity=1.0]   (0,        0) rectangle (1, -1);
+  \fill[lightblue,   opacity=0.5]   (0,    -0.75) rectangle (0.75, -1);
+  \fill[lightblue,   opacity=0.5]   (0.75,     0) rectangle (1, -0.75);
+  \fill[lightblue,   opacity=1.0]   (0.75, -0.75) rectangle (1, -1);
+
+  % equals sign
+  \node at (1.25, -0.5) {\Huge \textcolor{darksilver}{$=$}};
+
+  % lower triangle
+  \fill[lightsilver]
+    (1.5, -1) -- (2.5, -1) -- (1.5, 0) -- cycle;
+  \fill[lightblue]
+    (1.5, -1) -- (2.5, -1) -- (2.25, -0.75) -- (1.5, -0.75) -- cycle;
+
+  % times
+  \node at (2.05, -0.5) {\Huge \textcolor{darksilver}{$\cdot$}};
+
+  % upper triangle
+  \fill[lightsilver]
+    (2.6, -1) -- (2.6, 0) -- (1.6, 0) -- cycle;
+  \fill[lightblue]
+    (2.6, -1) -- (2.6, 0) -- (2.35, 0) -- (2.35, -0.75) -- cycle;
+\end{tikzpicture}

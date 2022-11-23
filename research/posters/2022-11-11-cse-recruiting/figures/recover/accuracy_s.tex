@@ -1,0 +1,20 @@
+\begin{tikzpicture}[baseline]
+  \begin{axis}[
+    width={0.92\textwidth},
+    grid={major},
+    title={Accuracy varying density},
+    %   (\( N = 256 \))},
+    % xlabel={\( s \)},
+    % ylabel={Accuracy (IOU)},
+    ytick distance={0.2},
+    xtick distance={50},
+    legend entries={rand., \( k \)-NN, corr., C\( k \)-NN},
+    legend pos={south east},
+    ymin=0, ymax=1.1,
+  ]
+  \addplot table {figures/recover/s_score_random.csv};
+  \addplot table {figures/recover/s_score_knn.csv};
+  \addplot table {figures/recover/s_score_corr.csv};
+  \addplot table {figures/recover/s_score_cknn.csv};
+  \end{axis}
+\end{tikzpicture}

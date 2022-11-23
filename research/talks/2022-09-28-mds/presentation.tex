@@ -1,0 +1,1047 @@
+\documentclass{beamer}                             % presentation
+% \documentclass[draft]{beamer}                      % improves compile time
+\usepackage[utf8]{inputenc}                        % utf8
+\usepackage[T1]{fontenc}                           % fix font encoding
+\usepackage[english]{babel}                        % language
+\usepackage[autostyle, english=american]{csquotes} % quotes
+\usepackage{bm, mathtools}                         % extra math packages
+\usepackage{graphicx, subcaption}                  % images
+\usepackage{tikz, pgfplots}                        % plots and graphs
+\usepackage[style=authoryear-comp]{biblatex}       % bibliography
+\usepackage{geometry, hyperref}                    % misc.
+
+\usetikzlibrary{positioning}                       % advanced positioning
+\pgfplotsset{compat=newest}                        % version of pgfplots
+
+\graphicspath{{./figures/}}
+\addbibresource{references.bib}
+
+%%% math
+
+% serif font in math mode
+\usefonttheme[onlymath]{serif}
+
+\newcommand*{\defeq}{\coloneqq}
+\newcommand*{\BigO}{\mathcal{O}}
+\newcommand*{\N}{\mathcal{N}}
+\newcommand*{\SpSet}{\mathcal{S}}
+\newcommand*{\GP}{\mathcal{GP}}
+\newcommand*{\Loss}{\mathcal{L}}
+\newcommand*{\Order}{\mathcal{I}}
+\newcommand*{\Reverse}{\updownarrow}
+\newcommand*{\I}{I}
+\newcommand*{\J}{J}
+\newcommand*{\V}{V}
+%
+\renewcommand*{\vec}[1]{\bm{#1}}
+\newcommand*{\Id}{\text{Id}}
+
+% Names of variables
+% covariance matrix
+\newcommand*{\CM}{\Theta}
+% precision matrix
+\newcommand*{\PM}{Q}
+\newcommand*{\mean}{\mu}
+\newcommand*{\var}{\sigma^2}
+\newcommand*{\std}{\sigma}
+% kernel function
+\newcommand*{\K}{K}
+\newcommand*{\Train}{\text{Tr}}
+\newcommand*{\Pred}{\text{Pr}}
+
+% Names of operators
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\DeclarePairedDelimiter{\card}{\lvert}{\rvert}
+\DeclareMathOperator{\diag}{diag}
+\let\trace\relax
+\DeclareMathOperator{\trace}{trace}
+\DeclareMathOperator{\logdet}{logdet}
+\DeclareMathOperator{\chol}{chol}
+\DeclareMathOperator{\FRO}{FRO}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\DeclarePairedDelimiterX{\infdivx}[2]{(}{)}{%
+  #1\;\delimsize\|\;#2%
+}
+\newcommand*{\KL}{\mathbb{D}_{\operatorname{KL}}\infdivx}
+\DeclareMathOperator{\p}{\pi}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\mathbb{V}ar}
+\DeclareMathOperator{\Cov}{\mathbb{C}ov}
+\DeclareMathOperator{\Corr}{\mathbb{C}orr}
+\DeclareMathOperator{\entropy}{\mathbb{H}}
+\DeclareMathOperator{\MI}{\mathbb{I}}
+
+%%% colors
+
+\definecolor{lightblue}{HTML}{a1b4c7}
+\definecolor{orange}{HTML}{ea8810}
+\definecolor{silver}{HTML}{b0aba8}
+\definecolor{rust}{HTML}{b8420f}
+\definecolor{seagreen}{HTML}{23553c}
+
+\colorlet{lightsilver}{silver!20!white}
+\colorlet{darkorange}{orange!85!black}
+\colorlet{darksilver}{silver!85!black}
+\colorlet{darklightblue}{lightblue!75!black}
+\colorlet{darkrust}{rust!85!black}
+\colorlet{darkseagreen}{seagreen!85!black}
+
+\colorlet{zeroborder}{darksilver}
+\colorlet{zerocolor}{lightsilver}
+\colorlet{nnzborder}{darksilver}
+\colorlet{nnzcolor}{silver}
+
+\colorlet{colborder}{black}
+\colorlet{targetcolor}{orange}
+\colorlet{selcolor}{seagreen}
+\colorlet{candcolor}{lightblue}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=darkrust,
+  citecolor=darkseagreen,
+  urlcolor=darksilver
+}
+
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{fillbetween}
+% make marks not follow the style of lines
+\tikzset{every mark/.append style={solid}}
+% cache tikz graphics
+\usepgfplotslibrary{external}
+\tikzexternalize
+\tikzsetexternalprefix{external/}
+
+%%% beamer settings
+
+\usetheme{Pittsburgh}
+\usecolortheme{dolphin}
+
+% hide navigation buttons
+\setbeamertemplate{navigation symbols}{}
+% change title color
+\setbeamercolor{title}{fg=darklightblue}
+\setbeamercolor{frametitle}{fg=darklightblue}
+% table of contents
+\setbeamertemplate{section in toc}[default]
+% change bibliography entry colors
+\setbeamercolor{bibliography entry author}{fg=darklightblue}
+\setbeamercolor{bibliography entry note}{fg=lightblue}
+% customize \item in itemize
+\setbeamercolor{structure}{fg=darklightblue}
+\setbeamertemplate{itemize item}{}
+\setbeamertemplate{enumerate item}[default]
+% enumitem doesn't play well with beamer
+% \setitemize{label={},itemsep=0.5cm}
+% https://tex.stackexchange.com/questions/16793/
+\newenvironment{wideitemize}
+  {\itemize\setlength{\itemsep}{0.5cm}}
+  {\enditemize}
+
+% title page
+\title[]{Sparse Cholesky Factorization by \\ Greedy Conditional Selection}
+\subtitle{}
+\author[Huan]{Stephen\ Huan}
+\institute[Georgia Institute of Technology]
+{
+  % Georgia Institute of Technology
+  \url{https://stephen-huan.github.io/projects/cholesky/}
+}
+\date[]{SIAM MDS22}
+\subject
+{
+  Recent Advances in Kernel Methods for Computing and Learning - Part II of II
+}
+
+\begin{document}
+
+\section{Introduction}
+
+\frame{\titlepage}
+
+\begin{frame}
+\frametitle{Collaborators}
+\framesubtitle{}
+  \begin{columns}
+    \begin{column}{0.22\textwidth}
+      \centering
+      \begin{figure}[h!]
+        \centering
+        % https://tex.stackexchange.com/questions/41370
+        % latex renders at 72 dpi for "px"
+        \includegraphics[width=2cm, height=2cm,
+          trim={26.88px 0 26.88px 0}, clip]
+          {figures/people/joe_guinness.jpg}
+      \end{figure}
+      Joe Guinness, \\ Cornell
+    \end{column}
+    \begin{column}{0.28\textwidth}
+      \centering
+      \begin{figure}[h!]
+        \centering
+        \includegraphics[width=2cm, height=2cm,
+          trim={0 65px 0 0px}, clip]
+          {figures/people/matthias_katzfuss.png}
+      \end{figure}
+      Matthias Katzfu{\ss}, \\ Texas A\&M
+    \end{column}
+    \begin{column}{0.26\textwidth}
+      \centering
+      \begin{figure}[h!]
+        \centering
+        \includegraphics[width=2cm, height=2cm,
+          trim={33.75px 0 33.75px 0}, clip]
+          {figures/people/houman_owhadi.jpg}
+      \end{figure}
+      Houman Owhadi, \\ Caltech
+    \end{column}
+    \begin{column}{0.24\textwidth}
+      \centering
+      \begin{figure}[h!]
+        \centering
+        \includegraphics[width=2cm, height=2cm,
+          trim={0 0 0 214px}, clip]
+          {figures/people/florian_schaefer.jpg}
+      \end{figure}
+      Florian\ Sch{\"a}fer, Gatech
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview}
+\framesubtitle{}
+
+\tableofcontents
+\end{frame}
+
+\begin{frame}
+\frametitle{The problem}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item<+-> Covariance matrices from pairwise kernel function evaluations
+  \item
+    i.e. \( \CM_{i, j} = \K(\vec{x}_i, \vec{x}_j) \) for points \( \{
+    \vec{x}_i \}_{i = 1}^N \) and kernel function \( \K \)
+  \item<+-> Kernel trick in machine learning
+  \item<2-> Statistical inference in Gaussian
+    processes on \( \vec{y} \sim \N(\vec{0}, \CM) \)
+  \item<+-> Seek \emph{sparse} Cholesky
+    factor for \emph{dense} covariance matrix
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Statistical Cholesky factorization}
+% \framesubtitle{Covariance or precision?}
+
+\begin{wideitemize}
+  \item<+-> Factor covariance matrix \( \CM
+    \) or precision matrix \( \PM = \CM^{-1} \)?
+    \begin{align*}
+      %    \text{marginal} & \text{ independence} &
+      % \text{conditional} & \text{ independence} \\
+      % \vec{y} &\sim \N(\vec{0}, \CM) &
+      % \vec{y} &\sim \N(\vec{0}, \PM^{-1}) \\
+      \CM_{i, i}      &= \Var[y_i] &
+      \PM_{i, i}^{-1} &= \Var[y_i \mid y_{k \neq i}] \\
+      % \frac{ \CM_{i, j}}{\sqrt{\CM_{i, i} \CM_{j, j}}} &= \Corr[y_i, y_j] &
+      \CM_{i, j} &= \Cov[y_i, y_j] &
+      % \frac{-\PM_{i, j}}{\sqrt{\PM_{i, i} \PM_{j, j}}} &=
+      %   \frac{\Cov[y_i, y_j \mid y_{k \neq i, j}]}
+      %        {\sqrt{\Var[y_i \mid y_{k \neq i, j}]
+      %               \Var[y_j \mid y_{k \neq i, j}]}} \\
+      \frac{-\PM_{i, j}}{\sqrt{\PM_{i, i} \PM_{j, j}}} &=
+        \Corr[y_i, y_j \mid y_{k \neq i, j}] \\
+      \intertext{
+        Cholesky factorization \( \Leftrightarrow \)
+        iterative conditioning of process
+      }
+      % observation 1 and observation 2 from phd thesis
+      L &= \chol(\CM) &
+      L &= \chol(\PM) \\
+      L_{i, j} &=
+        \frac{\Cov[y_i, y_j \mid y_{k < j}]}
+       {\sqrt{\Var[y_j      \mid y_{k < j}]}} &
+      -\frac{L_{i, j}}{L_{j, j}} &=
+        \frac{\Cov[y_i, y_j \mid y_{k > j, k \neq i}]}
+             {\Var[y_j      \mid y_{k > j, k \neq i}]}
+    \end{align*}
+  \item<+-> Conditional (near)-independence \(
+    \Leftrightarrow \) (approximate) sparsity
+  % \item<+-> Covariance matrix encodes marginal independence
+  % \item<4-> Precision matrix encodes conditional independence
+  \item<+-> Prefer precision matrix to attenuate density
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Cholesky factorization recipe}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item<+-> Implied procedure for computing \( L L^{\top} \approx \CM^{-1} \)
+    \begin{enumerate}
+      \item Pick an ordering on the rows/columns of \( \CM \)
+      \item Select a sparsity pattern lower triangular w.r.t. ordering
+      \item Compute entries by minimizing objective over all factors
+    \end{enumerate}
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Kullback-Leibler minimization}
+\framesubtitle{}
+\begin{wideitemize}
+  \item<+-> Compute entries by minimizing Kullback-Leibler divergence
+    \begin{align*}
+      L \defeq \argmin_{\hat{L} \in \SpSet} \,
+        \KL*{\N(\vec{0}, \CM)}
+            {\N(\vec{0}, (\hat{L} \hat{L}^{\top})^{-1})}
+    \end{align*}
+  \item<+-> Efficient and embarrassingly parallel closed-form solution
+    \begin{align*}
+      L_{s_i, i} &= \frac{\CM_{s_i, s_i}^{-1} \vec{e}_1}
+        {\sqrt{\vec{e}_1^{\top} \CM_{s_i, s_i}^{-1} \vec{e}_1}}
+    \end{align*}
+  \item<+-> Achieves state of the art \( \epsilon \)-accuracy in time
+    complexity \( \BigO\left (N \log^{2d}\left (\frac{N}{\epsilon} \right
+    ) \right ) \) with \( \BigO\left (N \log^{d}\left (\frac{N}{\epsilon}
+    \right ) \right ) \) nonzero entries [\cite{schafer2021sparse}]
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Screening effect}
+\framesubtitle{}
+
+\begin{figure}[t]
+  \centering
+  \input{figures/screening/uncond.tex}%
+  \qquad
+  \input{figures/screening/cond.tex}
+  \label{fig:screening}
+\end{figure}
+
+\begin{wideitemize}
+  \item<+-> Conditional on points near a point of interest, \\
+    far away points are almost independent [\cite{stein2002screening}]
+  \item<+-> Suggests space-covering ordering
+    and selecting nearby points % for the sparsity
+\end{wideitemize}
+\end{frame}
+
+\section{Previous work}
+
+\begin{frame}
+\frametitle{Ordering and sparsity pattern}
+\framesubtitle{}
+
+% copied a bit from https://youtu.be/Hdhv-moeR5U?t=968
+\begin{wideitemize}
+  \item (Reverse) maximin ordering [\cite{guinness2018permutation}]
+    selects the next \textcolor{orange}{point \( \vec{x}_i \)}
+    with \textcolor{orange}{largest distance \( \ell_i \)} to
+    \textcolor{lightblue}{points selected before}
+  \item The \( i \)th column selects all points
+    within a radius of \textcolor{seagreen}{\( \rho
+    \ell_i \)} from \textcolor{orange}{\( \vec{x}_i \)}
+\end{wideitemize}
+
+% computer generated
+\only<1>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_01.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_01.tex}
+  \end{figure}
+}
+\only<2>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_02.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_02.tex}
+  \end{figure}
+}
+\only<3>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_03.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_03.tex}
+  \end{figure}
+}
+\only<4>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_04.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_04.tex}
+  \end{figure}
+}
+\only<5>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_05.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_05.tex}
+  \end{figure}
+}
+\only<6>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_06.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_06.tex}
+  \end{figure}
+}
+\only<7>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_07.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_07.tex}
+  \end{figure}
+}
+\only<8>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_08.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_08.tex}
+  \end{figure}
+}
+\only<9>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_09.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_09.tex}
+  \end{figure}
+}
+\only<10>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_10.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_10.tex}
+  \end{figure}
+}
+\only<11>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_11.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_11.tex}
+  \end{figure}
+}
+\only<12>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_12.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_12.tex}
+  \end{figure}
+}
+\only<13>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_13.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_13.tex}
+  \end{figure}
+}
+\only<14>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_14.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_14.tex}
+  \end{figure}
+}
+\only<15>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_15.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_15.tex}
+  \end{figure}
+}
+\only<16>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_16.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_16.tex}
+  \end{figure}
+}
+\end{frame}
+
+\section{Conditional selection}
+
+\begin{frame}
+\frametitle{This work: KL-minimization, revisited}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item<+-> Plug optimal \( L \) back into the KL divergence
+    \begin{align*}
+      \KL*{\CM}{(L L^{\top})^{-1}} &=
+        \sum_{i = 1}^N
+          \left [
+            \log \left ( \CM_{i, i \mid s_i \setminus \{ i \}} \right ) -
+            \log \left ( \CM_{i, i \mid i + 1:} \right )
+          \right ]
+    \end{align*}
+  \item<+-> KL \( \Leftrightarrow \) accumulated
+    error over independent regression problems
+  \item<+-> Goal: minimize posterior variance of \( i
+    \)th prediction point by selecting training points
+    \( s_i \) \emph{most informative} to that point
+  \item<3->
+    Variance \( \Leftrightarrow \) mutual information
+    \( \Leftrightarrow \) mean squared error
+\end{wideitemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Conditional \( k \)-nearest neighbors}
+\framesubtitle{}
+
+% remove item indent just for this slide
+% may want to consider removing indent all together since unnecessary
+% but figures seem to be naturally indented
+\setlength{\leftmargini}{0em}
+
+% https://tex.stackexchange.com/questions/378548
+\begin{minipage}[c][][c]{0.6\textwidth}
+  \begin{wideitemize}
+    \item<1-> Sparse Gaussian process regression,
+      experimental design, active set, etc.
+    \item<1-> Naive: select \( k \) closest points
+    \item<2-> Chooses redundant information
+    \item<3-> Maximize \emph{mutual information}!
+  \end{wideitemize}
+\end{minipage}%
+\hfill
+\begin{minipage}[c][][t]{0.4\textwidth}
+  \begin{figure}[t!]
+    \centering
+    \only<1> {\include{figures/selection/knn_1.tex}}
+    \only<2->{\include{figures/selection/knn_2.tex}}
+  \end{figure}
+  \vspace{-5\baselineskip}
+  \uncover<3-> {
+    \begin{figure}
+      \centering
+      \only<-3>{\include{figures/selection/cknn_1.tex}}
+      \only<4->{\include{figures/selection/cknn_2.tex}}
+    \end{figure}
+  }
+\end{minipage}
+\end{frame}
+
+\begin{frame}
+\frametitle{Cholesky factorization by greedy selection}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item Identify \textcolor{orange}{target} point as the
+    \textcolor{orange}{diagonal entry}, \textcolor{lightblue}{candidates} are
+    \textcolor{lightblue}{below} it, and add \textcolor{seagreen}{selected
+    entries} to the \textcolor{seagreen}{sparsity pattern}
+  \item In practice, restrict candidate set to nearest neighbors, e.g.
+\end{wideitemize}
+
+% computer generated
+\only<1>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_01.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_01.tex}
+  \end{figure}
+}
+\only<2>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_02.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_02.tex}
+  \end{figure}
+}
+\only<3>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_03.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_03.tex}
+  \end{figure}
+}
+\only<4>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_04.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_04.tex}
+  \end{figure}
+}
+\only<5>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_05.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_05.tex}
+  \end{figure}
+}
+\only<6>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_06.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_06.tex}
+  \end{figure}
+}
+\only<7>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_07.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_07.tex}
+  \end{figure}
+}
+\only<8>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_08.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_08.tex}
+  \end{figure}
+}
+\only<9>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_09.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_09.tex}
+  \end{figure}
+}
+\only<10>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_10.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_10.tex}
+  \end{figure}
+}
+\only<11>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_11.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_11.tex}
+  \end{figure}
+}
+\only<12>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_12.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_12.tex}
+  \end{figure}
+}
+\only<13>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_13.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_13.tex}
+  \end{figure}
+}
+\only<14>{
+  \begin{figure}
+    \centering
+    \input{figures/points_cknn/cholesky_factor_14.tex}%
+    \qquad
+    \input{figures/points_cknn/selected_points_14.tex}
+  \end{figure}
+}
+\end{frame}
+
+% TeX doesn't have enough memory to render with TikZ
+% https://www.nesono.com/node/444
+% so use \tikzexternalize to save memory
+\begin{frame}
+\frametitle{Conditional selection}
+\framesubtitle{}
+
+\begin{figure}
+  \centering
+  \begin{tabular}{rl}
+    \input{figures/kernel/points_1.tex} & \input{figures/kernel/points_2.tex}
+    \\
+    \input{figures/kernel/points_3.tex} & \input{figures/kernel/points_4.tex}
+  \end{tabular}
+\end{figure}
+% not sure why this doesn't trigger Overfull \vbox
+\vspace{-\baselineskip}
+\end{frame}
+
+\begin{frame}
+\frametitle{Greedy conditional selection}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item<+-> Intractable to search over \(
+    \binom{N}{s} \) subsets, use greedy instead
+  \item<+-> Direct computation is \( \BigO(N s^4)
+    \) to select \( s \) points out of \( N \)
+  \item<+-> Maintain partial Cholesky factor for \( \BigO(N s^2) \)
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Fast conditional selection}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item<+-> Selecting candidate \( k \) is
+    rank-one downdate to covariance \( \CM \)
+    \begin{align*}
+      \CM_{:, : \mid \I, k} &= \CM_{:, : \mid \I} - \vec{u} \vec{u}^{\top} &
+        \vec{u} &= \frac{\CM_{:, k \mid \I}}{\sqrt{\CM_{k, k \mid \I}}}
+    \end{align*}
+    \vspace{-1\baselineskip}
+  \item<+-> Corresponding decrease in posterior variance is
+    \begin{align*}
+      u_\Pred^2
+      = \frac{\Cov[y_\Pred, y_k \mid \I]^2}{\Var[y_k \mid \I]}
+      = \Var[y_\Pred \mid \I] \Corr[y_\Pred, y_k \mid \I]^2
+    \end{align*}
+  \item<+-> Compute \( \vec{u} \) as next column of (partial) Cholesky factor
+  \item<+-> Replace \( \BigO(N^2) \) update
+    with \( \BigO(N s) \) by ``left-looking''
+    \begin{align*}
+      L_{:, i} &\gets \CM_{:, k} - L_{:, :i - 1} L_{k, :i - 1}^{\top} \\
+      L_{:, i} &\gets \frac{L_{:, i}}{\sqrt{L_{k, i}}}
+    \end{align*}
+\end{wideitemize}
+\end{frame}
+
+\section{Numerical experiments}
+
+\begin{frame}
+\frametitle{\( k \)-nearest neighbors}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item Image classification by mode label of \( k \)-``nearest'' neighbors
+  \item MNIST database of handwritten digits [\cite{lecun1998gradientbased}]
+  \item Mat{\'e}rn kernel with smoothness \( \nu =
+    \frac{3}{2} \) and length scale \( \ell = 2^{10} \)
+\end{wideitemize}
+
+\pgfplotsset{
+  cycle list={
+    {very thick, lightblue, style=dashed},
+    {very thick, orange,    style=solid},
+  }
+}
+
+\begin{figure}[t]
+  \centering
+  \input{figures/mnist/accuracy_k.tex}%
+  \input{figures/mnist/time_k.tex}
+  \label{fig:mnist}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Recovery of sparse factors}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item Randomly generate \textit{a priori} sparse Cholesky factor \( L \)
+  \item Attempt to recover \( L \) given
+    covariance matrix \( \CM = L L^{\top} \)
+\end{wideitemize}
+
+\pgfplotsset{
+  cycle list={
+    {very thick, silver,    style=densely dotted},
+    {very thick, lightblue, style=dashed},
+    {very thick, seagreen,  style=dashdotted},
+    {very thick, orange,    style=solid},
+  }
+}
+
+\begin{figure}[t]
+  \centering
+  \input{figures/recover/accuracy_n.tex}%
+  \input{figures/recover/accuracy_s.tex}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Cholesky factorization}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item Randomly sample \( N = 2^{16} \) points uniformly from \( [0, 1]^3 \)
+  \item Mat{\'e}rn kernel with smoothness \( \nu =
+    \frac{5}{2} \) and length scale \( \ell = 1 \)
+\end{wideitemize}
+
+% TODO: replace rho with nnz
+
+\pgfplotsset{
+  cycle list={
+    {very thick, lightblue, style=dashed,         mark=*},
+    {very thick, seagreen,  style=dashdotted,     mark=o},
+    {very thick, silver,    style=densely dotted, mark=triangle*},
+    {very thick, orange,    style=solid,          mark=square*},
+    {very thick, rust,      style=dotted,         mark=square},
+  }
+}
+
+\begin{figure}[t]
+  \centering
+  \input{figures/cholesky/rho_kl_div.tex}%
+  \input{figures/cholesky/rho_time.tex}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Gaussian process regression}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item Randomly sample \( 2^{16} \) points uniformly from \( [0, 1]^3 \)
+  \item Randomly partition into 90\% training and 10\% prediction
+  \item Mat{\'e}rn kernel with smoothness \( \nu =
+    \frac{5}{2} \) and length scale \( \ell = 1 \)
+  \item Draw \( 10^3 \) realizations from the resulting Gaussian process
+\end{wideitemize}
+
+\pgfplotsset{
+  cycle list={
+    {very thick, lightblue, style=dashed,         mark=*},
+    {very thick, seagreen,  style=dashdotted,     mark=o},
+    {very thick, orange,    style=solid,          mark=square*},
+    {very thick, rust,      style=dotted,         mark=square},
+  }
+}
+
+\begin{figure}[t]
+  \centering
+  \input{figures/gp/rho_loss.tex}%
+  \input{figures/gp/rho_time_loss.tex}
+  \label{fig:gp_rho}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Preconditioning the conjugate gradient}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item Randomly sample \( N \) points uniformly from \( [0, 1]^3 \)
+  \item Mat{\'e}rn kernel with smoothness \( \nu =
+    \frac{1}{2} \) and length scale \( \ell = 1 \)
+  \item First sample solution \( \vec{x} \sim \N(\vec{0},
+    \Id_N) \) then compute \( \vec{y} = \CM \vec{x} \)
+  \item Run conjugate gradient with preconditioner \( L \)
+\end{wideitemize}
+
+\pgfplotsset{
+  cycle list={
+    {very thick, lightblue, style=dashed,         mark=*},
+    {very thick, seagreen,  style=dashdotted,     mark=o},
+    {very thick, orange,    style=solid,          mark=square*},
+    {very thick, rust,      style=dotted,         mark=square},
+  }
+}
+
+\begin{figure}[t]
+  \centering
+  \input{figures/cg/n_iter-res.tex}%
+  \input{figures/cg/nnz_nnz.tex}
+  \label{fig:cg_iter}
+\end{figure}
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}
+\frametitle{Summary}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item \emph{Sparse} Cholesky factorization of \emph{dense} kernel
+    matrices from approximate conditional independence in Gaussian processes
+  \item Previous work exploits screening effect for ordering and sparsity
+  \item Replace pure geometry with information-theoretic criteria
+  \item More accurate factors at the same sparsity
+  \item Conditional selection is computationally efficient
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{}
+\framesubtitle{}
+
+% https://tex.stackexchange.com/questions/247826/beamer-full-vertical-centering
+\begin{minipage}[c][0.99\textheight][c]{\linewidth}
+  \centering
+  {\huge \textcolor{lightblue}{Thank You!}}
+\end{minipage}
+\end{frame}
+
+\begin{frame}
+\frametitle{References}
+\framesubtitle{}
+
+\printbibliography
+\end{frame}
+
+% \section{Extensions}
+
+\begin{frame}
+\frametitle{Mutual information objective}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item Define \emph{mutual information} or \emph{information gain}
+    \begin{align*}
+      \MI[\vec{y}_\Pred; \vec{y}_\Train] &=
+        \entropy[\vec{y}_\Pred] -
+        \entropy[\vec{y}_\Pred \mid \vec{y}_\Train]
+    \end{align*}
+  \item Entropy increasing with log determinant of covariance
+  \item Information-theoretic EV-VE identity
+    \begin{align*}
+      \textcolor{orange}{\entropy[\vec{y}_\Pred]} &=
+        \textcolor{lightblue}{
+          \entropy[\vec{y}_\Pred \mid \vec{y}_\Train]
+        } +
+        \textcolor{rust}{\MI[\vec{y}_\Pred;\vec{y}_\Train]} \\
+      \textcolor{orange}{\Var[\vec{y}_\Pred]} &=
+        \textcolor{lightblue}{
+          \E[\Var[\vec{y}_\Pred \mid \vec{y}_\Train]]
+        } +
+        \textcolor{rust}{\Var[\E[\vec{y}_\Pred \mid \vec{y}_\Train]]}
+    \end{align*}
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Orthogonal matching pursuit}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item Conditional selection can be seen as orthogonal
+    matching pursuit in covariance rather than feature space
+    \begin{align*}
+      \CM &= F^{\top} F
+      \shortintertext{where \( F \)'s columns \(
+        F_i \) are vectors in feature space and}
+      \CM_{i, j} &= \langle F_i, F_j \rangle
+      \shortintertext{Suppose \( F \) has \( QR \) factorization}
+      F &= QR
+      \shortintertext{for \( Q \) orthonormal
+        and \( R \) upper triangular. Then }
+      \CM &= F^{\top} F = (Q R)^{\top} (Q R) \\
+            &= R^{\top} Q^{\top} Q R \\
+            &= R^{\top} R
+      \shortintertext{so \( R^{\top} \) is a lower
+        triangular Cholesky factor of \( \CM \).}
+    \end{align*}
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Multiple prediction points}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item Select candidate for \emph{multiple} prediction points jointly
+  \item Try to take advantage of ``two birds with one stone''
+  \item Flipped objective allows efficient algorithm by single selection
+    {\small
+      \begin{align*}
+        \logdet(\CM_{\Pred, \Pred \mid \I, k})
+          - \logdet(\CM_{\Pred, \Pred \mid \I})
+        &= \log(\CM_{k, k \mid \I, \Pred})
+          - \log(\CM_{k, k \mid \I})
+      \end{align*}
+    }
+  \item \( \BigO(N s^2 + N m^2 + m^3) \) to select \( s
+    \) points out of \( N \) candidates for \( m \) targets,
+    essentially \( m \) times faster than single selection
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Partial selection}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item In aggregated (supernodal) Cholesky factorization, ``partial''
+    addition of candidates if candidate is between grouped targets
+  \item Conditional structure of partially conditioned covariance matrix
+    \begin{align*}
+      \Cov[\vec{y}_{\parallel k}] &=
+      \begin{pmatrix}
+        L_{:p} L_{:p}^{\top} &
+        L_{:p} {L'}_{p + 1:}^{\top} \\
+        {L'}_{p + 1:} L_{:p}^{\top} &
+        {L'}_{p + 1:} {L'}_{p + 1:}^{\top}
+      \end{pmatrix} =
+      \begin{pmatrix}
+        L_{:p} \\
+        {L'}_{p + 1:}
+      \end{pmatrix}
+      \begin{pmatrix}
+        L_{:p} \\
+        {L'}_{p + 1:}
+      \end{pmatrix}^{\top}
+    \end{align*}
+    % \begin{figure}
+    %   \centering
+    %   \input{figures/partial_factor.tex}
+    % \end{figure}
+  \item Efficient inductive algorithm matches complexity of
+    multiple-target selection algorithm using rank-one downdating
+    \begin{align*}
+      \CM_{i, i \mid :i - 1} &= L_{i, i}^2 \\
+      \CM_{j, i \mid :i - 1} &= L_{j, i} \cdot L_{i, i} \\
+      \CM_{i, i \mid :i - 1, j} &= \CM_{i, i \mid :i - 1} -
+        \CM_{j, i \mid :i - 1}^2/\CM_{j, j \mid :i - 1} \\
+      \CM_{j, j \mid :i - 1, i} &= \CM_{j, j \mid :i - 1} -
+        \CM_{j, i \mid :i - 1}^2/\CM_{i, i \mid :i - 1} = \CM_{j, j \mid :i}
+    \end{align*}
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Allocating nonzeros by global selection}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item It matters how many nonzeros each columns
+    receives, especially for inhomogeneous geometries
+  \item Distributing evenly maximizes computational efficiency
+  \item To maximize accuracy, maintain \emph{global} priority queue
+    that determines both the next candidate to select and its column
+  \item Priority queue implemented as array-backed binary heap, e.g.
+\end{wideitemize}
+\end{frame}
+
+\end{document}

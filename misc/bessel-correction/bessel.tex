@@ -1,0 +1,380 @@
+\documentclass{beamer}                             % presentation
+% \documentclass[draft]{beamer}                    % improves compile time
+% \documentclass[11pt, handout]{beamer}            % handout
+\usepackage[utf8]{inputenc}                        % utf8
+\usepackage[T1]{fontenc}                           % fix font encoding
+\usepackage[english]{babel}                        % language
+\usepackage{geometry, hyperref, fancyhdr, algorithm}
+\usepackage{amsmath, amssymb, amsthm}              % ams mathematical packages
+\usepackage{physics, mathtools, bm}                % extra math packages
+\usepackage{graphicx, subcaption, wrapfig}         % images
+\usepackage{fvextra, textcomp, CJKutf8}            % misc. text formatting
+\usepackage[autostyle, english=american]{csquotes} % quotes
+\usepackage{tikz, pgfplots, tikz-network}          % plots and graphs
+\usepackage[noend]{algpseudocode}                  % algorithm psuedocode
+\usepackage[cache=true]{minted}                    % source code
+\usepackage[style=ieee]{biblatex}                  % bibliography
+
+\pgfplotsset{compat=1.17}                          % version of pgfplots
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=cyan,
+  linkcolor=magenta
+}
+
+\setminted[]{
+  linenos=false,
+  breaklines=true,
+  encoding=utf8,
+  fontsize=\normalsize,
+  frame=lines,
+  framesep=2mm
+}
+
+% https://tex.stackexchange.com/questions/343494/minted-red-box-around-greek-characters
+\makeatletter
+\AtBeginEnvironment{minted}{\dontdofcolorbox}
+\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
+\makeatother
+
+\graphicspath{{./images/}}
+\addbibresource{ref.bib}
+
+\usetheme{Berkeley}
+\usecolortheme{dolphin}
+% hide navigation buttons
+\setbeamertemplate{navigation symbols}{}
+
+% title page
+\title[]{Bessel's Correction and Jensen's Inequality}
+\subtitle{}
+\author[Huan]{Stephen Huan\inst{1}}
+\institute[Georgia Institute of Technology]
+{
+  \inst{1}
+  Georgia Institute of Technology 
+}
+\date[]{November 24, 2021}
+\subject{Computer Science}
+
+\AtBeginSubsection[]
+{
+  \begin{frame}
+    \frametitle{Table of Contents}
+    \tableofcontents[currentsection, currentsubsection]
+  \end{frame}
+}
+
+\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+
+\begin{document}
+\frame{\titlepage}
+
+\section{Bessel's Correction}
+
+\begin{frame}
+\frametitle{Table of Contents}
+\tableofcontents[currentsection]
+\end{frame}
+
+\begin{frame}
+\frametitle{Setup}
+\framesubtitle{}
+Suppose we have \( X_1, X_2, \dots, X_n \) sampled
+i.i.d from the random variable \( X \) with unknown
+\( \E[X] = \mu \) and \( \Var[X] = \sigma^2 \). \bigskip
+
+Our goal is to find good estimators for the mean and variance
+\emph{without} assumptions about the underlying distribution.
+\end{frame}
+
+\subsection{Mean Estimator}
+
+\begin{frame}
+\frametitle{Mean Estimator}
+\framesubtitle{}
+To estimate the mean, the most natural thing is to take
+the sample mean. Let \( S_n = (X_1, X_2, \dots, X_n) \):
+\[ \E[S_n] = \sum_{i = 1}^n \frac{1}{n} X_i = \frac{1}{n} \sum_{i = 1}^n X_i \]
+Note that our estimator \( \E[S_n] \), defined as a linear
+combination of random variables, is also a random variable.
+We can therefore take its expectation and variance.
+\end{frame}
+
+\begin{frame}
+\frametitle{Expectation of the Mean Estimator}
+\framesubtitle{}
+\begin{align*}  
+  \E[\E[S_n]] &= \E[\frac{1}{n} \sum_{i = 1}^n X_i]
+                && \text{definition of \( \E[S_n] \)}\\
+              &= \frac{1}{n} \sum_{i = 1}^n \E[X_i]
+                && \text{linearity of expectation} \\
+              &= \frac{1}{n} (n \mu)
+                && \text{each \( X_i \) i.i.d from \( X \)} \\
+              &= \mu
+\end{align*}
+This shows our estimator is an \emph{unbiased} estimator of the
+true parameter, i.e. \( \E[\E[S_n] - \mu] = \mu - \mu = 0 \).
+
+Being unbiased is nice, but how fast is the convergence?
+\end{frame}
+
+\begin{frame}
+\frametitle{Variance of the Mean Estimator}
+\framesubtitle{}
+\begin{align*}  
+  \Var[\E[S_n]] &= \Var[\frac{1}{n} \sum_{i = 1}^n X_i]
+                  && \text{definition of \( \E[S_n] \)}\\
+                &= \frac{1}{n^2} \sum_{i = 1}^n \Var[X_i]
+                  && \text{variance of sum i.i.d. r.v.s} \\
+                &= \frac{1}{n^2} (n \sigma^2)
+                  && \text{each \( X_i \) i.i.d from \( X \)} \\
+                &= \frac{1}{n} \sigma^2
+\end{align*}
+As expected, as the number of samples goes up, the mean
+estimator varies less --- our estimate becomes more precise.
+\end{frame}
+
+\subsection{Variance Estimator}
+
+\begin{frame}
+\frametitle{Variance Estimator}
+\framesubtitle{}
+With the success of the mean estimator, why not use the
+sample variance as an estimator for \( \sigma^2 \)?
+\[ \Var[S_n] = \E[(S_n - \E[S_n])^2] = \E[S_n^2] - \E[S_n]^2 \]
+We'll just focus on computing the expectation of this estimator:
+\begin{align*}
+  \E[\Var[S_n]] &= \E[\E[S_n^2]] - \E[\E[S_n]^2]
+    && \text{linearity of expectation}
+  \shortintertext{Focusing on the second term,}
+  \Var[\E[S_n]] &= \E[\E[S_n]^2] - \E[\E[S_n]]^2
+    && \text{definition of variance} \\
+  \frac{1}{n} \sigma^2 &= \E[\E[S_n]^2] - \mu^2
+    && \text{from previous} \\
+  \E[\E[S_n]^2] &= \frac{1}{n} \sigma^2 + \mu^2 
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Expectation of the Variance Estimator}
+\framesubtitle{}
+Working on the first term,
+\begin{align*}
+  \E[\E[S_n^2]] &= \E[\frac{1}{n} \sum_{i = 1}^n X_i^2]
+                  && \text{definition of \( \E[S_n^2] \)} \\
+                &= \frac{1}{n} \sum_{i = 1}^n \E[X_i^2]
+                  && \text{linearity of expectation} \\
+                &= \frac{1}{n} n (\sigma^2 + \mu^2)
+                  && \text{each \( X_i \) i.i.d from \( X \)}
+  \shortintertext{where we used \( \Var[X] = \E[X^2] - \E[X]^2 \),
+    so \( \E[X^2] = \Var[X] + \E[X]^2 = \sigma^2 + \mu^2 \)}
+                &= \sigma^2 + \mu^2
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Bias of the Variance Estimator}
+\framesubtitle{}
+Putting the two together,
+\begin{align*}
+  \E[\Var[S_n]] &= \E[\E[S_n^2]] - \E[\E[S_n]^2] \\
+                &= (\sigma^2 + \mu^2) - (\frac{1}{n} \sigma^2 + \mu^2) \\
+                &= \boxed{\frac{n - 1}{n} \sigma^2}
+\end{align*}
+This is an \emph{underestimate} for the true variance! In order to
+correct it, the simplest thing is to multiply the estimator by \(
+\frac{n}{n - 1} \), which will unbias the estimator by linearity of
+expectation. This correction is called \emph{Bessel's correction}.
+\end{frame}
+
+\begin{frame}
+\frametitle{Corrected Variance Estimator}
+\framesubtitle{}
+That is, instead of computing the sample variance
+\begin{align*}
+  \Var[S_n] &= \frac{1}{n} \sum_{i = 1}^n (X_i - \E[S_n])^2 
+  \shortintertext{we multiply by \( \frac{n}{n - 1} \),
+    yielding the unbiased estimator:}
+  \frac{n}{n - 1} \Var[S_n] &= \frac{1}{n - 1} \sum_{i = 1}^n (X_i - \E[S_n])^2  
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Understanding Bias}
+\framesubtitle{}
+Why is the sample variance biased? \bigskip
+
+One explanation is \enquote{degrees of freedom}, as the knowing the mean takes
+1 degree of freedom off. This makes it \( n - 1 \) degrees of freedom instead
+of \( n \). This type of reasoning is powerful, but feels heuristical to me.
+\bigskip
+
+Instead, I think a more compelling explanation is that the sample mean is
+necessarily a better minimizer of sample variance than the true mean. The
+sample mean happens to be the unique minimizer of the sum of squares error.
+Since we're using the sample mean instead of the true mean, we'll always
+\emph{underestimate} the true variance. If we somehow knew the true mean,
+and used it to calculate sample variance, the estimation \emph{would} be
+unbiased and we wouldn't need to correct.
+\end{frame}
+
+\begin{frame}
+\frametitle{Estimating Standard Deviation}
+\framesubtitle{}
+
+But what if we wanted to estimate the standard deviation \( \sigma
+\) instead of \( \sigma^2 \)? Well, one natural thing to do would
+be to take the square root of our unbiased variance estimator,
+\begin{align*}
+  \hat{\sigma} &= \sqrt{\hat{\sigma^2}} \\
+  \shortintertext{However, note that in general \( \E[f(X)] \neq f(\E[X]) \)}
+  \E[\hat{\sigma}] &\neq \sqrt{\E[\hat{\sigma^2}]} = \sigma
+  \shortintertext{Our estimator is biased again! But in which direction?}
+\end{align*}
+\end{frame}
+
+\section{Jensen's Inequality}
+
+\subsection{Convex Functions}
+
+\begin{frame}
+\frametitle{Convex Functions}
+\framesubtitle{}
+\begin{block}{Convexity}
+A function \( f(x) \) is \emph{convex} if its second
+derivative is always positive, i.e. \( f''(x) \geq 0 \).
+There are many alternative definitions.
+\end{block}
+
+\begin{theorem}
+Jensen's inequality. If \( f \) is convex, \[ f(\E[X]) \leq \E[f(X)] \] 
+\end{theorem}
+
+We will prove for discrete random variable \( X \), but
+the theorem holds for continuous random variables as well.
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Jensen's Inequality}
+\framesubtitle{}
+\begin{proof}
+  We use an alternative definition of convexity, that
+  \begin{align*}
+    f(\lambda_1 x_1 + \lambda_2 x_2) &\leq \lambda_1 f(x_1) + \lambda_2 f(x_2)
+    \shortintertext{for all \( \lambda_1, \lambda_2 \geq 0 \),
+      \( \lambda_1 + \lambda_2 = 1 \).}
+    \shortintertext{We want to show that}
+    f(\E[X]) \leq \E[f(X)]
+    \shortintertext{Assuming that \( X \) is a discrete random variable,}
+    \E[X] &= \sum_{x \in X} x \, p(x) \\ 
+          &= p(x_1) x_1 + p(x_2) x_2 + \dots + p(x_n) x_n \\
+          &= \lambda_1 x_1 + \dots + \lambda_n x_n
+    \shortintertext{where \( \lambda_i \geq 0 \) and
+      \( \sum_{i = 1}^n \lambda_i = 1 \)}
+  \end{align*}
+  \let\qedsymbol\relax
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof of Jensen's Inequality}
+\framesubtitle{}
+\begin{proof}
+  We want to show:
+  \begin{align*}
+    f(\E[X]) &\leq \E[f(X)] \\
+    f(\lambda_1 x_1 + \dots + \lambda_n x_n) &\leq \lambda_1 f(x_1) + \dots + \lambda_n f(x_n)
+    \shortintertext{We can just induct out each
+      \( \lambda_i x_i \) term from the left side:}
+    f(\lambda_1 x_1 + (1 - \lambda_1) & [\frac{\lambda_2}{1 - \lambda_1} x_2
+      + \dots + \frac{\lambda_n}{1 - \lambda_1} x_n]) \leq \\
+    \lambda_1 f(x_1) + (1 - \lambda_1) & f(\frac{\lambda_2}{1 - \lambda_1} x_2
+      + \dots + \frac{\lambda_n}{1 - \lambda_1} x_n)
+    \shortintertext{by convexity. By induction,
+      the theorem is true for all \( n \). \qed}
+  \end{align*}
+  \let\qedsymbol\relax
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Special Case of Jensen's Inequality}
+\framesubtitle{}
+For example, take the convex function \( f(x) = x^2 \). \bigskip 
+
+By Jensen's inequality, \( f(\E[X]) = \E[X]^2 \leq \E[f(X)]
+= \E[X^2] \). This tells us \( \E[X^2] - \E[X]^2 \geq 0
+\), which we already knew since variance must be positive! \bigskip
+
+It also tells us why our sample variance is an underestimate for the true
+variance. Recall our estimator is \( (\sigma^2 + \mu^2) - \E[\E[S_n]^2]
+\). If we used \( \mu \) instead of \( \E[S_n] \), \( (\sigma^2 + \mu^2)
+- \E[\mu^2] = \sigma^2 \) so we have an unbiased estimator as expected.
+However, we use \( \E[S_n] \), and by Jensen's inequality, \( \E[\E[S_n]^2]
+\geq \E[\E[S_n]]^2 = \mu^2 \). \bigskip 
+
+So we always subtract \emph{more} than we should with
+the sample mean, underestimating the true variance.
+\end{frame}
+
+\subsection{Concave Functions}
+
+\begin{frame}
+\frametitle{Jensen's Inequality for Concave Functions}
+\framesubtitle{}
+\begin{block}{Concavity}
+A function \( f \) is \emph{concave} if its second derivative is
+always negative, i.e. \( f''(x) \leq 0 \). This is basically the
+\enquote{opposite} of convexity (not literally logically negative).
+\end{block}
+
+We can also adjust the inequality for concave functions trivially.
+Suppose \( f(x) \) is concave. Then \( g(x) = -f(x) \) is convex.
+\begin{align*}
+  \shortintertext{Applying Jensen's inequality on \( g \),}
+  g(\E[X]) &\leq \E[g(x)] \\
+  -f(\E[X]) &\leq \E[-f(x)] \\
+  f(\E[X]) &\geq \E[f(x)]
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Bias of the Standard Deviation Estimator}
+\framesubtitle{}
+Finally, we can analyze the estimator of standard deviation.
+\begin{align*} 
+  \shortintertext{If \( \hat{\sigma^2} \) is our unbiased estimator for
+    variance, then the estimator for standard deviation is the square root:}
+  \hat{\sigma} &= \sqrt{\hat{\sigma^2}} \\
+  \shortintertext{Note that \( f(x) = \sqrt{x} \) is a concave function, so}
+  \E[\hat{\sigma}] &= \E[\sqrt{\hat{\sigma^2}}] \leq
+    \sqrt{\E[\hat{\sigma^2}]} = \sigma
+\end{align*}
+
+Thus, our standard deviation estimator is always an \emph{underestimate}
+of the true standard deviation. There is no generally unbiased estimator;
+one has to know the distribution of \( X \) to construct one. This is why
+variance is better!
+\end{frame}
+
+\section{References}
+
+\begin{frame}
+\frametitle{References}
+\framesubtitle{}
+Wikipedia articles on:
+\begin{enumerate}
+  \item \href{https://en.wikipedia.org/wiki/Bessel\%27s_correction}
+      {Bessel's Correction}
+  \item \href{https://en.wikipedia.org/wiki/Jensen\%27s_inequality}
+      {Jensen's Inequality}
+  \item \href{https://en.wikipedia.org/wiki/Unbiased_estimation_of_standard_deviation}
+      {Standard Deviation Estimation}
+\end{enumerate}
+\end{frame}
+
+% \printbibliography
+\end{document}

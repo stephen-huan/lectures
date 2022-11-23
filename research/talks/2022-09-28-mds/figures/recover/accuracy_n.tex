@@ -1,0 +1,17 @@
+\begin{tikzpicture}[baseline, scale=0.55]
+  \begin{axis}[
+    grid={major},
+    % title={Accuracy with increasing \( N \)
+    %   (\( s = 32 \))},
+    xlabel={\( N \)},
+    ylabel={Accuracy (IOU)},
+    % legend entries={rand., \( k \)-NN, corr., C\( k \)-NN},
+    % legend pos={south west},
+    ymin=0, ymax=1.1,
+  ]
+  \addplot table {figures/recover/n_score_random.csv};
+  \addplot table {figures/recover/n_score_knn.csv};
+  \addplot table {figures/recover/n_score_corr.csv};
+  \addplot table {figures/recover/n_score_cknn.csv};
+  \end{axis}
+\end{tikzpicture}

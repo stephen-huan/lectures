@@ -1,0 +1,16 @@
+\begin{tikzpicture}[baseline, scale=0.55]
+  \begin{loglogaxis}[
+    grid={major},
+    % title={RMSE against time with increasing \( \rho \)
+    %   (\( N = 65536, \rho_s = 2, \lambda = 1.5 \))},
+    xlabel={\( \log_{10} \) Time (seconds)},
+    % ylabel={\( \log_{10} \) RMSE},
+    legend entries={KL, KL (agg.), select, select (agg.)},
+    legend pos={north east},
+  ]
+  \addplot table {figures/gp/rho_time_KL_loss.csv};
+  \addplot table {figures/gp/rho_time_KL_agg_loss.csv};
+  \addplot table {figures/gp/rho_time_select_loss.csv};
+  \addplot table {figures/gp/rho_time_select_agg_loss.csv};
+  \end{loglogaxis}
+\end{tikzpicture}
