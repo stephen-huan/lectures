@@ -1,4 +1,0 @@
-Sitemap: https://stephen-huan.github.io/sitemap.xml
-
-User-agent: *
-Disallow:
