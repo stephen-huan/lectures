@@ -173,6 +173,8 @@ tr:first-of-type > th { text-align: center; /* background: #eae9f4; */ }
 
 .clean-table tbody tr:nth-child(even) { background-color: var(--background); }
 
+.no-header table tbody tr th { display: none; }
+
 /* blockquote */
 
 .franklin-content blockquote {
@@ -353,6 +355,8 @@ hr { border-top: var(--rule); border-bottom: 0; }
   float: right;
   margin-left: 1rem;
 }
+
+.franklin-content .no-margin {margin: 0}
 
 /* ==================================================================
     IMAGES in CONTENT
@@ -677,8 +681,6 @@ instead, display a burger menu.
 /* ==================================================================
     NEWS
 ================================================================== */
-
-.news table tbody tr th { display: none; }
 
 .news td:first-of-type { font-weight: var(--font-weight-thick); }
 

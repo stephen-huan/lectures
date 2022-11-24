@@ -220,7 +220,7 @@ function lx_news(com, _)
     i = -1
     open("news.md") do news
         for line in eachline(news)
-            if line == "@@news,clean-table"
+            if line == "@@news,clean-table,no-header"
                 i = 0
             end
             i >= 0 && (i += 1)
