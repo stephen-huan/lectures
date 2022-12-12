@@ -23,7 +23,7 @@ generate_rss = false
 website_title = "Lectures"
 website_descr = "Lectures on computer science and mathematics"
 website_url   = "https://stephen-huan.github.io/"
-prepath = "lectures"
+# prepath = "lectures"
 
 # character for the icon
 icon = "浣"
