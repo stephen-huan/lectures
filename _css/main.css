@@ -496,7 +496,6 @@ nav li a {
   color: black;
   text-decoration: none;
   display: inline-block;
-  float: center;
   padding-top: 0.5rem;
   padding-right: 0.125rem;
   padding-left: 0.125rem;
@@ -708,7 +707,6 @@ instead, display a burger menu.
 
 .blog-tags {
   text-align: center;
-  display: center;
   padding-top: 1.75rem;
   padding-bottom: 1.75rem;
   border-top: var(--rule);
@@ -774,6 +772,8 @@ instead, display a burger menu.
   font-weight: var(--font-weight-thick);
   border: none;
 }
+
+.tagged-posts td { text-align: left; }
 
 /* ==================================================================
     PROJECTS

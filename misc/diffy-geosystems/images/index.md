@@ -1,4 +1,8 @@
-# [cs-lectures](../../..)
++++
+title = "Geoscience"
++++
+
+\chapter{[cs-lectures](/)}
 
 @@img-large,border
 ![geosystems.png](./geosystems.png)

@@ -11,6 +11,10 @@ copy() {
 mkdir --parents "_css"
 copy "_css/main.css"
 
+mkdir --parents "_assets"
+copy "_assets/favicon.svg"
+# copy "_assets/hamburger.svg"
+
 mkdir --parents "_layout"
 copy "_layout/foot.html"
 copy "_layout/head.html"

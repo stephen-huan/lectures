@@ -144,12 +144,12 @@ function hfun_custom_taglist()
         url = get_url(rpath)
         title, date = robust_title(rpath), robust_date(rpath)
         # write some appropriate HTML
-        write(io, """<th align="left" scope="row">$date</th>""")
-        write(io, """<td align="left"><a href="/$rpath/">$title</a></td>""")
+        write(io, """<th scope="row">$date</th>""")
+        write(io, """<td><a href="/$rpath/">$title</a></td>""")
         write(io, "</tr>\n")
     end
     # finish the HTML
-    write(io, "</table></tbody></div>")
+    write(io, "</tbody></table></div>")
     # return the HTML string
     return String(take!(io))
 end
@@ -166,8 +166,9 @@ function hfun_gettags()
     write(io, "<ul>\n")
     for (i, tag) in enumerate(tags)
         url = "/$path/$tag/"
-        write(io, """<li><a href="$url"><b>#</b> $tag</a></li>\n""")
-        i != length(tags) && write(io, "<p>&nbsp; &middot; &nbsp;</p>\n")
+        write(io, """<li><a href="$url"><b>#</b> $tag</a>""")
+        i != length(tags) && write(io, "<p>&nbsp; &middot; &nbsp;</p>")
+        write(io, "</li>\n")
     end
     write(io, "</ul>")
     return String(take!(io))
@@ -310,6 +311,6 @@ function env_wrap(com, _)
     # https://github.com/tlienart/Franklin.jl/blob/4ba6d9020367468bfb77b5bde9eabb2648ab8a21/src/converter/markdown/blocks.jl#L35-L37
     parsed = Franklin.reprocess(content, lxdefs;
                                 nostripp=true) |> Franklin.simplify_ps
-    return "~~~<$tag$data>\n$parsed\n</$tag>~~~"
+    return "~~~<$tag$data>$parsed</$tag>~~~"
 end
 

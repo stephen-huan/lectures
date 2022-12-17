@@ -13,6 +13,7 @@ mintoclevel = 2
 ignore = ["Project.toml", "Manifest.toml",
           "node_modules/", "package-lock.json", "package.json",
           "bin/",
+          "misc/diffy-geosystems/images/README.md",
          ]
 
 generate_sitemap = false
@@ -28,4 +29,9 @@ website_url   = "https://stephen-huan.github.io/"
 # character for the icon
 icon = "浣"
 +++
+
+<!--
+Add here global LaTeX commands to use throughout your pages.
+-->
+\newcommand{\chapter      }[1]{\begin{wrap}{h1}#1\end{wrap}}
 
