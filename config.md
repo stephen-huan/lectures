@@ -28,6 +28,14 @@ website_url   = "https://stephen-huan.github.io/"
 
 # character for the icon
 icon = "浣"
+
+# git repo for page source
+git_repo = "https://github.com/stephen-huan/lectures/blob/master"
+
+# footer exclude
+footer_exclude = Set(
+  []
+)
 +++
 
 <!--

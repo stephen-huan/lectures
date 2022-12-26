@@ -1,4 +1,4 @@
-\chapter{Index}
+# Index
 
 - research
   - posters
