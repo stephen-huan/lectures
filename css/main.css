@@ -369,12 +369,14 @@ hr { border-top: var(--rule); border-bottom: 0; }
 
 .franklin-content .img-large img {
   width: 80%;
+  height: auto;
   margin-left: 10%;
   text-align: center;
 }
 
 .franklin-content .img-small img {
   width: 60%;
+  height: auto;
   margin-left: 20%;
   text-align: center;
 }
@@ -661,6 +663,7 @@ instead, display a burger menu.
 
 .franklin-content .profile img {
   width: 265px;
+  height: 375.5px;
   border-radius: 4px;
   box-shadow: var(--box-shadow);
 }
@@ -668,6 +671,7 @@ instead, display a burger menu.
 @media (max-width: 760px) {
   .franklin-content .profile img {
     min-width: 100%;
+    height: auto;
   }
 
   .franklin-content .right {
