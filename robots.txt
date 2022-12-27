@@ -1,0 +1,4 @@
+Sitemap: https://lectures.cgdct.moe/sitemap.xml
+
+User-agent: *
+Disallow:
