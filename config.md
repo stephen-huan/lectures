@@ -34,7 +34,7 @@ git_repo = "https://github.com/stephen-huan/lectures/blob/master"
 
 # footer exclude
 footer_exclude = Set(
-  []
+  ["/404/"]
 )
 +++
 
