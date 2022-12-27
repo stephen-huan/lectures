@@ -16,14 +16,11 @@ ignore = ["Project.toml", "Manifest.toml",
           "misc/diffy-geosystems/images/README.md",
          ]
 
-generate_sitemap = false
-generate_robots = false
-generate_rss = false
-
 # RSS (the website_{title, descr, url} must be defined to get RSS)
+generate_rss = true
 website_title = "Lectures"
 website_descr = "Lectures on computer science and mathematics"
-website_url   = "https://stephen-huan.github.io/"
+website_url   = "https://lectures.cgdct.moe/"
 # prepath = "lectures"
 
 # character for the icon
