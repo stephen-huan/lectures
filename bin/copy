@@ -24,6 +24,8 @@ copy "_layout/head_katex.html"
 touch "_layout/header.html"
 copy "_layout/page_foot.html"
 
+cp --recursive "$MAIN/_rss" .
+
 copy "404.md"
 copy "Project.toml"
 # copy "Manifest.toml"
