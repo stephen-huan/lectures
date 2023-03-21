@@ -10,11 +10,15 @@ mintoclevel = 2
 # these files might be copied and, if markdown, processed by Franklin which
 # you might not want. Indicate directories by ending the name with a `/`.
 # Base files such as LICENSE.md and README.md are ignored by default.
-ignore = ["Project.toml", "Manifest.toml",
-          "node_modules/", "package-lock.json", "package.json",
-          "bin/",
-          "misc/diffy-geosystems/images/README.md",
-         ]
+ignore = [
+    "Project.toml",
+    "Manifest.toml",
+    "node_modules/",
+    "package-lock.json",
+    "package.json",
+    "bin/",
+    "misc/diffy-geosystems/images/README.md",
+]
 
 # RSS (the website_{title, descr, url} must be defined to get RSS)
 generate_rss = true
@@ -31,7 +35,7 @@ git_repo = "https://github.com/stephen-huan/lectures/blob/master"
 
 # footer exclude
 footer_exclude = Set(
-  ["/404/"]
+    ["/404/"]
 )
 +++
 
