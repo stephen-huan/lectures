@@ -307,6 +307,7 @@ function lx_bibliography(com, _)
     @@references
     ## References
     [BibTeX]($path/$bib.bib)
+
     \\textinput{$path/$bib.md}
     @@
     """

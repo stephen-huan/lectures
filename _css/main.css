@@ -179,10 +179,10 @@ tr:first-of-type > th { text-align: center; /* background: #eae9f4; */ }
 
 .franklin-content blockquote {
   /* background: var(--output-background); */
+  /* font-style: italic; */
   border-left: 0.125rem solid var(--theme-darksilver-color);
   margin: 0.5rem 0.625rem;
-  padding: 0.5rem 0.625rem;
-  /* font-style: italic; */
+  padding: 0.625rem;
 }
 
 .franklin-content blockquote p {
@@ -461,20 +461,75 @@ code {
 .hljs-metap        {font-weight: bold; color: #4063d8;}
 
 /* ==================================================================
-    BOXES
+    MATH
 ================================================================== */
 
-.franklin-content .colbox-blue {
-  background-color: #eef3f5;
-  padding-top: 5px;
-  padding-right: 10px;
-  padding-left: 10px;
-  padding-bottom: 5px;
-  margin-left: 5px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  border-radius: 0 10px 10px 0;
-  border-left: 5px solid #4c9cf1;
+/* inspired by https://textbooks.math.gatech.edu/ila/index.html */
+
+.definition {
+  margin: 0.5rem 0.75rem;
+  padding: 0.625rem;
+  position: relative;
+}
+
+.definition::before {
+  content: "";
+  border-right:  0.125rem solid var(--theme-darksilver-color);
+  border-top:    0.125rem solid var(--theme-darksilver-color);
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  right: -0.125rem;
+  top: -0.125rem;
+}
+
+.definition::after {
+  content: "";
+  display: block;
+  border-left:   0.125rem solid var(--theme-darksilver-color);
+  border-bottom: 0.125rem solid var(--theme-darksilver-color);
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  left: -0.125rem;
+  bottom: -0.125rem;
+}
+
+.lemma {
+  border-left:   0.125rem solid var(--theme-darksilver-color);
+  margin: 0.5rem 0.625rem;
+  padding: 0.625rem;
+  position: relative;
+}
+
+.lemma::after {
+  content: "";
+  display: block;
+  border-bottom: 0.125rem solid var(--theme-darksilver-color);
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  left: -0.125rem;
+  bottom: -0.125rem;
+}
+
+.theorem {
+  border: 0.125rem solid var(--theme-darksilver-color);
+  margin: 0.5rem 0.625rem;
+  padding: 0.625rem;
+  position: relative;
+}
+
+.corollary {
+  border: 0.125rem dashed var(--theme-darksilver-color);
+  margin: 0.5rem 0.625rem;
+  padding: 0.625rem;
+  position: relative;
+}
+
+.qedsymbol {
+  display: inline-block;
+  float: right;
 }
 
 /* ==================================================================
