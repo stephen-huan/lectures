@@ -24,12 +24,12 @@ copy "_layout/head_katex.html"
 touch "_layout/header.html"
 copy "_layout/page_foot.html"
 
-cp --recursive "$MAIN/_rss" .
+# cp --recursive "$MAIN/_rss" .
 
 copy "404.md"
 copy "Project.toml"
-# copy "Manifest.toml"
+# # copy "Manifest.toml"
 copy "package.json"
-# copy "package-lock.json"
+# # copy "package-lock.json"
 copy "utils.jl"
 
