@@ -16,6 +16,8 @@ ignore = [
     "node_modules/",
     "package-lock.json",
     "package.json",
+    ".prettierrc.json",
+    ".prettierignore",
     "bin/",
     "misc/diffy-geosystems/images/README.md",
 ]
