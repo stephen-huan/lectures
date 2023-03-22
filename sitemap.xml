@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-<url>
+  <url>
     <loc>https://lectures.cgdct.moe/404/index.html</loc>
-    <lastmod>2022-12-26</lastmod>
+    <lastmod>2023-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-</url>
-<url>
+  </url>
+  <url>
     <loc>https://lectures.cgdct.moe/index.html</loc>
     <lastmod>2022-12-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://lectures.cgdct.moe/misc/diffy-geosystems/images/index.html</loc>
+  </url>
+  <url>
+    <loc>
+      https://lectures.cgdct.moe/misc/diffy-geosystems/images/index.html
+    </loc>
     <lastmod>2022-12-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-</url>
+  </url>
 </urlset>

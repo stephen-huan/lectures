@@ -2,6 +2,7 @@
     VARIABLES
 ================================================================== */
 
+/* prettier-ignore */
 :root {
   --text-color: #000;
   --background: #fff;
@@ -123,9 +124,13 @@ body {
     GENERAL FORMATTING
 ================================================================== */
 
-.centering { text-align: center; }
+.centering {
+  text-align: center;
+}
 
-.font-weight-bold { font-weight: var(--font-weight-bold); }
+.font-weight-bold {
+  font-weight: var(--font-weight-bold);
+}
 
 /* links */
 
@@ -137,13 +142,19 @@ body {
   /* border-bottom: 1px solid var(--theme-silver-color); */
 }
 
-.franklin-content            a:hover { text-decoration: underline; }
-.franklin-content .showhover a:hover { text-decoration: underline; }
+.franklin-content a:hover {
+  text-decoration: underline;
+}
+.franklin-content .showhover a:hover {
+  text-decoration: underline;
+}
 
 /* lists */
 
 /* Spacing between bullet points. */
-.franklin-content li p { margin: 0.5rem 0; }
+.franklin-content li p {
+  margin: 0.5rem 0;
+}
 
 /* tables */
 
@@ -163,26 +174,39 @@ body {
   border: var(--rule);
 }
 
-tbody tr:nth-child(even) { background-color: var(--output-background); }
+tbody tr:nth-child(even) {
+  background-color: var(--output-background);
+}
 
-tr:first-of-type > th { text-align: center; /* background: #eae9f4; */ }
+tr:first-of-type > th {
+  text-align: center; /* background: #eae9f4; */
+}
 
-.clean-table table { margin-left: 0; }
+.clean-table table {
+  margin-left: 0;
+}
 
-.clean-table tr, .clean-table table tbody tr td { border: none; }
+.clean-table tr,
+.clean-table table tbody tr td {
+  border: none;
+}
 
-.clean-table tbody tr:nth-child(even) { background-color: var(--background); }
+.clean-table tbody tr:nth-child(even) {
+  background-color: var(--background);
+}
 
-.no-header table tbody tr th { display: none; }
+.no-header table tbody tr th {
+  display: none;
+}
 
 /* blockquote */
 
 .franklin-content blockquote {
   /* background: var(--output-background); */
+  /* font-style: italic; */
   border-left: 0.125rem solid var(--theme-darksilver-color);
   margin: 0.5rem 0.625rem;
-  padding: 0.5rem 0.625rem;
-  /* font-style: italic; */
+  padding: 0.625rem;
 }
 
 .franklin-content blockquote p {
@@ -193,18 +217,33 @@ tr:first-of-type > th { text-align: center; /* background: #eae9f4; */ }
 
 /* horizontal rule */
 
-hr { border-top: var(--rule); border-bottom: 0; }
+hr {
+  border-top: var(--rule);
+  border-bottom: 0;
+}
 
 /* ==================================================================
     TITLES
 ================================================================== */
 
-.franklin-content h1 { font-size: var(--font-size-h1); }
-.franklin-content h2 { font-size: var(--font-size-h2); }
-.franklin-content h3 { font-size: var(--font-size-h3); }
-.franklin-content h4 { font-size: var(--font-size-h4); }
-.franklin-content h5 { font-size: var(--font-size-h5); }
-.franklin-content h6 { font-size: var(--font-size-h6); }
+.franklin-content h1 {
+  font-size: var(--font-size-h1);
+}
+.franklin-content h2 {
+  font-size: var(--font-size-h2);
+}
+.franklin-content h3 {
+  font-size: var(--font-size-h3);
+}
+.franklin-content h4 {
+  font-size: var(--font-size-h4);
+}
+.franklin-content h5 {
+  font-size: var(--font-size-h5);
+}
+.franklin-content h6 {
+  font-size: var(--font-size-h6);
+}
 
 .franklin-content h1,
 .franklin-content h2,
@@ -255,7 +294,9 @@ hr { border-top: var(--rule); border-bottom: 0; }
   border-bottom: none;
 }
 
-.franklin-content .title strong { font-weight: var(--font-weight-bold); }
+.franklin-content .title strong {
+  font-weight: var(--font-weight-bold);
+}
 
 /* ==================================================================
     HYPERREFS AND FOOTNOTES
@@ -264,18 +305,30 @@ hr { border-top: var(--rule); border-bottom: 0; }
 /* table of contents */
 
 /* Avoid clickable elements being too close together. */
-.franklin-toc li    { margin: 0.5rem 0; }
-.franklin-toc li a  { text-decoration: none; }
-.franklin-toc ol ol { list-style-type: lower-alpha; }
+.franklin-toc li {
+  margin: 0.5rem 0;
+}
+.franklin-toc li a {
+  text-decoration: none;
+}
+.franklin-toc ol ol {
+  list-style-type: lower-alpha;
+}
 
 /* inline citations and equation numbering */
 
-.franklin-content .eqref  a { color: var(--theme-darkrust-color); }
+.franklin-content .eqref a {
+  color: var(--theme-darkrust-color);
+}
 /* this may seem a bit odd but it's how SIAM \cref looks for equations */
-.franklin-content .cref     { color: var(--theme-darkrust-color); }
-.franklin-content .bibref a { color: var(--theme-darkseagreen-color); }
+.franklin-content .cref {
+  color: var(--theme-darkrust-color);
+}
+.franklin-content .bibref a {
+  color: var(--theme-darkseagreen-color);
+}
 
-.franklin-content .eqref  a,
+.franklin-content .eqref a,
 .franklin-content .bibref a {
   text-decoration: none;
 }
@@ -287,8 +340,13 @@ hr { border-top: var(--rule); border-bottom: 0; }
   padding-left: 1rem;
 }
 
-.references h2 { text-align: center; }
-.references p  { text-indent: -4rem; padding-left: 4rem; }
+.references h2 {
+  text-align: center;
+}
+.references p {
+  text-indent: -4rem;
+  padding-left: 4rem;
+}
 
 /* footnotes */
 
@@ -305,7 +363,9 @@ hr { border-top: var(--rule); border-bottom: 0; }
   line-height: 0;
 }
 
-.franklin-content sup a { text-decoration: none; }
+.franklin-content sup a {
+  text-decoration: none;
+}
 
 .franklin-content table.fndef {
   margin: 0;
@@ -319,9 +379,11 @@ hr { border-top: var(--rule); border-bottom: 0; }
   text-align: left;
 }
 
-.franklin-content .fndef tr {
-  /* border-left: 0.125rem solid var(--theme-darksilver-color); */
-}
+/*
+ * .franklin-content .fndef tr {
+ *   border-left: 0.125rem solid var(--theme-darksilver-color);
+ * }
+ */
 
 .franklin-content .fndef td.fndef-backref {
   color: var(--theme-darkrust-color);
@@ -330,7 +392,9 @@ hr { border-top: var(--rule); border-bottom: 0; }
   padding-left: 0.25rem;
 }
 
-.franklin-content .fndef td.fndef-backref a { text-decoration: none; }
+.franklin-content .fndef td.fndef-backref a {
+  text-decoration: none;
+}
 
 .franklin-content .fndef td.fndef-content {
   font-size: var(--font-size-footnote);
@@ -356,7 +420,9 @@ hr { border-top: var(--rule); border-bottom: 0; }
   margin-left: 1rem;
 }
 
-.franklin-content .no-margin {margin: 0}
+.franklin-content .no-margin {
+  margin: 0;
+}
 
 /* ==================================================================
     IMAGES in CONTENT
@@ -393,15 +459,19 @@ hr { border-top: var(--rule); border-bottom: 0; }
   content: "";
 }
 
-.franklin-content figcaption {
-  /* text-align: center; */
-}
+/*
+ * .franklin-content figcaption {
+ *   text-align: center;
+ * }
+ */
 
 /* ==================================================================
     KATEX
 ================================================================== */
 
-.katex { font-size: 1em !important; }
+.katex {
+  font-size: 1em !important;
+}
 
 .katex-display .katex {
   /* Overwrite KaTeX settings. */
@@ -456,25 +526,89 @@ code {
 }
 
 /* colors from https://julialang.org/assets/infra/logo.svg */
-.hljs-meta.prompt_ {font-weight: bold; color: #389826;}
-.hljs-metas        {font-weight: bold; color: #cb3c33;}
-.hljs-metap        {font-weight: bold; color: #4063d8;}
+.hljs-meta.prompt_ {
+  font-weight: bold;
+  color: #389826;
+}
+.hljs-metas {
+  font-weight: bold;
+  color: #cb3c33;
+}
+.hljs-metap {
+  font-weight: bold;
+  color: #4063d8;
+}
 
 /* ==================================================================
-    BOXES
+    MATH
 ================================================================== */
 
-.franklin-content .colbox-blue {
-  background-color: #eef3f5;
-  padding-top: 5px;
-  padding-right: 10px;
-  padding-left: 10px;
-  padding-bottom: 5px;
-  margin-left: 5px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  border-radius: 0 10px 10px 0;
-  border-left: 5px solid #4c9cf1;
+/* inspired by https://textbooks.math.gatech.edu/ila/index.html */
+
+.definition {
+  margin: 0.5rem 0.75rem;
+  padding: 0.625rem;
+  position: relative;
+}
+
+.definition::before {
+  content: "";
+  border-right: 0.125rem solid var(--theme-darksilver-color);
+  border-top: 0.125rem solid var(--theme-darksilver-color);
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  right: -0.125rem;
+  top: -0.125rem;
+}
+
+.definition::after {
+  content: "";
+  display: block;
+  border-left: 0.125rem solid var(--theme-darksilver-color);
+  border-bottom: 0.125rem solid var(--theme-darksilver-color);
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  left: -0.125rem;
+  bottom: -0.125rem;
+}
+
+.lemma {
+  border-left: 0.125rem solid var(--theme-darksilver-color);
+  margin: 0.5rem 0.625rem;
+  padding: 0.625rem;
+  position: relative;
+}
+
+.lemma::after {
+  content: "";
+  display: block;
+  border-bottom: 0.125rem solid var(--theme-darksilver-color);
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  left: -0.125rem;
+  bottom: -0.125rem;
+}
+
+.theorem {
+  border: 0.125rem solid var(--theme-darksilver-color);
+  margin: 0.5rem 0.625rem;
+  padding: 0.625rem;
+  position: relative;
+}
+
+.corollary {
+  border: 0.125rem dashed var(--theme-darksilver-color);
+  margin: 0.5rem 0.625rem;
+  padding: 0.625rem;
+  position: relative;
+}
+
+.qedsymbol {
+  /* display: inline-block; */
+  float: right;
 }
 
 /* ==================================================================
@@ -492,7 +626,9 @@ nav ul {
   margin-bottom: 0;
 }
 
-nav li { display: inline-block; }
+nav li {
+  display: inline-block;
+}
 
 nav li a {
   color: black;
@@ -507,14 +643,18 @@ nav li a {
   transition: color 0.3s ease;
 }
 
-nav li:last-of-type a { margin-right: 0px; }
+nav li:last-of-type a {
+  margin-right: 0px;
+}
 
 nav .active {
   color: var(--text-color);
   font-weight: var(--font-weight-thick);
 }
 
-nav li a:hover { color: var(--theme-darksilver-color); }
+nav li a:hover {
+  color: var(--theme-darksilver-color);
+}
 
 header {
   text-align: right;
@@ -538,7 +678,9 @@ header .blog-name a {
   text-decoration: none;
 }
 
-#menu-icon { display: none; }
+#menu-icon {
+  display: none;
+}
 
 @media (max-width: 480px) {
   header {
@@ -565,7 +707,9 @@ header .blog-name a {
 
 /* medium display: nav goes under name */
 @media (max-width: 940px) {
-  header { display: block; }
+  header {
+    display: block;
+  }
 
   header .blog-name {
     display: block;
@@ -621,7 +765,9 @@ instead, display a burger menu.
     margin: 0;
   }
 
-  nav:hover ul { display: block; }
+  nav:hover ul {
+    display: block;
+  }
 
   #menu-icon {
     display: inline-block;
@@ -648,11 +794,18 @@ instead, display a burger menu.
     ABOUT
 ================================================================== */
 
-.pgp { font-size: var(--font-size-small); overflow-wrap: break-word; }
+.pgp {
+  font-size: var(--font-size-small);
+  overflow-wrap: break-word;
+}
 
-.pgp samp { font-family: var(--monospace); }
+.pgp samp {
+  font-family: var(--monospace);
+}
 
-.pgp a { text-decoration: none; }
+.pgp a {
+  text-decoration: none;
+}
 
 .address p {
   font-family: var(--monospace);
@@ -685,7 +838,9 @@ instead, display a burger menu.
     NEWS
 ================================================================== */
 
-.news td:first-of-type { font-weight: var(--font-weight-thick); }
+.news td:first-of-type {
+  font-weight: var(--font-weight-thick);
+}
 
 /* ==================================================================
     BLOG POSTS and TAG PAGES
@@ -719,15 +874,23 @@ instead, display a burger menu.
   margin-bottom: 1rem;
 }
 
-.blog-tags ul { padding-left: 0; margin-top: 0; margin-bottom: 0; }
-
-.blog-tags li, .blog-tags p {
-   display: inline-block;
-   margin-top: 0;
-   margin-bottom: 0;
+.blog-tags ul {
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
-.blog-tags p { margin-left: 0.25rem; margin-right: 0.25rem; }
+.blog-tags li,
+.blog-tags p {
+  display: inline-block;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.blog-tags p {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}
 
 .blog-tags a {
   color: var(--theme-darksilver-color);
@@ -759,25 +922,34 @@ instead, display a burger menu.
   margin-bottom: 0;
 }
 
-.blog-posts h3 a:hover { color: var(--theme-darksilver-color); }
+.blog-posts h3 a:hover {
+  color: var(--theme-darksilver-color);
+}
 
-.post-meta, .post-tags {
+.post-meta,
+.post-tags {
   color: var(--theme-darksilver-color);
   font-size: var(--font-size-small);
 }
 
-.post-tags a { text-decoration: none; }
+.post-tags a {
+  text-decoration: none;
+}
 
 /* tag page */
 
-.tagged-posts a { text-decoration: none; }
+.tagged-posts a {
+  text-decoration: none;
+}
 
 .tagged-posts th:first-of-type {
   font-weight: var(--font-weight-thick);
   border: none;
 }
 
-.tagged-posts td { text-align: left; }
+.tagged-posts td {
+  text-align: left;
+}
 
 /* ==================================================================
     PROJECTS
@@ -795,11 +967,15 @@ instead, display a burger menu.
 /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout */
 
 @media (min-width: 760px) {
-  .inference { grid-template-columns: repeat(2, 1fr); }
+  .inference {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (min-width: 940px) {
-  .inference { grid-template-columns: repeat(3, 1fr); }
+  .inference {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .inference {
@@ -815,6 +991,7 @@ instead, display a burger menu.
 }
 
 .card:hover {
+  /* prettier-ignore */
   box-shadow:
     0 8px 17px 0 rgba(0, 0, 0, 0.20),
     0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -871,4 +1048,3 @@ instead, display a burger menu.
   border-top: var(--rule);
   border-bottom: none;
 }
-
