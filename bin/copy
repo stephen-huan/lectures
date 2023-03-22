@@ -1,7 +1,7 @@
 #!/bin/bash
 # script to copy files from the main website
 
-MAIN=~/programs/web/stephen-huan.github.io
+MAIN=~/programs/web/cgdct.moe
 
 copy() {
     # copy the file in $1 from MAIN to here.

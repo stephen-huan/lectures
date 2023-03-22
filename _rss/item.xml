@@ -18,18 +18,18 @@ defining your own `rss_enclosures` variable with a list of string and use that.
 -->
 <item>
   <title>
-    <![CDATA[  {{fd2rss rss_title}}  ]]>
+    <![CDATA[{{fd2rss rss_title}}]]>
   </title>
   <link> {{fd_full_url}} </link>
   <guid> {{fd_full_url}} </guid>
   <description>
-    <![CDATA[  {{fd2rss rss_description}}  ]]>
+    <![CDATA[{{fd2rss rss_description}}]]>
   </description>
 
   <!-- note that fd_page_html is already HTML, so we don't use fd2rss here -->
   {{if rss_full_content}}
   <content:encoded>
-    <![CDATA[  {{fix_relative_links fd_page_html}} ]]>
+    <![CDATA[{{fix_relative_links fd_page_html}}]]>
   </content:encoded>
   {{end}}
 
