@@ -1,0 +1,11 @@
+.outer404 {
+  margin-top: 6rem;
+  font-size: var(--font-size-h1);
+  line-height: 1em;
+  text-align: center;
+}
+
+.inner404 {
+  margin-bottom: 8.5rem;
+  font-size: var(--font-size-h4);
+}

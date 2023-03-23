@@ -179,7 +179,7 @@ tbody tr:nth-child(even) {
 }
 
 tr:first-of-type > th {
-  text-align: center; /* background: #eae9f4; */
+  text-align: center; /* background-color: #eae9f4; */
 }
 
 .clean-table table {
@@ -202,7 +202,7 @@ tr:first-of-type > th {
 /* blockquote */
 
 .franklin-content blockquote {
-  /* background: var(--output-background); */
+  /* background-color: var(--output-background); */
   /* font-style: italic; */
   border-left: 0.125rem solid var(--theme-darksilver-color);
   margin: 0.5rem 0.625rem;
@@ -220,6 +220,16 @@ tr:first-of-type > th {
 hr {
   border-top: var(--rule);
   border-bottom: 0;
+}
+
+/* code */
+
+code {
+  font-family: var(--monospace);
+  font-size: var(--font-size-small);
+  background-color: var(--output-background);
+  border-radius: 2px;
+  padding: 0.1em 0.2em;
 }
 
 /* ==================================================================
@@ -424,6 +434,10 @@ hr {
   margin: 0;
 }
 
+.franklin-content .column-end {
+  clear: both;
+}
+
 /* ==================================================================
     IMAGES in CONTENT
 ================================================================== */
@@ -464,152 +478,6 @@ hr {
  *   text-align: center;
  * }
  */
-
-/* ==================================================================
-    KATEX
-================================================================== */
-
-.katex {
-  font-size: 1em !important;
-}
-
-.katex-display .katex {
-  /* Overwrite KaTeX settings. */
-  display: inline-block;
-
-  /* Allow display equations to wrap on small screens. */
-  white-space: normal;
-}
-
-.katex-display::after {
-  counter-increment: eqnum;
-  content: "(" counter(eqnum) ")";
-  position: relative;
-  float: left;
-  padding-left: 0;
-}
-
-.nonumber .katex-display::after {
-  counter-increment: nothing;
-  content: "";
-}
-
-/* ==================================================================
-    CODE & HIGHLIGHT.JS
-================================================================== */
-
-code {
-  background-color: var(--output-background);
-  padding: 0.1em 0.2em;
-  border-radius: 2px;
-  font-family: var(--monospace);
-  font-size: var(--font-size-small);
-}
-
-/* Franklin does not annotate code output with the
- * "code-output" class when using prerender=true
- * instead, use "plaintext" for code output and can
- * substitute actual plaintext with "text" or "txt"
- * https://highlightjs.readthedocs.io/en/latest/supported-languages.html
- */
-.plaintext {
-  background: var(--output-background);
-  border: 1px dashed lightgrey;
-}
-
-.hljs {
-  font-family: var(--monospace);
-  font-size: var(--font-size-small);
-  font-weight: var(--font-weight-thick);
-  border-radius: 10px;
-  background: var(--background);
-}
-
-/* colors from https://julialang.org/assets/infra/logo.svg */
-.hljs-meta.prompt_ {
-  font-weight: bold;
-  color: #389826;
-}
-.hljs-metas {
-  font-weight: bold;
-  color: #cb3c33;
-}
-.hljs-metap {
-  font-weight: bold;
-  color: #4063d8;
-}
-
-/* ==================================================================
-    MATH
-================================================================== */
-
-/* inspired by https://textbooks.math.gatech.edu/ila/index.html */
-
-.definition {
-  margin: 0.5rem 0.75rem;
-  padding: 0.625rem;
-  position: relative;
-}
-
-.definition::before {
-  content: "";
-  border-right: 0.125rem solid var(--theme-darksilver-color);
-  border-top: 0.125rem solid var(--theme-darksilver-color);
-  width: 3rem;
-  height: 3rem;
-  position: absolute;
-  right: -0.125rem;
-  top: -0.125rem;
-}
-
-.definition::after {
-  content: "";
-  display: block;
-  border-left: 0.125rem solid var(--theme-darksilver-color);
-  border-bottom: 0.125rem solid var(--theme-darksilver-color);
-  width: 3rem;
-  height: 3rem;
-  position: absolute;
-  left: -0.125rem;
-  bottom: -0.125rem;
-}
-
-.lemma {
-  border-left: 0.125rem solid var(--theme-darksilver-color);
-  margin: 0.5rem 0.625rem;
-  padding: 0.625rem;
-  position: relative;
-}
-
-.lemma::after {
-  content: "";
-  display: block;
-  border-bottom: 0.125rem solid var(--theme-darksilver-color);
-  width: 3rem;
-  height: 3rem;
-  position: absolute;
-  left: -0.125rem;
-  bottom: -0.125rem;
-}
-
-.theorem {
-  border: 0.125rem solid var(--theme-darksilver-color);
-  margin: 0.5rem 0.625rem;
-  padding: 0.625rem;
-  position: relative;
-}
-
-.corollary {
-  border: 0.125rem dashed var(--theme-darksilver-color);
-  margin: 0.5rem 0.625rem;
-  padding: 0.625rem;
-  position: relative;
-}
-
-.qedsymbol {
-  /* display: inline-block; */
-  float: right;
-}
 
 /* ==================================================================
     HEADER AND NAV
@@ -749,7 +617,7 @@ instead, display a burger menu.
     position: absolute;
 
     /* padding: 0.5rem; */
-    background: var(--background);
+    background-color: var(--background);
     border: 1px solid black;
     right: 12.5%;
     top: 3.3rem;
@@ -791,140 +659,8 @@ instead, display a burger menu.
 }
 
 /* ==================================================================
-    ABOUT
+    BLOG POSTS
 ================================================================== */
-
-.pgp {
-  font-size: var(--font-size-small);
-  overflow-wrap: break-word;
-}
-
-.pgp samp {
-  font-family: var(--monospace);
-}
-
-.pgp a {
-  text-decoration: none;
-}
-
-.address p {
-  font-family: var(--monospace);
-  font-size: var(--font-size-small);
-  margin-top: 0.5rem;
-  margin-bottom: 0rem;
-}
-
-.franklin-content .profile img {
-  width: 265px;
-  height: 375.5px;
-  border-radius: 4px;
-  box-shadow: var(--box-shadow);
-}
-
-@media (max-width: 760px) {
-  .franklin-content .profile img {
-    min-width: 100%;
-    height: auto;
-  }
-
-  .franklin-content .right {
-    margin-left: 0;
-    float: none;
-    text-align: center;
-  }
-}
-
-/* ==================================================================
-    NEWS
-================================================================== */
-
-.news td:first-of-type {
-  font-weight: var(--font-weight-thick);
-}
-
-/* ==================================================================
-    BLOG POSTS and TAG PAGES
-================================================================== */
-
-.blog-title h1 {
-  font-size: var(--font-size-huge);
-  font-weight: var(--font-weight-normal);
-  text-align: center;
-  padding-bottom: 0;
-  border-bottom: none;
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-.blog-title h2 {
-  font-size: var(--font-size-h3);
-  font-weight: var(--font-weight-normal);
-  text-align: center;
-  border-bottom: none;
-  margin-top: 0;
-}
-
-.blog-tags {
-  text-align: center;
-  padding-top: 1.75rem;
-  padding-bottom: 1.75rem;
-  border-top: var(--rule);
-  border-bottom: var(--rule);
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-}
-
-.blog-tags ul {
-  padding-left: 0;
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.blog-tags li,
-.blog-tags p {
-  display: inline-block;
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.blog-tags p {
-  margin-left: 0.25rem;
-  margin-right: 0.25rem;
-}
-
-.blog-tags a {
-  color: var(--theme-darksilver-color);
-  text-decoration: none;
-}
-
-.blog-posts ul {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-.blog-posts li {
-  padding-bottom: var(--font-size-normal);
-  border-bottom: var(--rule);
-}
-
-.blog-posts li:last-of-type {
-  padding-bottom: 0;
-  border-bottom: none;
-}
-
-.blog-posts p {
-  font-size: var(--font-size-small);
-}
-
-.blog-posts h3 {
-  font-size: var(--font-size-h4);
-  font-weight: var(--font-weight-normal);
-  margin-bottom: 0;
-}
-
-.blog-posts h3 a:hover {
-  color: var(--theme-darksilver-color);
-}
 
 .post-meta,
 .post-tags {
@@ -934,117 +670,4 @@ instead, display a burger menu.
 
 .post-tags a {
   text-decoration: none;
-}
-
-/* tag page */
-
-.tagged-posts a {
-  text-decoration: none;
-}
-
-.tagged-posts th:first-of-type {
-  font-weight: var(--font-weight-thick);
-  border: none;
-}
-
-.tagged-posts td {
-  text-align: left;
-}
-
-/* ==================================================================
-    PROJECTS
-================================================================== */
-
-.category h2 {
-  font-size: var(--font-size-h3);
-  font-weight: var(--font-weight-normal);
-  color: var(--theme-lightsilver-color);
-  text-align: right;
-  margin-top: 0;
-  margin-bottom: 2rem;
-}
-
-/* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout */
-
-@media (min-width: 760px) {
-  .inference {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 940px) {
-  .inference {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.inference {
-  display: grid;
-  grid-auto-rows: auto;
-  gap: var(--font-size-normal);
-}
-
-.card {
-  box-shadow: var(--box-shadow);
-  width: 100%;
-  transition: all 0.55s ease-in-out;
-}
-
-.card:hover {
-  /* prettier-ignore */
-  box-shadow:
-    0 8px 17px 0 rgba(0, 0, 0, 0.20),
-    0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
-.card a {
-  color: var(--text-color);
-  transition: all 0.2s ease-in-out;
-  text-decoration: none;
-}
-
-.card a:hover {
-  color: var(--theme-darksilver-color);
-  text-decoration: none;
-}
-
-.card img {
-  padding-left: 0;
-  width: 100%;
-}
-
-.card-body {
-  padding: var(--font-size-normal);
-}
-
-.card h2 {
-  font-size: var(--font-size-h2);
-  text-transform: lowercase;
-  margin-top: 0;
-  margin-bottom: 0;
-  border: none;
-}
-
-.card p {
-  font-size: var(--font-size-small);
-  font-weight: var(--font-weight-thick);
-  color: var(--theme-darksilver-color);
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-/* ==================================================================
-    PUBLICATIONS
-================================================================== */
-
-.year h2 {
-  font-size: var(--font-size-h3);
-  font-weight: var(--font-weight-normal);
-  color: var(--theme-lightsilver-color);
-  text-align: right;
-  margin-top: 0;
-  margin-bottom: 0;
-  /* padding-top: 1rem; */
-  border-top: var(--rule);
-  border-bottom: none;
 }
