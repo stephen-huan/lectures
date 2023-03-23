@@ -136,6 +136,24 @@ function hfun_stylesheets()
 end
 
 """
+    hfun_metadescription()
+
+Make the meta description.
+See: https://developer.chrome.com/docs/lighthouse/seo/meta-description/
+"""
+function hfun_metadescription()
+    page = locvar(:fd_rpath)
+    content = pagevar(
+        page,
+        :meta_description;
+        default=pagevar(page, :rss_description),
+    )
+    return !isempty(content) ?
+        """<meta name="description" content="$content">""" :
+        ""
+end
+
+"""
     hfun_makeheader()
 
 Make the header list for the website.
