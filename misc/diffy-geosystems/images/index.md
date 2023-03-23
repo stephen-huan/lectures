@@ -1,5 +1,6 @@
 +++
 title = "Geoscience"
+meta_description = "Where I got the image of 戦場ヶ原ひたぎ."
 +++
 
 \chapter{[lectures](/)}

@@ -25,7 +25,7 @@ ignore = [
 # RSS (the website_{title, descr, url} must be defined to get RSS)
 generate_rss = false
 website_title = "Lectures"
-website_descr = "Lectures on computer science and mathematics"
+website_descr = "Lecture notes on computer science and mathematics."
 website_url   = "https://lectures.cgdct.moe/"
 # prepath = "lectures"
 

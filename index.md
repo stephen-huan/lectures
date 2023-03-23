@@ -1,3 +1,8 @@
++++
+title = "Index"
+meta_description = "Lecture notes on computer science and mathematics."
++++
+
 # Index
 
 - research
