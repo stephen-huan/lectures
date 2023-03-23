@@ -1,0 +1,100 @@
+/* ==================================================================
+    KATEX
+================================================================== */
+
+.katex {
+  font-size: 1em !important;
+}
+
+.katex-display .katex {
+  /* Overwrite KaTeX settings. */
+  display: inline-block;
+
+  /* Allow display equations to wrap on small screens. */
+  white-space: normal;
+}
+
+.katex-display::after {
+  counter-increment: eqnum;
+  content: "(" counter(eqnum) ")";
+  position: relative;
+  float: left;
+  padding-left: 0;
+}
+
+.nonumber .katex-display::after {
+  counter-increment: nothing;
+  content: "";
+}
+
+/* ==================================================================
+    MATH
+================================================================== */
+
+/* inspired by https://textbooks.math.gatech.edu/ila/index.html */
+
+.definition {
+  margin: 0.5rem 0.75rem;
+  padding: 0.625rem;
+  position: relative;
+}
+
+.definition::before {
+  content: "";
+  border-right: 0.125rem solid var(--theme-darksilver-color);
+  border-top: 0.125rem solid var(--theme-darksilver-color);
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  right: -0.125rem;
+  top: -0.125rem;
+}
+
+.definition::after {
+  content: "";
+  display: block;
+  border-left: 0.125rem solid var(--theme-darksilver-color);
+  border-bottom: 0.125rem solid var(--theme-darksilver-color);
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  left: -0.125rem;
+  bottom: -0.125rem;
+}
+
+.lemma {
+  border-left: 0.125rem solid var(--theme-darksilver-color);
+  margin: 0.5rem 0.625rem;
+  padding: 0.625rem;
+  position: relative;
+}
+
+.lemma::after {
+  content: "";
+  display: block;
+  border-bottom: 0.125rem solid var(--theme-darksilver-color);
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  left: -0.125rem;
+  bottom: -0.125rem;
+}
+
+.theorem {
+  border: 0.125rem solid var(--theme-darksilver-color);
+  margin: 0.5rem 0.625rem;
+  padding: 0.625rem;
+  position: relative;
+}
+
+.corollary {
+  border: 0.125rem dashed var(--theme-darksilver-color);
+  margin: 0.5rem 0.625rem;
+  padding: 0.625rem;
+  position: relative;
+}
+
+.qedsymbol {
+  /* display: inline-block; */
+  float: right;
+}

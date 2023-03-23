@@ -8,8 +8,11 @@ copy() {
     cp "$MAIN/$1" "./$1"
 }
 
-mkdir --parents "_css"
+mkdir --parents "_css/root"
 copy "_css/main.css"
+copy "_css/katex.css"
+copy "_css/highlight.css"
+copy "_css/root/404.css"
 
 mkdir --parents "_assets"
 copy "_assets/favicon.svg"
@@ -18,8 +21,6 @@ copy "_assets/favicon.svg"
 mkdir --parents "_layout"
 copy "_layout/foot.html"
 copy "_layout/head.html"
-copy "_layout/head_highlight.html"
-copy "_layout/head_katex.html"
 # copy "_layout/header.html"
 touch "_layout/header.html"
 copy "_layout/page_foot.html"
@@ -28,8 +29,8 @@ copy "_layout/page_foot.html"
 
 copy "404.md"
 copy "Project.toml"
-# # copy "Manifest.toml"
+# copy "Manifest.toml"
 copy "package.json"
-# # copy "package-lock.json"
+# copy "package-lock.json"
 copy "utils.jl"
 

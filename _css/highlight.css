@@ -1,0 +1,32 @@
+/* Franklin does not annotate code output with the
+ * "code-output" class when using prerender=true
+ * instead, use "plaintext" for code output and can
+ * substitute actual plaintext with "text" or "txt"
+ * https://highlightjs.readthedocs.io/en/latest/supported-languages.html
+ */
+.plaintext {
+  background-color: var(--output-background);
+  border: 1px dashed lightgrey;
+}
+
+.hljs {
+  font-family: var(--monospace);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-thick);
+  background-color: var(--background);
+  border-radius: 10px;
+}
+
+/* colors from https://julialang.org/assets/infra/logo.svg */
+.hljs-meta.prompt_ {
+  font-weight: bold;
+  color: #389826;
+}
+.hljs-metas {
+  font-weight: bold;
+  color: #cb3c33;
+}
+.hljs-metap {
+  font-weight: bold;
+  color: #4063d8;
+}

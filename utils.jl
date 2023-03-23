@@ -1,4 +1,5 @@
-using Franklin: LxCom, stent
+using Dates: Dates, Date
+using Franklin: Franklin, LxCom, stent
 
 """
     formatdate(date::Date, format=globvar(:date_format))
@@ -16,7 +17,8 @@ Get `var` from `page`, using the simplier `Franklin.locvar` if possible.
 """
 function getvar(page, var; default=nothing)
     (page == locvar(:fd_rpath)) ?
-        locvar(var; default) : pagevar(page, var; default)
+        locvar(var; default) :
+        pagevar(page, var; default)
 end
 
 """
@@ -32,9 +34,11 @@ robust_title(page) = getvar(page, :title; default="/$page/")
 Get the date field for `page`, defaulting to date of creation if not defined.
 """
 function robust_date(page, format=globvar(:date_format))
-    date = getvar(page, :date;
-                  default=Date(Dates.unix2datetime(stat(page * ".md").ctime))
-                 )
+    date = getvar(
+        page,
+        :date;
+        default=Date(Dates.unix2datetime(stat(page * ".md").ctime)),
+    )
     formatdate(date, format)
 end
 
@@ -82,6 +86,56 @@ Get a path to the assets directory for the current page.
 hfun_assets() = "/assets$(get_url(locvar(:fd_rpath)))"[begin:end - 1]
 
 """
+    hfun_stylesheets()
+
+Return a list of CSS stylesheets.
+"""
+function hfun_stylesheets()
+    page = locvar(:fd_rpath)
+    name = splitext(page)[1]
+    # add library styles
+    paths = []
+    if locvar(:hasmath)
+        paths = push!(
+            paths,
+            "/libs/katex/katex.min.css",
+            "/css/katex.css",
+        )
+    end
+    if locvar(:hascode)
+        paths = push!(
+            paths,
+            "/libs/highlight/styles/atom-one-light.min.css",
+            "/css/highlight.css",
+        )
+    end
+    # add main default style
+    paths = push!(paths, "/css/main.css")
+    # add implictly determined path
+    if ispath("_css/root/$name.css")
+        push!(paths, "/css/root/$name.css")
+    end
+    # add page-defined list of paths
+    # this allows avoiding @import, for example
+    paths = append!(
+        paths,
+        pagevar(page, :stylesheets; default=String[]),
+    )
+    # tag page, fd_rpath not set correctly
+    if !isempty(locvar(:fd_tag))
+        paths = [
+            "/css/main.css",
+            "/css/tag.css",
+        ]
+    end
+    io = IOBuffer()
+    for path in paths
+        write(io, """<link rel="stylesheet" href="$path">\n""")
+    end
+    return String(take!(io))
+end
+
+"""
     hfun_makeheader()
 
 Make the header list for the website.
@@ -93,7 +147,10 @@ function hfun_makeheader()
     io = IOBuffer()
     write(io, "<ul>")
     for (url, name) in globvar(:headers)
-        is_active = (url == current_url) ? "active" : ""
+        is_active = (
+            (url != "/" && startswith(current_url, url))
+            || (url == "/" && current_url == url)
+        ) ? "active" : ""
         write(io, """<li><a href="$url" class="$is_active">$name</a></li>\n""")
     end
     write(io, "</ul>")
@@ -110,8 +167,8 @@ function hfun_pagesource()
     !isempty(locvar(:fd_tag)) && return ""
     repo = "$(globvar(:git_repo))/$(locvar(:fd_rpath))"
     return (
-        "<a href=\"$(repo)\">Page source</a>." *
-        (isempty(hfun_lastupdated()) ? "" : " ")
+        "<a href=\"$(repo)\">Page source</a>."
+        * (isempty(hfun_lastupdated()) ? "" : " ")
     )
 end
 
@@ -256,7 +313,7 @@ end
 
 Make a card for the given project page.
 """
-function lx_makecard(com, _)
+@delay function lx_makecard(com, _)
     page = stent(com.braces[1])
     path = "projects/$page"
     image = pagevar(path, :preview_image)
@@ -328,8 +385,11 @@ function env_wrap(com, _)
     content = stent(com)
     lxdefs = collect(values(Franklin.GLOBAL_LXDEFS))
     # https://github.com/tlienart/Franklin.jl/blob/4ba6d9020367468bfb77b5bde9eabb2648ab8a21/src/converter/markdown/blocks.jl#L35-L37
-    parsed = Franklin.reprocess(content, lxdefs;
-                                nostripp=true) |> Franklin.simplify_ps
+    parsed = Franklin.reprocess(
+        content,
+        lxdefs;
+        nostripp=true,
+    ) |> Franklin.simplify_ps
     return "~~~<$tag$data>$parsed</$tag>~~~"
 end
 
