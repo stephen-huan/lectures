@@ -19,6 +19,7 @@ ignore = [
     ".prettierrc.json",
     ".prettierignore",
     "bin/",
+    "utils/",
     "misc/diffy-geosystems/images/README.md",
 ]
 
@@ -40,9 +41,3 @@ footer_exclude = Set(
     ["/404/"]
 )
 +++
-
-<!--
-Add here global LaTeX commands to use throughout your pages.
--->
-\newcommand{\chapter      }[1]{\begin{wrap}{h1}#1\end{wrap}}
-

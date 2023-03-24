@@ -5,7 +5,7 @@ MAIN=~/programs/web/cgdct.moe
 
 copy() {
     # copy the file in $1 from MAIN to here.
-    cp "$MAIN/$1" "./$1"
+    cp --recursive "$MAIN/$1" "./$1"
 }
 
 mkdir --parents "_css/root"
@@ -32,5 +32,6 @@ copy "Project.toml"
 # copy "Manifest.toml"
 copy "package.json"
 # copy "package-lock.json"
+copy "utils"
 copy "utils.jl"
 
