@@ -2,11 +2,11 @@ using Dates: Dates, Date
 using Franklin: Franklin, LxCom, stent
 
 """
-    formatdate(date::Date, format=globvar(:date_format))
+    formatdate(date, format=globvar(:date_format))
 
 Format the date object as a html <time> tag according to the given format.
 """
-function formatdate(date::Date, format=globvar(:date_format))
+function formatdate(date, format=globvar(:date_format))
     """<time datetime="$date">$(Dates.format(date, format))</time>"""
 end
 
@@ -45,10 +45,14 @@ end
 """
     modification_date()
 
-Get the time of last modification for the current page.
+Get the time of the last git modification, defaulting to filesystem.
 """
 function modification_date()
-    """<time datetime="$(locvar(:fd_mtime_raw))">$(locvar(:fd_mtime))</time>"""
+    # https://www.git-scm.com/docs/git-log#_pretty_formats
+    timestamp = readchomp(`git log --pretty="%at" -1 $(locvar(:fd_rpath))`)
+    !isempty(timestamp) ?
+        Dates.unix2datetime(parse(Int, timestamp)) :
+        locvar(:fd_mtime_raw)
 end
 
 """
@@ -196,7 +200,7 @@ end
 Return the modification time, ignoring automatically generated pages.
 """
 function hfun_lastupdated()
-    date = locvar(:fd_mtime_raw)
+    date = modification_date()
     # early exit for tag pages
     !isempty(locvar(:fd_tag)) && return ""
     url = get_url(locvar(:fd_rpath))
