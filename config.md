@@ -30,9 +30,6 @@ website_descr = "Lecture notes on computer science and mathematics."
 website_url   = "https://lectures.cgdct.moe/"
 # prepath = "lectures"
 
-# character for the icon
-icon = "浣"
-
 # git repo for page source
 git_repo = "https://github.com/stephen-huan/lectures/blob/master"
 
