@@ -36,6 +36,8 @@ icon = "浣"
 # git repo for page source
 git_repo = "https://github.com/stephen-huan/lectures/blob/master"
 
+footer_text = "さみしいも、たのしい。"
+
 # footer exclude
 footer_exclude = Set(
     ["/404/"]
