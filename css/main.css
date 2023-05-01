@@ -232,6 +232,12 @@ code {
   padding: 0.1em 0.2em;
 }
 
+/* ruby */
+
+rt {
+  margin-bottom: -0.25em;
+}
+
 /* ==================================================================
     TITLES
 ================================================================== */
@@ -502,10 +508,7 @@ nav li a {
   color: black;
   text-decoration: none;
   display: inline-block;
-  padding-top: 0.5rem;
-  padding-right: 0.125rem;
-  padding-left: 0.125rem;
-  padding-bottom: 0.25rem;
+  padding: 0.5rem 0.125rem 0.25rem 0.125rem;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   transition: color 0.3s ease;
