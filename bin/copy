@@ -15,7 +15,7 @@ copy "_css/highlight.css"
 copy "_css/root/404.css"
 
 mkdir --parents "_assets"
-copy "_assets/favicon.svg"
+# copy "_assets/favicon.svg"
 # copy "_assets/hamburger.svg"
 
 mkdir --parents "_layout"
