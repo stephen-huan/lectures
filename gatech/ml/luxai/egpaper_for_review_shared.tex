@@ -1,0 +1,118 @@
+% SIAM Shared Information Template
+% This is information that is shared between the main document and any
+% supplement. If no supplement is required, then this information can
+% be included directly in the main document.
+
+
+% Packages and macros go here
+\usepackage{lipsum}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsopn}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{algorithmic}
+\usepackage{tikz}
+% \usepackage{pgfplots}
+\usetikzlibrary{shapes.arrows, patterns, calc}
+\usepackage{tikz-3dplot}
+\usepackage{bbm}
+\usepackage{bm}
+\ifpdf
+  \DeclareGraphicsExtensions{.eps,.pdf,.png,.jpg}
+\else
+  \DeclareGraphicsExtensions{.eps}
+\fi
+% \usepackage{todonotes}
+
+\definecolor{lightblue}{HTML}{a1b4c7}
+\definecolor{orange}{HTML}{ea8810}
+\definecolor{silver}{HTML}{b0aba8}
+\definecolor{rust}{HTML}{b8420f}
+\definecolor{seagreen}{HTML}{23553c}
+
+\colorlet{darklightblue}{lightblue!85!black}
+\colorlet{darkorange}{orange!85!black}
+\colorlet{lightsilver}{silver!15!white}
+\colorlet{darksilver}{silver!85!black}
+\colorlet{darkrust}{rust!85!black}
+\colorlet{darkseagreen}{seagreen!85!black}
+
+\definecolor{ice}{HTML}{48dbfb}
+\definecolor{ore}{HTML}{2c3e50}
+\definecolor{rubblelight}{HTML}{f4f4f4}
+\definecolor{rubbledark}{HTML}{9f9f9f}
+
+\definecolor{factory1}{HTML}{5aa8ec}
+\definecolor{lichen1}{HTML}{90c2ed}
+\definecolor{robot1}{HTML}{228be6}
+
+\definecolor{factory2}{HTML}{f46f6f}
+\definecolor{lichen2}{HTML}{f2a8a8}
+\definecolor{robot2}{HTML}{f03e3e}
+
+% Names of standard objects
+\newcommand*{\Reals}{\mathbb{R}}
+\newcommand*{\Naturals}{\mathbb{N}}
+
+\newcommand*{\defeq}{\coloneqq}
+\newcommand*{\BigO}{\mathcal{O}}
+\newcommand*{\N}{\mathcal{N}}
+\newcommand*{\SpSet}{\mathcal{S}}
+\newcommand*{\GP}{\mathcal{GP}}
+\newcommand*{\Loss}{\mathcal{L}}
+\newcommand*{\Order}{\mathcal{I}}
+\newcommand*{\Reverse}{\updownarrow}
+\newcommand*{\I}{I}
+\newcommand*{\J}{J}
+\newcommand*{\V}{V}
+
+\renewcommand*{\vec}[1]{\bm{#1}}
+\newcommand*{\Id}{\text{Id}}
+
+% Names of variables
+% covariance matrix
+\newcommand*{\CM}{\Theta}
+\newcommand*{\mean}{\mu}
+\newcommand*{\var}{\sigma^2}
+\newcommand*{\std}{\sigma}
+% kernel function
+\newcommand*{\K}{K}
+\newcommand*{\Train}{\text{Tr}}
+\newcommand*{\Pred}{\text{Pr}}
+
+% Names of operators
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\DeclarePairedDelimiter{\card}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclareMathOperator{\diag}{diag}
+\let\trace\relax
+\DeclareMathOperator{\trace}{trace}
+\DeclareMathOperator{\logdet}{logdet}
+\DeclareMathOperator{\chol}{chol}
+\DeclareMathOperator{\FRO}{FRO}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\DeclarePairedDelimiterX{\infdivx}[2]{(}{)}{%
+  #1\;\delimsize\|\;#2%
+}
+\newcommand*{\KL}{\mathbb{D}_{\operatorname{KL}}\infdivx}
+\DeclareMathOperator{\p}{\pi}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\mathbb{V}ar}
+\DeclareMathOperator{\Cov}{\mathbb{C}ov}
+\DeclareMathOperator{\Corr}{\mathbb{C}orr}
+\DeclareMathOperator{\entropy}{\mathbb{H}}
+\DeclareMathOperator{\MI}{\mathbb{I}}
+\DeclareMathOperator{\Prob}{\mathbb{P}}
+\DeclareMathOperator{\Ind}{\mathbbm{1}}
+\DeclareMathOperator{\cw}{\mathsf{cw}}
+\DeclareMathOperator{\Uniform}{\text{Unif}}
+
+%%% Local Variables:
+%%% mode:latex
+%%% TeX-master: "experimental_design_linalg"
+%%% End:

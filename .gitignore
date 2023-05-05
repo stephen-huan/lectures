@@ -3,6 +3,7 @@
 *.fdb_latexmk
 *.fls
 *.out
+*.brf
 
 # bibliography files
 *.bbl
