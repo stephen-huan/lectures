@@ -33,7 +33,7 @@ website_url   = "https://lectures.cgdct.moe/"
 # git repo for page source
 git_repo = "https://github.com/stephen-huan/lectures/blob/master"
 
-footer_text = "さみしいも、たのしい。"
+footer_text = "単純明快。"
 
 # footer exclude
 footer_exclude = Set(
