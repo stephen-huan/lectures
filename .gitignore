@@ -30,3 +30,4 @@ archive
 __site
 node_modules
 _rss
+.lycheecache
