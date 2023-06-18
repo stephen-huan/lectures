@@ -1,5 +1,5 @@
 using Dates: Dates, Date
-using Franklin: Franklin, LxCom, stent
+using Franklin: Franklin, LxCom, stent, locvar, pagevar, globvar, @delay
 
 """
     formatdate(date, format=globvar(:date_format))
@@ -7,7 +7,7 @@ using Franklin: Franklin, LxCom, stent
 Format the date object as a html <time> tag according to the given format.
 """
 function formatdate(date, format=globvar(:date_format))
-    """<time datetime="$date">$(Dates.format(date, format))</time>"""
+    return """<time datetime="$date">$(Dates.format(date, format))</time>"""
 end
 
 """
@@ -16,9 +16,11 @@ end
 Get `var` from `page`, using the simplier `Franklin.locvar` if possible.
 """
 function getvar(page, var; default=nothing)
-    (page == locvar(:fd_rpath)) ?
-        locvar(var; default) :
+    return if (page == locvar(:fd_rpath))
+        locvar(var; default)
+    else
         pagevar(page, var; default)
+    end
 end
 
 """
@@ -39,7 +41,7 @@ function robust_date(page, format=globvar(:date_format))
         :date;
         default=Date(Dates.unix2datetime(stat(page * ".md").ctime)),
     )
-    formatdate(date, format)
+    return formatdate(date, format)
 end
 
 """
@@ -50,9 +52,11 @@ Get the time of the last git modification, defaulting to filesystem.
 function modification_date()
     # https://www.git-scm.com/docs/git-log#_pretty_formats
     timestamp = readchomp(`git log --pretty="%at" -1 $(locvar(:fd_rpath))`)
-    !isempty(timestamp) ?
-        Dates.unix2datetime(parse(Int, timestamp)) :
+    return if !isempty(timestamp)
+        Dates.unix2datetime(parse(Int, timestamp))
+    else
         locvar(:fd_mtime_raw)
+    end
 end
 
 """
@@ -87,7 +91,7 @@ end
 
 Get a path to the assets directory for the current page.
 """
-hfun_assets() = "/assets$(get_url(locvar(:fd_rpath)))"[begin:end - 1]
+hfun_assets() = "/assets$(get_url(locvar(:fd_rpath)))"[begin:(end - 1)]
 
 """
     hfun_stylesheets()
@@ -100,11 +104,13 @@ function hfun_stylesheets()
     # add library styles
     paths = []
     if locvar(:hasmath)
+        #! format: off
         paths = push!(
             paths,
             "/libs/katex/katex.min.css",
             "/css/katex.css",
         )
+        #! format: on
     end
     if locvar(:hascode)
         paths = push!(
@@ -121,16 +127,15 @@ function hfun_stylesheets()
     end
     # add page-defined list of paths
     # this allows avoiding @import, for example
-    paths = append!(
-        paths,
-        pagevar(page, :stylesheets; default=String[]),
-    )
+    paths = append!(paths, pagevar(page, :stylesheets; default=String[]))
     # tag page, fd_rpath not set correctly
     if !isempty(locvar(:fd_tag))
+        #! format: off
         paths = [
             "/css/main.css",
             "/css/tag.css",
         ]
+        #! format: on
     end
     io = IOBuffer()
     for path in paths
@@ -148,13 +153,13 @@ See: https://developer.chrome.com/docs/lighthouse/seo/meta-description/
 function hfun_metadescription()
     page = locvar(:fd_rpath)
     content = pagevar(
-        page,
-        :meta_description;
-        default=pagevar(page, :rss_description),
+        page, :meta_description; default=pagevar(page, :rss_description)
     )
-    return !isempty(content) ?
-        """<meta name="description" content="$content">""" :
+    return if !isempty(content)
+        """<meta name="description" content="$content">"""
+    else
         ""
+    end
 end
 
 """
@@ -169,10 +174,15 @@ function hfun_makeheader()
     io = IOBuffer()
     write(io, "<ul>")
     for (url, name) in globvar(:headers)
-        is_active = (
-            (url != "/" && startswith(current_url, url))
-            || (url == "/" && current_url == url)
-        ) ? "active" : ""
+        is_active =
+            if (
+                (url != "/" && startswith(current_url, url)) ||
+                (url == "/" && current_url == url)
+            )
+                "active"
+            else
+                ""
+            end
         write(io, """<li><a href="$url" class="$is_active">$name</a></li>\n""")
     end
     write(io, "</ul>")
@@ -188,10 +198,12 @@ function hfun_pagesource()
     # early exit for tag pages
     !isempty(locvar(:fd_tag)) && return ""
     repo = "$(globvar(:git_repo))/$(locvar(:fd_rpath))"
+    #! format: off
     return (
         "<a href=\"$(repo)\">Page source</a>."
         * (isempty(hfun_lastupdated()) ? "" : " ")
     )
+    #! format: on
 end
 
 """
@@ -205,7 +217,7 @@ function hfun_lastupdated()
     !isempty(locvar(:fd_tag)) && return ""
     url = get_url(locvar(:fd_rpath))
     exclude = globvar(:footer_exclude)
-    (in(url, exclude)) ?  "" : "Last updated: $(formatdate(date))."
+    return (in(url, exclude)) ? "" : "Last updated: $(formatdate(date))."
 end
 
 """
@@ -226,7 +238,7 @@ function hfun_custom_taglist()
     rpaths = globvar(:fd_tag_pages)[tag]
     # you might want to sort these pages by chronological order
     # you could also only show the most recent 5 etc...
-    sort!(rpaths, by=robust_date, rev=true)
+    sort!(rpaths; by=robust_date, rev=true)
 
     # ---------------------------------
     # Part 2: Write the HTML to plug in
@@ -239,7 +251,7 @@ function hfun_custom_taglist()
     for rpath in rpaths
         write(io, "<tr>")
         # recover the url corresponding to the rpath
-        url = get_url(rpath)
+        _ = get_url(rpath)
         title, date = robust_title(rpath), robust_date(rpath)
         # write some appropriate HTML
         write(io, """<th scope="row">$date</th>""")
@@ -282,7 +294,7 @@ See: https://franklinjl.org/demos/#007_delayed_hfun
 @delay function hfun_getposts()
     io = IOBuffer()
     write(io, "<ul>\n")
-    for post in sort(readdir("blog"; join=true), by=robust_date, rev=true)
+    for post in sort(readdir("blog"; join=true); by=robust_date, rev=true)
         post == "blog/index.md" && continue
         write(io, "<li>")
         url, title = get_url(post), robust_title(post)
@@ -354,7 +366,7 @@ https://github.com/tlienart/Franklin.jl/blob/master\
 /src/converter/latex/hyperrefs.jl.
 """
 function Franklin.lx_cite(lxc::LxCom, _)
-    Franklin.form_href(lxc, "BIBR"; parens="["=>"]", class="bibref")
+    return Franklin.form_href(lxc, "BIBR"; parens="[" => "]", class="bibref")
 end
 
 """
@@ -381,15 +393,15 @@ See: https://ctroupin.github.io/posts/2019-12-19-bibtex-markdown/
 """
 function lx_bibliography(com, _)
     bib = stent(com.braces[1])
-    path = "/assets$(get_url(locvar(:fd_rpath)))"[begin:end - 1]
-    """
-    @@references
-    ## References
-    [BibTeX]($path/$bib.bib)
+    path = "/assets$(get_url(locvar(:fd_rpath)))"[begin:(end - 1)]
+    return """
+           @@references
+           ## References
+           [BibTeX]($path/$bib.bib)
 
-    \\textinput{$path/$bib.md}
-    @@
-    """
+           \\textinput{$path/$bib.md}
+           @@
+           """
 end
 
 """
@@ -407,11 +419,12 @@ function env_wrap(com, _)
     content = stent(com)
     lxdefs = collect(values(Franklin.GLOBAL_LXDEFS))
     # https://github.com/tlienart/Franklin.jl/blob/4ba6d9020367468bfb77b5bde9eabb2648ab8a21/src/converter/markdown/blocks.jl#L35-L37
+    #! format: off
     parsed = Franklin.reprocess(
         content,
         lxdefs;
         nostripp=true,
     ) |> Franklin.simplify_ps
+    #! format: on
     return "~~~<$tag$data>$parsed</$tag>~~~"
 end
-

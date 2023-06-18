@@ -23,13 +23,16 @@ see:
 - https://katex.org/docs/supported.html#macros
 """
 function starmacro(name, num, nostar, star)
-    lxd(name, 0, """
-        \\providecommand{\\$(name)helper}{
-          \\@ifstar{\\$(name)star}{\\$(name)nostar}
-        }
-        \\providecommand{\\$(name)nostar}[$num]{$nostar}
-        \\providecommand{\\$(name)star}[$num]{$star}
-        \\$(name)helper"""
+    return lxd(
+        name,
+        0,
+        """
+\\providecommand{\\$(name)helper}{
+  \\@ifstar{\\$(name)star}{\\$(name)nostar}
+}
+\\providecommand{\\$(name)nostar}[$num]{$nostar}
+\\providecommand{\\$(name)star}[$num]{$star}
+\\$(name)helper""",
     )
 end
 
@@ -39,6 +42,7 @@ function starmacro(name, num, nostar)
     right = [")", "]", "\\rvert", "\\rVert", "\\rangle"]
     star = replace(
         nostar,
+        #! format: off
         [
             Pair(delim, direction * delim)
             for (direction, delims) in zip(
@@ -46,8 +50,9 @@ function starmacro(name, num, nostar)
                 (left, middle, right)
             ) for delim in delims
         ]...,
+        #! format: on
     )
-    starmacro(name, num, nostar, star)
+    return starmacro(name, num, nostar, star)
 end
 
 """
@@ -56,11 +61,8 @@ DeclarePairedDelimiterX(name, num, left, right, body)
 An emulator of the corresponding mathtools macro.
 """
 function DeclarePairedDelimiterX(name, num, left, right, body)
-    starmacro(
-        name,
-        num,
-        "$left $body $right",
-        "\\left $left $body \\right $right",
+    return starmacro(
+        name, num, "$left $body $right", "\\left $left $body \\right $right"
     )
 end
 
@@ -70,7 +72,7 @@ DeclarePairedDelimiter(name, left, right)
 An emulator of the corresponding mathtools macro.
 """
 function DeclarePairedDelimiter(name, left, right)
-    DeclarePairedDelimiterX(name, 1, left, right, "#1")
+    return DeclarePairedDelimiterX(name, 1, left, right, "#1")
 end
 
 # LaTeX-like math macros.
@@ -78,6 +80,7 @@ end
 # KaTeX has its own macro system: https://katex.org/docs/supported.html#macros
 const katex_commands = [
     # colors
+    #! format: off
     lxd("silver",        0, raw"""#9e9997"""),
     lxd("lightblue",     0, raw"""#a1b4c7"""),
     lxd("seagreen",      0, raw"""#23553c"""),
@@ -89,6 +92,7 @@ const katex_commands = [
     lxd("darkseagreen",  0, raw"""#1e4833"""),
     lxd("darkorange",    0, raw"""#c7740e"""),
     lxd("darkrust",      0, raw"""#9c380d"""),
+    #! format: on
     # general
     lxd("defeq", 0, raw"""\coloneqq"""),
     lxd("BigO", 0, raw"""\mathcal{O}"""),
@@ -111,18 +115,10 @@ const katex_commands = [
     DeclarePairedDelimiter("floor", raw"""\lfloor""", raw"""\rfloor"""),
     DeclarePairedDelimiter("ceil", raw"""\lceil""", raw"""\rceil"""),
     DeclarePairedDelimiterX(
-        "fro",
-        1,
-        raw"""\lVert""",
-        raw"""\rVert_{\operatorname{FRO}}""",
-        "#1"
+        "fro", 1, raw"""\lVert""", raw"""\rVert_{\operatorname{FRO}}""", "#1"
     ),
     DeclarePairedDelimiterX(
-        "inner",
-        2,
-        raw"""\langle""",
-        raw"""\rangle""",
-        "#1, #2",
+        "inner", 2, raw"""\langle""", raw"""\rangle""", "#1, #2"
     ),
     # operators
     lxd("argmin", 0, raw"""\operatorname*{argmin}"""),
@@ -149,17 +145,22 @@ const katex_commands = [
 ]
 
 const katex_environments = append!(
+    #! format: off
     [
         lxe(name, 0, make_def(name))
         for name in ["definition", "lemma", "theorem", "corollary"]
     ],
+    #! format: on
     [
-        lxe("proof", 0, raw"""
-            \begin{wrap}{div class="proof"}
-            _Proof_.""" => raw"""
-            \begin{wrap}{span class="qedsymbol"}$ \square $\end{wrap}
-            \end{wrap}
-            """
+        lxe(
+            "proof",
+            0,
+            raw"""
+\begin{wrap}{div class="proof"}
+_Proof_.""" => raw"""
+\begin{wrap}{span class="qedsymbol"}$ \square $\end{wrap}
+\end{wrap}
+""",
         ),
     ],
 )
@@ -167,4 +168,3 @@ const katex_environments = append!(
 for store in (katex_commands, katex_environments), (name, def) in store
     GLOBAL_LXDEFS[name] = def
 end
-
