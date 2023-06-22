@@ -1,9 +1,15 @@
 # LaTeX auxiliary files
 *.aux
+*.auxlock
+*.bbl
+*.blg
 *.fdb_latexmk
 *.fls
+*.log
 *.out
-*.brf
+*.synctex(busy)
+*.synctex.gz
+*.thm
 
 # bibliography files
 *.bbl
@@ -12,15 +18,19 @@
 *.run.xml
 
 # minted code output
+*.pyg
 *.pygstyle
 *.pygtex
 *.loa
 
 # beamer presentation files
-*.snm
 *.nav
+*.snm
 *.toc
 *.vrb
+
+# tikzexternalize
+external/
 
 # archive
 archive
