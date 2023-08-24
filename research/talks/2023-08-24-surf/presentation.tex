@@ -1,0 +1,706 @@
+\documentclass{beamer}                             % presentation
+% \documentclass[draft]{beamer}                      % improves compile time
+\usepackage[utf8]{inputenc}                        % utf8
+\usepackage[T1]{fontenc}                           % fix font encoding
+\usepackage[english]{babel}                        % language
+\usepackage[autostyle, english=american]{csquotes} % quotes
+\usepackage{bm, mathtools}                         % extra math packages
+\usepackage{graphicx, subcaption}                  % images
+\usepackage{tikz, pgfplots}                        % plots and graphs
+\usepackage[style=authoryear-comp]{biblatex}       % bibliography
+\usepackage{geometry, hyperref}                    % misc.
+
+\usetikzlibrary{positioning}                       % advanced positioning
+\pgfplotsset{compat=newest}                        % version of pgfplots
+
+\graphicspath{{./figures/}}
+\addbibresource{cholesky.bib}
+\addbibresource{references.bib}
+
+%%% math
+
+% serif font in math mode
+\usefonttheme[onlymath]{serif}
+
+\newcommand*{\defeq}{\coloneqq}
+\newcommand*{\BigO}{\mathcal{O}}
+\newcommand*{\N}{\mathcal{N}}
+\newcommand*{\SpSet}{\mathcal{S}}
+\newcommand*{\GP}{\mathcal{GP}}
+\newcommand*{\Loss}{\mathcal{L}}
+\newcommand*{\Order}{\mathcal{I}}
+\newcommand*{\Reverse}{\updownarrow}
+\newcommand*{\I}{I}
+\newcommand*{\J}{J}
+\newcommand*{\V}{V}
+\newcommand*{\dd}{\, \text{d}}
+\renewcommand*{\vec}[1]{\bm{#1}}
+\newcommand*{\Id}{\text{Id}}
+
+% Names of variables
+% covariance matrix
+\newcommand*{\CM}{\Theta}
+% precision matrix
+\newcommand*{\PM}{Q}
+\newcommand*{\mean}{\mu}
+\newcommand*{\var}{\sigma^2}
+\newcommand*{\std}{\sigma}
+% kernel function
+\newcommand*{\K}{K}
+\newcommand*{\Train}{\text{Tr}}
+\newcommand*{\Pred}{\text{Pr}}
+
+% Names of operators
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\card}{\lvert}{\rvert}
+\DeclareMathOperator{\diag}{diag}
+\let\trace\relax
+\DeclareMathOperator{\trace}{trace}
+\DeclareMathOperator{\logdet}{logdet}
+\DeclareMathOperator{\chol}{chol}
+\DeclareMathOperator{\FRO}{FRO}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\DeclarePairedDelimiterX{\infdivx}[2]{(}{)}{%
+  #1\;\delimsize\|\;#2%
+}
+\newcommand*{\KL}{\mathbb{D}_{\operatorname{KL}}\infdivx}
+\DeclareMathOperator{\p}{\pi}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\mathbb{V}ar}
+\DeclareMathOperator{\Cov}{\mathbb{C}ov}
+\DeclareMathOperator{\Corr}{\mathbb{C}orr}
+\DeclareMathOperator{\entropy}{\mathbb{H}}
+\DeclareMathOperator{\MI}{\mathbb{I}}
+
+%%% colors
+
+\definecolor{lightblue}{HTML}{a1b4c7}
+\definecolor{orange}{HTML}{ea8810}
+\definecolor{silver}{HTML}{b0aba8}
+\definecolor{rust}{HTML}{b8420f}
+\definecolor{seagreen}{HTML}{23553c}
+
+\colorlet{lightsilver}{silver!20!white}
+\colorlet{darkorange}{orange!85!black}
+\colorlet{darksilver}{silver!85!black}
+\colorlet{darklightblue}{lightblue!75!black}
+\colorlet{darkrust}{rust!85!black}
+\colorlet{darkseagreen}{seagreen!85!black}
+
+\colorlet{zeroborder}{darksilver}
+\colorlet{zerocolor}{lightsilver}
+\colorlet{nnzborder}{darksilver}
+\colorlet{nnzcolor}{silver}
+
+\colorlet{colborder}{black}
+\colorlet{targetcolor}{orange}
+\colorlet{selcolor}{seagreen}
+\colorlet{candcolor}{lightblue}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=darkrust,
+  citecolor=darkseagreen,
+  urlcolor=darksilver
+}
+
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{fillbetween}
+% make marks not follow the style of lines
+\tikzset{every mark/.append style={solid}}
+% cache tikz graphics
+% \usepgfplotslibrary{external}
+% \tikzexternalize
+% \tikzsetexternalprefix{external/}
+
+%%% beamer settings
+
+\usetheme{Pittsburgh}
+\usecolortheme{dolphin}
+
+% hide navigation buttons
+\setbeamertemplate{navigation symbols}{}
+% change title color
+\setbeamercolor{title}{fg=darklightblue}
+\setbeamercolor{frametitle}{fg=darklightblue}
+% table of contents
+\setbeamertemplate{section in toc}[default]
+% change bibliography entry colors
+\setbeamercolor{bibliography entry author}{fg=darklightblue}
+\setbeamercolor{bibliography entry note}{fg=lightblue}
+% customize \item in itemize
+\setbeamercolor{structure}{fg=darklightblue}
+\setbeamertemplate{itemize item}{}
+\setbeamertemplate{enumerate item}[default]
+% enumitem doesn't play well with beamer
+% \setitemize{label={},itemsep=0.5cm}
+% https://tex.stackexchange.com/questions/16793/
+\newenvironment{wideitemize}
+  {\itemize\setlength{\itemsep}{0.5cm}}
+  {\enditemize}
+
+% title page
+\title[]{Scalable Gaussian processes for \\ non-ergodic earthquake models}
+\subtitle{}
+\author[Huan]{Stephen\ Huan}
+\institute[Georgia Institute of Technology]
+{
+  % Georgia Institute of Technology
+  \url{https://cgdct.moe}
+}
+\date[]{SURF Summer Seminar Day 2023}
+\subject{K - Computer Science and Applied and Computational Mathematics}
+
+% https://sfp.caltech.edu/undergraduate-research/summer_requirements/final_presentation
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+\frametitle{Collaborators}
+\framesubtitle{}
+  \begin{columns}
+    \begin{column}{0.26\textwidth}
+      \centering
+      \begin{figure}[h!]
+        \centering
+        % https://tex.stackexchange.com/questions/41370
+        % latex renders at 72 dpi for "px"
+        \includegraphics[
+          width=2cm,
+          height=2cm,
+          trim={33.75px 0 33.75px 0},
+          clip,
+        ]{figures/people/houman_owhadi.jpg}
+      \end{figure}
+      Houman Owhadi, \\ Caltech
+    \end{column}
+    \begin{column}{0.28\textwidth}
+      \centering
+      \begin{figure}[h!]
+        \centering
+        \includegraphics[
+          width=2cm,
+          height=2cm,
+          trim={0 40px 0 19px},
+          clip,
+        ]{figures/people/greg_lavrentiadis.jpg}
+      \end{figure}
+      Greg Lavrentiadis, \\ Caltech
+    \end{column}
+    \begin{column}{0.22\textwidth}
+      \centering
+      \begin{figure}[h!]
+        \centering
+        \includegraphics[
+          width=2cm,
+          height=2cm,
+        ]{figures/people/yifan_chen.jpg}
+      \end{figure}
+      Yifan Chen, \\ Caltech
+    \end{column}
+    \begin{column}{0.22\textwidth}
+      \centering
+      \begin{figure}[h!]
+        \centering
+        \includegraphics[
+          width=2cm,
+          height=2cm,
+          trim={0 20px 0 21px},
+          clip,
+        ]{figures/people/pau_batlle.jpg}
+      \end{figure}
+      Pau Batlle, \\ Caltech
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Collaborators}
+\framesubtitle{}
+\begin{columns}
+  \begin{column}{\textwidth}
+    \centering
+    \begin{figure}[h!]
+      \centering
+      \includegraphics[
+        width=2cm,
+        height=2cm,
+        trim={0 0 0 46px},
+        clip
+      ]{figures/people/florian_schaefer.jpg}
+    \end{figure}
+    Florian\ Sch{\"a}fer, \\ Gatech
+  \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview}
+\framesubtitle{}
+
+\tableofcontents
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}
+\frametitle{The problem}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item<+-> Non-ergodic ground-motion models [\cite{lavrentiadis2022overview}]
+    estimate the probability an earthquake exceeds a fixed intensity
+  \item<+-> \emph{Ergodic} refers to assumption of translation invariance
+  \item<+-> Gaussian process modeling provides uncertainty quantification
+  \item<+-> Seismic hazard at nuclear power plant locations
+\end{wideitemize}
+\end{frame}
+
+\section{Gaussian process modelling}
+
+\begin{frame}
+\frametitle{Gaussian process regression}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item<+-> Given dataset \( \mathcal{D} = \{ (\vec{x}_i, y_i)
+    \}_{i = 1}^N \), learn residual \( y_i = f(\vec{x}_i) \)
+  \item<+-> Gaussian process (GP) modeling
+    \( f \sim \GP(\mu(\cdot), \K(\cdot, \cdot)) \)
+  \item<+-> Use closed-form posterior predictions
+    \begin{align*}
+      \E[\vec{y}_\Pred \mid \vec{y}_\Train] &=
+        \vec{\mean}_\Pred +
+        \CM_{\Pred, \Train} \CM_{\Train, \Train}^{-1}
+        (\vec{y}_\Train - \vec{\mean}_\Train) \\
+      \Cov[\vec{y}_\Pred \mid \vec{y}_\Train] &=
+        \CM_{\Pred, \Pred} -
+        \CM_{\Pred, \Train} \CM_{\Train, \Train}^{-1}
+        \CM_{\Train, \Pred}
+    \end{align*}
+    \item<+-> Direct computation scales as \(
+      \BigO(N^3) \), limiting data size (\( 10^4 \))
+  \end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Mat{\'e}rn kernel functions}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item Mat{\'e}rn family of kernels with
+    smoothness \( \nu \) and length scale \( \ell \)
+  \item\( \nu = 1/2 \) corresponds to the
+    exponential kernel \( \psi^2 \exp(-r/\ell) \)
+  \item \( \nu = \infty \) to the squared
+    exponential kernel \( \psi^2 \exp(-r^2/(2 \ell^2)) \)
+\end{wideitemize}
+\begin{figure}[b]
+  \centering
+  \includegraphics[width=0.45\textwidth]{figures/matern/exp.png}%
+  \qquad%
+  \includegraphics[width=0.45\textwidth]{figures/matern/sqexp.png}%
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Kernel function}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item<+-> Use kernel
+    \begin{align*}
+      c_1(t_E)
+      + c_2(t_S)
+      + X_3 c_3 (t_E, t_S)
+      + [\Delta R \cdot c_{\text{ca}}(t_C)]
+      + \delta W
+      + \delta B
+    \end{align*}
+  where
+    \begin{itemize}
+      \item \( c_1 \) models earthquake interactions
+      \item \( c_2 \) models site (receiver) interactions
+      \item \( X_3 \) is the geometric scaling spreading
+      \item \( c_3 \) models the interaction between earthquakes and sites
+      \item \( \Delta R \) is a cell path distance array
+      \item \( c_{\text{ca}} \) models cell-specific path attenuation
+      \item \( \delta W \) is a noise nugget
+      \item \( \delta B \) is noise shared within the same earthquake event
+    \end{itemize}
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Modeling overview}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item Pick (parametric) class of kernel functions
+  \item Learn hyperparameters (MLE, full Bayesian, kernel flows, \ldots)
+  \item Make predictions
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{What do we need?}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item<+-> (log-)Likelihood, posterior statistics
+    \begin{align*}
+      -2 \log \eta(\vec{y}) &=
+        \logdet(\CM)
+        + \vec{y}^{\top} \CM^{-1} \vec{y}
+        + N \log(2 \pi) \\
+      \E[\vec{y}_\Pred \mid \vec{y}_\Train] &=
+        \CM_{\Pred, \Train} \CM_{\Train, \Train}^{-1} \vec{y}_\Train \\
+      \Cov[\vec{y}_\Pred \mid \vec{y}_\Train] &=
+        \CM_{\Pred, \Pred} -
+        \CM_{\Pred, \Train} \CM_{\Train, \Train}^{-1}
+        \CM_{\Train, \Pred}
+    \end{align*}
+  \item<+-> Log determinant, inversion
+  \item<+-> Accelerated with \emph{Cholesky factor} \( \CM = L L^{\top} \)
+  \item<+-> Seek \emph{sparse} Cholesky
+    factor for \emph{dense} covariance matrix
+\end{wideitemize}
+\end{frame}
+
+\section{Sparse Cholesky factorization}
+
+% \begin{frame}
+% \frametitle{Statistical interpretation of s.p.d.\ matrices}
+% % \framesubtitle{Covariance or precision?}
+%
+% \begin{wideitemize}
+%   \item<+-> Factor covariance matrix \( \CM \)
+%     or precision matrix \( \PM \defeq \CM^{-1} \)?
+%     \begin{align*}
+%       \CM_{i, i}      &= \Var[y_i] &
+%       \PM_{i, i}^{-1} &= \Var[y_i \mid y_{k \neq i}] \\
+%       \CM_{i, j} &= \Cov[y_i, y_j] &
+%       \frac{-\PM_{i, j}}{\sqrt{\PM_{i, i} \PM_{j, j}}} &=
+%         \Corr[y_i, y_j \mid y_{k \neq i, j}]
+%     \end{align*}
+%   \item<+-> Covariance matrix encodes marginal independence
+%   \item<2-> Precision matrix encodes conditional independence
+%   \item<+-> Prefer precision matrix to attenuate density
+% \end{wideitemize}
+% \end{frame}
+
+\begin{frame}
+\frametitle{Statistical Cholesky factorization}
+% \framesubtitle{Covariance or precision?}
+
+\begin{wideitemize}
+  \item<+-> Cholesky factorization \( \Leftrightarrow
+    \) iterative conditioning of process
+    \begin{align*}
+      % observation 1 and observation 2 from phd thesis
+      % L &= \chol(\CM) &
+      L &= \chol(\CM^{-1}) \\
+      % L_{i, j} &=
+      %   \frac{\Cov[y_i, y_j \mid y_{k < j}]}
+      %  {\sqrt{\Var[y_j      \mid y_{k < j}]}} &
+      -\frac{L_{i, j}}{L_{j, j}} &=
+        \frac{\Cov[y_i, y_j \mid y_{k > j, k \neq i}]}
+             {\Var[y_j      \mid y_{k > j, k \neq i}]}
+    \end{align*}
+  \item<+-> Conditional (near)-independence \(
+    \Leftrightarrow \) (approximate) sparsity
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Screening effect}
+\framesubtitle{}
+
+\begin{figure}[t]
+  \centering
+  \input{figures/screening/uncond.tex}%
+  \qquad
+  \input{figures/screening/cond.tex}
+\end{figure}
+
+\begin{wideitemize}
+  \item<+-> Conditional on points near a point of interest, \\
+    far away points are almost independent [\cite{stein2002screening}]
+  \item<+-> Suggests space-covering ordering
+    and selecting nearby points % for the sparsity
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Cholesky factorization recipe}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item<+-> Implied procedure for computing \( L L^{\top} \approx \CM^{-1} \)
+    \begin{enumerate}
+      \item Pick an ordering on the rows/columns of \( \CM \)
+      \item Select a sparsity pattern lower triangular w.r.t. ordering
+      \item Compute entries by minimizing objective over all factors
+    \end{enumerate}
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Ordering and sparsity pattern}
+\framesubtitle{}
+
+% copied a bit from https://youtu.be/Hdhv-moeR5U?t=968
+\begin{wideitemize}
+  \item (Reverse) maximin ordering [\cite{guinness2018permutation}]
+    selects the next \textcolor{orange}{point \( \vec{x}_i \)}
+    with \textcolor{orange}{largest distance \( \ell_i \)} to
+    \textcolor{lightblue}{points selected before}
+  \item The \( i \)th column selects all points
+    within a radius of \textcolor{seagreen}{\( \rho
+    \ell_i \)} from \textcolor{orange}{\( \vec{x}_i \)}
+\end{wideitemize}
+
+% computer generated
+\only<1>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_01.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_01.tex}
+  \end{figure}
+}
+\only<2>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_02.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_02.tex}
+  \end{figure}
+}
+\only<3>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_03.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_03.tex}
+  \end{figure}
+}
+\only<4>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_04.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_04.tex}
+  \end{figure}
+}
+\only<5>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_05.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_05.tex}
+  \end{figure}
+}
+\only<6>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_06.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_06.tex}
+  \end{figure}
+}
+\only<7>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_07.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_07.tex}
+  \end{figure}
+}
+\only<8>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_08.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_08.tex}
+  \end{figure}
+}
+\only<9>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_09.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_09.tex}
+  \end{figure}
+}
+\only<10>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_10.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_10.tex}
+  \end{figure}
+}
+\only<11>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_11.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_11.tex}
+  \end{figure}
+}
+\only<12>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_12.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_12.tex}
+  \end{figure}
+}
+\only<13>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_13.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_13.tex}
+  \end{figure}
+}
+\only<14>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_14.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_14.tex}
+  \end{figure}
+}
+\only<15>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_15.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_15.tex}
+  \end{figure}
+}
+\only<16>{
+  \begin{figure}
+    \centering
+    \input{figures/points_knn/cholesky_factor_16.tex}%
+    \qquad
+    \input{figures/points_knn/selected_points_16.tex}
+  \end{figure}
+}
+\end{frame}
+
+\begin{frame}
+\frametitle{Kullback-Leibler minimization}
+\framesubtitle{}
+\begin{wideitemize}
+  \item<+-> Compute entries by minimizing Kullback-Leibler divergence
+    \begin{align*}
+      L \defeq \argmin_{\hat{L} \in \SpSet} \,
+        \KL*{\N(\vec{0}, \CM)}
+            {\N(\vec{0}, (\hat{L} \hat{L}^{\top})^{-1})}
+    \end{align*}
+  \item<+-> Efficient and embarrassingly parallel closed-form solution
+    \begin{align*}
+      L_{s_i, i} &= \frac{\CM_{s_i, s_i}^{-1} \vec{e}_1}
+        {\sqrt{\vec{e}_1^{\top} \CM_{s_i, s_i}^{-1} \vec{e}_1}}
+    \end{align*}
+  \item<+-> Achieves state of the art \( \epsilon \)-accuracy in time
+    complexity \( \BigO\left (N \log^{2d}\left (\frac{N}{\epsilon} \right
+    ) \right ) \) with \( \BigO\left (N \log^{d}\left (\frac{N}{\epsilon}
+    \right ) \right ) \) nonzero entries [\cite{schafer2021sparse}]
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Geometric dependence}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item<+-> Screening effect motivated by geometric considerations
+  \item<+-> Maximin ordering worse than
+    random for spatial dimension \( \geq 4 \)
+  \item<2-> Nearest neighbors unclear for paths
+  \item<+-> Quick fix: correlation distance
+    \begin{align*}
+      \mathsf{dist}(p, q) &\defeq \sqrt{1 - \abs{\rho}} \\
+      \rho(p, q) &\defeq \frac{k(p, q)}{\sqrt{k(p, p) k(q, q)}}
+    \end{align*}
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Towards geometry-free Cholesky factors}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item RPCholesky [\cite{chen2023randomly}] + random ordering
+  \item RPCholesky + nearest neighbors + random candidate sets
+  \item Conditional selection sparsity pattern [\cite{huan2023sparse}]
+  \item Automatic interpolation between low rank/sparse
+\end{wideitemize}
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}
+\frametitle{Summary}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item Non-ergodic earthquake models with Gaussian processes
+  \item Efficient computation with sparse Cholesky factors
+  \item Implemented in Julia, scale to HPC/supercomputers
+  \item Project website and additional resources can be found at
+    \begin{center}
+      \url{https://kolesky.cgdct.moe}
+    \end{center}
+\end{wideitemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{}
+\framesubtitle{}
+
+% https://tex.stackexchange.com/questions/247826/beamer-full-vertical-centering
+\begin{minipage}[c][0.99\textheight][c]{\linewidth}
+  \centering
+  {\huge \textcolor{lightblue}{Thank you!}} \\
+\end{minipage}
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+\frametitle{References}
+\framesubtitle{}
+
+\printbibliography
+\end{frame}
+
+\begin{frame}
+\frametitle{Kernels on paths}
+\framesubtitle{}
+
+\begin{wideitemize}
+  \item Integral of a Mat{\'e}rn kernel \( k(\vec{x}, \vec{x}') \)
+  \item If \( f \sim \GP(\vec{0}, k) \), then define \(
+    \widetilde{f} = \int_0^1 f(\vec{x} + t(\vec{x}' - \vec{x})) \dd t \)
+  \item Linear transformation of a GP is also a GP
+  \item It has covariance
+    \begin{align*}
+      \widetilde{k}(\vec{x}, \vec{x}', \vec{y}, \vec{y}') &=
+        \int_0^1 \int_0^1
+          k(\vec{x} + t(\vec{x}' - \vec{x}), \vec{y} + s(\vec{y}' - \vec{y}))
+        \dd t \dd s
+    \end{align*}
+    which creates ``paths'' in the 2-d input space.
+\end{wideitemize}
+\end{frame}
+
+\end{document}

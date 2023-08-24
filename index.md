@@ -33,6 +33,11 @@ meta_description = "Lecture notes on computer science and mathematics."
       @ [
         SIAM Conference on Mathematics of Data Science (MDS22)
       ](https://meetings.siam.org/sess/dsp_talk.cfm?p=122967)
+    - 2023-08-24
+      [Talk](./research/talks/2023-08-24-surf/presentation.pdf)
+      @ [
+        SFP Summer Seminar Day
+      ](https://sfp.caltech.edu/undergraduate-research/summer_requirements/summer_seminar_day)
 - misc
   - probability theory
     - [_Bessel's Correction and Jensen's Inequality_](./misc/bessel-correction/bessel.pdf)
