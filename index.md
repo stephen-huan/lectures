@@ -52,6 +52,7 @@ meta_description = "Lecture notes on computer science and mathematics."
   - theory
     - [_Sparse Cholesky Factorization by Greedy Conditional Selection_](./gatech/theory/cholesky/handout.pdf),
       [full](./gatech/theory/cholesky/presentation.pdf)
+    - [_make10_](./gatech/theory/make10/make10.pdf)
   - machine learning
     - [_CS 7643 Project Report: Behavior cloning for Lux AI Season 2_](./gatech/ml/luxai/egpaper_for_review.pdf)
 - tjhsst
